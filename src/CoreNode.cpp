@@ -7,24 +7,24 @@ CoreNode::CoreNode(
 		Core::MW::Thread::PriorityEnum priority
 ) :
 	Core::MW::Node(name, false),
-	link(*this),
 	_workingAreaSize(0),
 	_priority(priority),
 	_runner(nullptr),
 	_mustRun(false),
 	_mustLoop(false),
-	_mustTeardown(false)
+	_mustTeardown(false),
+	link(*this)
 {}
 
 CoreNode::CoreNode() :
 	Core::MW::Node("", false),
-	link(*this),
 	_workingAreaSize(0),
 	_priority(Core::MW::Thread::NORMAL),
 	_runner(nullptr),
 	_mustRun(false),
 	_mustLoop(false),
-	_mustTeardown(false)
+	_mustTeardown(false),
+	link(*this)
 {}
 
 const char*
