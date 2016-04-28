@@ -7,29 +7,15 @@
 #include <type_traits>
 
 /* Macros that allow us to keep the python code generator clean */
-#define CORE_CONFIGURATION_BEGIN(__name__)  class __name__: \
-	public Core::MW::CoreConfiguration {
-#define CORE_CONFIGURATION_FIELD(__name__, __type__, __size__) \
-public: \
-	Core::MW::CoreParameter<Core::MW::CoreType::__type__, __size__> __name__;
-#define CORE_CONFIGURATION_MAP_BEGIN(__n__) \
-private: \
-	const Core::MW::Array<KeyValue, __n__> _map = {{
-#define CORE_CONFIGURATION_MAP_ENTRY(__name__, __field__) { # __field__, \
-		                                                      Core::MW::pointer_to_helper<__name__, decltype(__name__::__field__), \
-																						& __name__::__field__>::pointer},
-#define CORE_CONFIGURATION_MAP_END() } \
-	};
+#define CORE_CONFIGURATION_BEGIN(__name__) class __name__: public Core::MW::CoreConfiguration {
+#define CORE_CONFIGURATION_FIELD(__name__, __type__, __size__) public: Core::MW::CoreParameter<Core::MW::CoreType::__type__, __size__> __name__;
+#define CORE_CONFIGURATION_MAP_BEGIN(__n__) private: const Core::MW::Array<KeyValue, __n__> _map = {{
+#define CORE_CONFIGURATION_MAP_ENTRY(__name__, __field__) { # __field__, Core::MW::pointer_to_helper<__name__, decltype(__name__::__field__), & __name__::__field__>::pointer},
+#define CORE_CONFIGURATION_MAP_END() }};
 #define CORE_CONFIGURATION_END() \
-private: \
-	iterator begin() { \
-		return _map.begin(); \
-	} \
-private: \
-	iterator end() { \
-		return _map.end(); \
-	} \
-	};
+private: iterator begin() { return _map.begin(); } \
+private: iterator end() { return _map.end(); } \
+};
 
 NAMESPACE_CORE_MW_BEGIN
 

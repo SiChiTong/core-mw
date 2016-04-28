@@ -239,3 +239,20 @@ namespace CoreTypeUtils {
 }
 
 NAMESPACE_CORE_MW_END
+
+#define CORETYPE_UDL_INT(__s__, __t__) constexpr Core::MW::CoreTypeTraits<Core::MW::CoreType::__t__,1>::Type operator "" _##__s__(unsigned long long x) { return static_cast<Core::MW::CoreTypeTraits<Core::MW::CoreType::__t__,1>::Type>(x); }
+#define CORETYPE_UDL_FLOAT(__s__, __t__) constexpr Core::MW::CoreTypeTraits<Core::MW::CoreType::__t__,1>::Type operator "" _##__s__(long double x) { return static_cast<Core::MW::CoreTypeTraits<Core::MW::CoreType::__t__,1>::Type>(x); }
+CORETYPE_UDL_INT(s8, INT8)
+CORETYPE_UDL_INT(u8, UINT8)
+CORETYPE_UDL_INT(s16, INT16)
+CORETYPE_UDL_INT(u16, UINT16)
+CORETYPE_UDL_INT(s32, INT32)
+CORETYPE_UDL_INT(u32, UINT32)
+CORETYPE_UDL_INT(s64, INT64)
+CORETYPE_UDL_INT(u64, UINT64)
+CORETYPE_UDL_FLOAT(f32, FLOAT32)
+CORETYPE_UDL_FLOAT(f64, FLOAT64)
+
+
+
+
