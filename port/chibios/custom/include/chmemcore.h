@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 /*
     ChibiOS/RT - Copyright (C) 2006,2007,2008,2009,2010,
                  2011,2012,2013 Giovanni Di Sirio.
@@ -22,7 +22,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /**
  * @file    chmemcore.h
@@ -40,7 +40,9 @@
  * @note    This type must be assignment compatible with the @p chMemAlloc()
  *          function.
  */
-typedef void *(*memgetfunc_t)(size_t size);
+typedef void*(* memgetfunc_t)(
+   size_t size
+);
 
 /**
  * @name    Alignment support macros
@@ -77,20 +79,50 @@ typedef void *(*memgetfunc_t)(size_t size);
 #ifdef __cplusplus
 extern "C" {
 #endif
-  void _core_init(void);
-  void *chCoreAlloc(size_t size);
-  void *chCoreAllocI(size_t size);
-  size_t chCoreStatus(void);
+void
+_core_init(
+   void
+);
 
-  void *chCoreReserve(size_t size);
-  void *chCoreReserveI(size_t size);
-  void *chCoreUnreserve(size_t size);
-  void *chCoreUnreserveI(size_t size);
+void*
+chCoreAlloc(
+   size_t size
+);
+
+void*
+chCoreAllocI(
+   size_t size
+);
+
+size_t
+chCoreStatus(
+   void
+);
+
+void*
+chCoreReserve(
+   size_t size
+);
+
+void*
+chCoreReserveI(
+   size_t size
+);
+
+void*
+chCoreUnreserve(
+   size_t size
+);
+
+void*
+chCoreUnreserveI(
+   size_t size
+);
+
 
 #ifdef __cplusplus
 }
 #endif
-
 #endif /* CH_USE_MEMCORE */
 
 #endif /* _CHMEMCORE_H_ */

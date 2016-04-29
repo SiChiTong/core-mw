@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #include <Core/MW/CoreModule.hpp>
 
 #include "ch.h"
@@ -20,15 +20,15 @@ CoreModule::Led& CoreModule::led = _led;
 bool
 CoreModule::initialize()
 {
-	return true;
+   return true;
 }
 
 const void
 CoreModule::halt(
-		const char* message
+   const char* message
 )
 {
-	osalSysHalt(message);
+   osalSysHalt(message);
 }
 
 /*

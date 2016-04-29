@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -14,33 +14,33 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class SysLock:
-	private Uncopyable
+   private Uncopyable
 {
 public:
-	class Scope:
-		private Uncopyable
-	{
+   class Scope:
+      private Uncopyable
+   {
 public:
-		Scope()
-		{
-			SysLock::acquire();
-		}
+      Scope()
+      {
+         SysLock::acquire();
+      }
 
-		~Scope()
-		{
-			SysLock::release();
-		}
-	};
+      ~Scope()
+      {
+         SysLock::release();
+      }
+   };
 
 private:
-	SysLock();
+   SysLock();
 
 public:
-	static void
-	acquire();
+   static void
+   acquire();
 
-	static void
-	release();
+   static void
+   release();
 };
 
 
@@ -48,14 +48,14 @@ inline
 void
 SysLock::acquire()
 {
-	SysLock_::acquire();
+   SysLock_::acquire();
 }
 
 inline
 void
 SysLock::release()
 {
-	SysLock_::release();
+   SysLock_::release();
 }
 
 NAMESPACE_CORE_MW_END

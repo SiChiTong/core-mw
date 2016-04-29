@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #include <Core/MW/namespace.hpp>
 
 #if CORE_USE_BOOTLOADER
@@ -22,485 +22,485 @@ const Flasher_::Data Flasher_::erased_word CORE_FLASH_ALIGNED
 inline
 static void
 flash_lock(
-		void
+   void
 )
 {
-	FLASH->CR |= FLASH_CR_LOCK;
+   FLASH->CR |= FLASH_CR_LOCK;
 }
 
 static bool
 flash_unlock()
 {
-	// Check if unlock is really needed
-	if ((FLASH->CR & FLASH_CR_LOCK) == 0) {
-		return true;
-	}
+   // Check if unlock is really needed
+   if ((FLASH->CR & FLASH_CR_LOCK) == 0) {
+      return true;
+   }
 
-	// Write magic unlock sequence
-	FLASH->KEYR = 0x45670123;
-	FLASH->KEYR = 0xCDEF89AB;
+   // Write magic unlock sequence
+   FLASH->KEYR = 0x45670123;
+   FLASH->KEYR = 0xCDEF89AB;
 
-	return (FLASH->CR & FLASH_CR_LOCK) == 0;
+   return (FLASH->CR & FLASH_CR_LOCK) == 0;
 }
 
 inline
 static void
 flash_busy_wait()
 {
-	while (FLASH->SR & FLASH_SR_BSY) {}
+   while (FLASH->SR & FLASH_SR_BSY) {}
 }
 
 void
 Flasher_::set_page_buffer(
-		Data page_buf[]
+   Data page_buf[]
 )
 {
-	CORE_ASSERT(page_buf != NULL);
+   CORE_ASSERT(page_buf != NULL);
 
-	page_bufp = page_buf;
+   page_bufp = page_buf;
 }
 
 bool
 Flasher_::is_erased(
-		PageID page
+   PageID page
 )
 {
-	volatile const Data* const startp
-	   = reinterpret_cast<volatile const Data*>(address_of(page));
-	volatile const Data* const stopp
-	   = reinterpret_cast<volatile const Data*>(address_of(page + 1));
+   volatile const Data* const startp
+      = reinterpret_cast<volatile const Data*>(address_of(page));
+   volatile const Data* const stopp
+      = reinterpret_cast<volatile const Data*>(address_of(page + 1));
 
-	// Cycle through the whole page and check for default set bits
-	for (volatile const Data* datap = startp; datap < stopp; ++datap) {
-		if (*datap != ERASED_WORD) {
-			return false;
-		}
-	}
+   // Cycle through the whole page and check for default set bits
+   for (volatile const Data* datap = startp; datap < stopp; ++datap) {
+      if (*datap != ERASED_WORD) {
+         return false;
+      }
+   }
 
-	return true;
+   return true;
 }
 
 bool
 Flasher_::erase(
-		PageID page
+   PageID page
 )
 {
-	// Unlock flash for write access
-	if (!flash_unlock()) {
-		return false;
-	}
+   // Unlock flash for write access
+   if (!flash_unlock()) {
+      return false;
+   }
 
-	flash_busy_wait();
+   flash_busy_wait();
 
-	// Start deletion of page.
-	FLASH->CR |= FLASH_CR_PER;
-	FLASH->AR  = reinterpret_cast<uint32_t>(address_of(page));
-	FLASH->CR |= FLASH_CR_STRT;
-	flash_busy_wait();
+   // Start deletion of page.
+   FLASH->CR |= FLASH_CR_PER;
+   FLASH->AR  = reinterpret_cast<uint32_t>(address_of(page));
+   FLASH->CR |= FLASH_CR_STRT;
+   flash_busy_wait();
 
-	// Page erase flag does not clear automatically.
-	FLASH->CR &= !FLASH_CR_PER;
+   // Page erase flag does not clear automatically.
+   FLASH->CR &= !FLASH_CR_PER;
 
-	flash_lock();
-	return is_erased(page);
+   flash_lock();
+   return is_erased(page);
 } // Flasher_::erase
 
 int
 Flasher_::compare(
-		PageID               page,
-		volatile const Data* bufp
+   PageID               page,
+   volatile const Data* bufp
 )
 {
-	CORE_ASSERT(is_aligned(const_cast<const Data*>(bufp)));
+   CORE_ASSERT(is_aligned(const_cast<const Data*>(bufp)));
 
-	volatile const Data* const flashp
-	   = reinterpret_cast<volatile const Data*>(address_of(page));
+   volatile const Data* const flashp
+      = reinterpret_cast<volatile const Data*>(address_of(page));
 
-	bool identical = true;
+   bool identical = true;
 
-	for (size_t pos = 0; pos < PAGE_SIZE / WORD_ALIGNMENT; ++pos) {
-		if (flashp[pos] != bufp[pos]) {
-			// Keep track if the buffer is identical to page -> mark not identical
-			identical = false;
+   for (size_t pos = 0; pos < PAGE_SIZE / WORD_ALIGNMENT; ++pos) {
+      if (flashp[pos] != bufp[pos]) {
+         // Keep track if the buffer is identical to page -> mark not identical
+         identical = false;
 
-			// Not identical, and not erased, needs erase
-			if (flashp[pos] != ERASED_WORD) {
-				return -1;
-			}
-		}
-	}
+         // Not identical, and not erased, needs erase
+         if (flashp[pos] != ERASED_WORD) {
+            return -1;
+         }
+      }
+   }
 
-	// Page is not identical, but no page erase is needed to write
-	if (!identical) {
-		return 1;
-	}
+   // Page is not identical, but no page erase is needed to write
+   if (!identical) {
+      return 1;
+   }
 
-	// Page is identical. No write is needed
-	return 0;
+   // Page is identical. No write is needed
+   return 0;
 } // Flasher_::compare
 
 bool
 Flasher_::read(
-		PageID page,
-		Data*  bufp
+   PageID page,
+   Data*  bufp
 )
 {
-	CORE_ASSERT(is_aligned(bufp));
+   CORE_ASSERT(is_aligned(bufp));
 
-	memcpy(static_cast<void*>(bufp),
-			reinterpret_cast<const void*>(address_of(page)),
-			PAGE_SIZE);
-	return true;
+   memcpy(static_cast<void*>(bufp),
+          reinterpret_cast<const void*>(address_of(page)),
+          PAGE_SIZE);
+   return true;
 }
 
 bool
 Flasher_::write(
-		PageID               page,
-		volatile const Data* bufp
+   PageID               page,
+   volatile const Data* bufp
 )
 {
-	CORE_ASSERT(is_aligned(const_cast<const Data*>(bufp)));
+   CORE_ASSERT(is_aligned(const_cast<const Data*>(bufp)));
 
-	if (!check_bounds(address_of(page), PAGE_SIZE, get_program_start(),
-				 get_program_length())) {
-		return false;
-	}
+   if (!check_bounds(address_of(page), PAGE_SIZE, get_program_start(),
+                     get_program_length())) {
+      return false;
+   }
 
-	volatile Data* const flashp = reinterpret_cast<volatile Data*>(
-	   reinterpret_cast<uintptr_t>(address_of(page))
-	                              );
+   volatile Data* const flashp = reinterpret_cast<volatile Data*>(
+      reinterpret_cast<uintptr_t>(address_of(page))
+                                 );
 
-	chSysDisable();
+   chSysDisable();
 
-	// Unlock flash for write access
-	if (!flash_unlock()) {
-		flash_lock();
-		chSysEnable();
-		return false;
-	}
+   // Unlock flash for write access
+   if (!flash_unlock()) {
+      flash_lock();
+      chSysEnable();
+      return false;
+   }
 
-	flash_busy_wait();
+   flash_busy_wait();
 
-	for (size_t pos = 0; pos < PAGE_SIZE / WORD_ALIGNMENT; ++pos) {
-		// Enter flash programming mode
-		FLASH->CR |= FLASH_CR_PG;
+   for (size_t pos = 0; pos < PAGE_SIZE / WORD_ALIGNMENT; ++pos) {
+      // Enter flash programming mode
+      FLASH->CR |= FLASH_CR_PG;
 
-		// Write half-word to flash
-		flashp[pos] = bufp[pos];
-		flash_busy_wait();
+      // Write half-word to flash
+      flashp[pos] = bufp[pos];
+      flash_busy_wait();
 
-		// Exit flash programming mode
-		FLASH->CR &= ~FLASH_CR_PG;
+      // Exit flash programming mode
+      FLASH->CR &= ~FLASH_CR_PG;
 
-		// Check for flash error
-		if (flashp[pos] != bufp[pos]) {
-			flash_lock();
-			chSysEnable();
-			return false;
-		}
-	}
+      // Check for flash error
+      if (flashp[pos] != bufp[pos]) {
+         flash_lock();
+         chSysEnable();
+         return false;
+      }
+   }
 
-	flash_lock();
-	chSysEnable();
-	return true;
+   flash_lock();
+   chSysEnable();
+   return true;
 } // Flasher_::write
 
 bool
 Flasher_::write_if_needed(
-		PageID               page,
-		volatile const Data* bufp
+   PageID               page,
+   volatile const Data* bufp
 )
 {
-	CORE_ASSERT(is_aligned(const_cast<const Data*>(bufp)));
+   CORE_ASSERT(is_aligned(const_cast<const Data*>(bufp)));
 
-	// TODO: Only write on pages in the user area
+   // TODO: Only write on pages in the user area
 
-	// Don't do anything if pages are identical
-	register int comparison = compare(page, bufp);
+   // Don't do anything if pages are identical
+   register int comparison = compare(page, bufp);
 
-	if (comparison == 0) {
-		return true;
-	}
+   if (comparison == 0) {
+      return true;
+   }
 
-	// Page needs erase
-	if (comparison < 0) {
-		if (!erase(page)) {
-			return false;
-		}
-	}
+   // Page needs erase
+   if (comparison < 0) {
+      if (!erase(page)) {
+         return false;
+      }
+   }
 
-	// Write data
-	return write(page, bufp);
+   // Write data
+   return write(page, bufp);
 } // Flasher_::write_if_needed
 
 void
 Flasher_::begin()
 {
-	CORE_ASSERT(page_modified == false);
+   CORE_ASSERT(page_modified == false);
 
-	page = INVALID_PAGE;
+   page = INVALID_PAGE;
 }
 
 bool
 Flasher_::end()
 {
-	// Write back last buffer if it is tainted
-	if (page_modified) {
-		page_modified = false;
-		return write_if_needed(page, page_bufp);
-	}
+   // Write back last buffer if it is tainted
+   if (page_modified) {
+      page_modified = false;
+      return write_if_needed(page, page_bufp);
+   }
 
-	return true;
+   return true;
 }
 
 bool
 Flasher_::flash_aligned(
-		const Data* address,
-		const Data* bufp,
-		size_t      buflen
+   const Data* address,
+   const Data* bufp,
+   size_t      buflen
 )
 {
-	CORE_ASSERT(is_aligned(address));
-	CORE_ASSERT(is_aligned(bufp));
-	CORE_ASSERT(is_aligned(reinterpret_cast<const void*>(buflen)));
+   CORE_ASSERT(is_aligned(address));
+   CORE_ASSERT(is_aligned(bufp));
+   CORE_ASSERT(is_aligned(reinterpret_cast<const void*>(buflen)));
 
-	bool writeback = false;
+   bool writeback = false;
 
-	// Process all given words
-	while (buflen > 0) {
-		PageID old_page = page;
-		page = page_of(reinterpret_cast<const uint8_t*>(address));
-		ptrdiff_t offset = reinterpret_cast<ptrdiff_t>(address)
-		                   - reinterpret_cast<ptrdiff_t>(address_of(page));
-		size_t length = (PAGE_SIZE - offset);
+   // Process all given words
+   while (buflen > 0) {
+      PageID old_page = page;
+      page = page_of(reinterpret_cast<const uint8_t*>(address));
+      ptrdiff_t offset = reinterpret_cast<ptrdiff_t>(address)
+                         - reinterpret_cast<ptrdiff_t>(address_of(page));
+      size_t length = (PAGE_SIZE - offset);
 
-		// Read back new page if page has changed
-		if (old_page != page) {
-			if (page_modified) {
-				if (!write_if_needed(old_page, page_bufp)) {
-					return false;
-				}
-			}
+      // Read back new page if page has changed
+      if (old_page != page) {
+         if (page_modified) {
+            if (!write_if_needed(old_page, page_bufp)) {
+               return false;
+            }
+         }
 
-			if (!read(page, page_bufp)) {
-				return false;
-			}
+         if (!read(page, page_bufp)) {
+            return false;
+         }
 
-			page_modified = false;
-		}
+         page_modified = false;
+      }
 
-		// Process no more bytes than remaining
-		if (length > buflen) {
-			length = buflen;
-		} else {
-			writeback = true;
-		}
+      // Process no more bytes than remaining
+      if (length > buflen) {
+         length = buflen;
+      } else {
+         writeback = true;
+      }
 
-		// Copy buffer into page buffer and mark as tainted
-		memcpy(&page_bufp[offset / WORD_ALIGNMENT], bufp, length);
-		page_modified = true;
-		buflen       -= length;
+      // Copy buffer into page buffer and mark as tainted
+      memcpy(&page_bufp[offset / WORD_ALIGNMENT], bufp, length);
+      page_modified = true;
+      buflen       -= length;
 
-		// Writeback buffer if needed
-		if (writeback) {
-			if (!write_if_needed(page, page_bufp)) {
-				return false;
-			}
+      // Writeback buffer if needed
+      if (writeback) {
+         if (!write_if_needed(page, page_bufp)) {
+            return false;
+         }
 
-			writeback = false;
-		}
-	}
+         writeback = false;
+      }
+   }
 
-	return true;
+   return true;
 } // Flasher_::flash_aligned
 
 bool
 Flasher_::erase_aligned(
-		const Data* address,
-		size_t      length
+   const Data* address,
+   size_t      length
 )
 {
-	CORE_ASSERT(is_aligned(address));
-	CORE_ASSERT(is_aligned(reinterpret_cast<const void*>(length)));
+   CORE_ASSERT(is_aligned(address));
+   CORE_ASSERT(is_aligned(reinterpret_cast<const void*>(length)));
 
-	while (length > 0) {
-		flash_aligned(address, &erased_word, WORD_ALIGNMENT);
-		address += WORD_ALIGNMENT;
-		length  -= WORD_ALIGNMENT;
-	}
+   while (length > 0) {
+      flash_aligned(address, &erased_word, WORD_ALIGNMENT);
+      address += WORD_ALIGNMENT;
+      length  -= WORD_ALIGNMENT;
+   }
 
-	return true;
+   return true;
 }
 
 bool
 Flasher_::flash(
-		const uint8_t* address,
-		const uint8_t* bufp,
-		size_t         buflen
+   const uint8_t* address,
+   const uint8_t* bufp,
+   size_t         buflen
 )
 {
-	if (buflen == 0) {
-		return true;
-	}
+   if (buflen == 0) {
+      return true;
+   }
 
-	Data partial CORE_FLASH_ALIGNED;
+   Data partial CORE_FLASH_ALIGNED;
 
-	// Write the unaligned buffer beginning
-	size_t offset = compute_offset(address, WORD_ALIGNMENT);
-	address -= offset;
-	partial  = *reinterpret_cast<const Data*>(address);
+   // Write the unaligned buffer beginning
+   size_t offset = compute_offset(address, WORD_ALIGNMENT);
+   address -= offset;
+   partial  = *reinterpret_cast<const Data*>(address);
 
-	if (offset + buflen <= WORD_ALIGNMENT) {
-		// A single word to write
-		memcpy(reinterpret_cast<uint8_t*>(&partial) + offset, bufp, buflen);
-		return flash_aligned(reinterpret_cast<const Data*>(address), &partial,
-				WORD_ALIGNMENT);
-	} else {
-		memcpy(reinterpret_cast<uint8_t*>(&partial) + offset, bufp,
-				WORD_ALIGNMENT - offset);
+   if (offset + buflen <= WORD_ALIGNMENT) {
+      // A single word to write
+      memcpy(reinterpret_cast<uint8_t*>(&partial) + offset, bufp, buflen);
+      return flash_aligned(reinterpret_cast<const Data*>(address), &partial,
+                           WORD_ALIGNMENT);
+   } else {
+      memcpy(reinterpret_cast<uint8_t*>(&partial) + offset, bufp,
+             WORD_ALIGNMENT - offset);
 
-		if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
-					 WORD_ALIGNMENT)) {
-			return false;
-		}
-	}
+      if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
+                         WORD_ALIGNMENT)) {
+         return false;
+      }
+   }
 
-	address += WORD_ALIGNMENT;
-	bufp    += WORD_ALIGNMENT - offset;
-	buflen  -= WORD_ALIGNMENT - offset;
+   address += WORD_ALIGNMENT;
+   bufp    += WORD_ALIGNMENT - offset;
+   buflen  -= WORD_ALIGNMENT - offset;
 
-	// Write the aligned buffer middle
-	offset = compute_offset(address + buflen, WORD_ALIGNMENT);
+   // Write the aligned buffer middle
+   offset = compute_offset(address + buflen, WORD_ALIGNMENT);
 
-	while (buflen > offset) {
-		partial = *reinterpret_cast<const Data*>(bufp);
+   while (buflen > offset) {
+      partial = *reinterpret_cast<const Data*>(bufp);
 
-		if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
-					 WORD_ALIGNMENT)) {
-			return false;
-		}
+      if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
+                         WORD_ALIGNMENT)) {
+         return false;
+      }
 
-		address += WORD_ALIGNMENT;
-		bufp    += WORD_ALIGNMENT;
-		buflen  -= WORD_ALIGNMENT;
-	}
+      address += WORD_ALIGNMENT;
+      bufp    += WORD_ALIGNMENT;
+      buflen  -= WORD_ALIGNMENT;
+   }
 
-	// Write the unaligned buffer end
-	if (offset > 0) {
-		partial = *reinterpret_cast<const Data*>(address);
-		memcpy(&partial, bufp, offset);
+   // Write the unaligned buffer end
+   if (offset > 0) {
+      partial = *reinterpret_cast<const Data*>(address);
+      memcpy(&partial, bufp, offset);
 
-		if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
-					 WORD_ALIGNMENT)) {
-			return false;
-		}
-	}
+      if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
+                         WORD_ALIGNMENT)) {
+         return false;
+      }
+   }
 
-	return true;
+   return true;
 } // Flasher_::flash
 
 bool
 Flasher_::erase(
-		const uint8_t* address,
-		size_t         length
+   const uint8_t* address,
+   size_t         length
 )
 {
-	if (length == 0) {
-		return true;
-	}
+   if (length == 0) {
+      return true;
+   }
 
-	Data partial CORE_FLASH_ALIGNED;
+   Data partial CORE_FLASH_ALIGNED;
 
-	// Erase the unaligned buffer beginning
-	size_t offset = compute_offset(address, WORD_ALIGNMENT);
-	address -= offset;
-	partial  = *reinterpret_cast<const Data*>(address);
+   // Erase the unaligned buffer beginning
+   size_t offset = compute_offset(address, WORD_ALIGNMENT);
+   address -= offset;
+   partial  = *reinterpret_cast<const Data*>(address);
 
-	if (offset + length <= WORD_ALIGNMENT) {
-		// A single word to write
-		memcpy(reinterpret_cast<uint8_t*>(&partial) + offset,
-				reinterpret_cast<const uint8_t*>(&erased_word) + offset, length);
-		return flash_aligned(reinterpret_cast<const Data*>(address), &partial,
-				WORD_ALIGNMENT);
-	} else {
-		memcpy(reinterpret_cast<uint8_t*>(&partial) + offset,
-				reinterpret_cast<const uint8_t*>(&erased_word) + offset,
-				WORD_ALIGNMENT - offset);
+   if (offset + length <= WORD_ALIGNMENT) {
+      // A single word to write
+      memcpy(reinterpret_cast<uint8_t*>(&partial) + offset,
+             reinterpret_cast<const uint8_t*>(&erased_word) + offset, length);
+      return flash_aligned(reinterpret_cast<const Data*>(address), &partial,
+                           WORD_ALIGNMENT);
+   } else {
+      memcpy(reinterpret_cast<uint8_t*>(&partial) + offset,
+             reinterpret_cast<const uint8_t*>(&erased_word) + offset,
+             WORD_ALIGNMENT - offset);
 
-		if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
-					 WORD_ALIGNMENT)) {
-			return false;
-		}
-	}
+      if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
+                         WORD_ALIGNMENT)) {
+         return false;
+      }
+   }
 
-	address += WORD_ALIGNMENT;
-	length  -= WORD_ALIGNMENT - offset;
+   address += WORD_ALIGNMENT;
+   length  -= WORD_ALIGNMENT - offset;
 
-	// Erase the aligned buffer middle
-	offset = compute_offset(address + length, WORD_ALIGNMENT);
+   // Erase the aligned buffer middle
+   offset = compute_offset(address + length, WORD_ALIGNMENT);
 
-	while (length > offset) {
-		if (!flash_aligned(reinterpret_cast<const Data*>(address), &erased_word,
-					 WORD_ALIGNMENT)) {
-			return false;
-		}
+   while (length > offset) {
+      if (!flash_aligned(reinterpret_cast<const Data*>(address), &erased_word,
+                         WORD_ALIGNMENT)) {
+         return false;
+      }
 
-		address += WORD_ALIGNMENT;
-		length  -= WORD_ALIGNMENT;
-	}
+      address += WORD_ALIGNMENT;
+      length  -= WORD_ALIGNMENT;
+   }
 
-	// Erase the unaligned buffer end
-	if (offset > 0) {
-		partial = *reinterpret_cast<const Data*>(address);
-		memcpy(&partial, &erased_word, offset);
+   // Erase the unaligned buffer end
+   if (offset > 0) {
+      partial = *reinterpret_cast<const Data*>(address);
+      memcpy(&partial, &erased_word, offset);
 
-		if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
-					 WORD_ALIGNMENT)) {
-			return false;
-		}
-	}
+      if (!flash_aligned(reinterpret_cast<const Data*>(address), &partial,
+                         WORD_ALIGNMENT)) {
+         return false;
+      }
+   }
 
-	return true;
+   return true;
 } // Flasher_::erase
 
 Flasher_::Flasher_(
-		Data page_buf[]
+   Data page_buf[]
 )
-	:
-	page_bufp(page_buf),
-	page_modified(false),
-	page(0)
+   :
+   page_bufp(page_buf),
+   page_modified(false),
+   page(0)
 {}
 
 
 void
 Flasher_::jump_to(
-		const uint8_t* address
+   const uint8_t* address
 )
 {
-	typedef void (* Proc)(
-			void
-	);
+   typedef void (* Proc)(
+      void
+   );
 
-	// Load jump address into function pointer
-	Proc proc = reinterpret_cast<Proc>(
-	   reinterpret_cast<const uint32_t*>(address)[1]
-	            );
+   // Load jump address into function pointer
+   Proc proc = reinterpret_cast<Proc>(
+      reinterpret_cast<const uint32_t*>(address)[1]
+               );
 
-	// Reset all interrupts to default
-	chSysDisable();
+   // Reset all interrupts to default
+   chSysDisable();
 
-	// Clear pending interrupts just to be on the safe side
-	SCB_ICSR = ICSR_PENDSVCLR;
+   // Clear pending interrupts just to be on the safe side
+   SCB_ICSR = ICSR_PENDSVCLR;
 
-	// Disable all interrupts
-	for (unsigned i = 0; i < 8; ++i) {
-		NVIC->ICER[i] = NVIC->IABR[i];
-	}
+   // Disable all interrupts
+   for (unsigned i = 0; i < 8; ++i) {
+      NVIC->ICER[i] = NVIC->IABR[i];
+   }
 
-	// Set stack pointer as in application's vector table
-	__set_MSP((reinterpret_cast<const uint32_t*>(address))[0]);
-	proc();
+   // Set stack pointer as in application's vector table
+   __set_MSP((reinterpret_cast<const uint32_t*>(address))[0]);
+   proc();
 } // Flasher_::jump_to
 
 NAMESPACE_CORE_MW_END

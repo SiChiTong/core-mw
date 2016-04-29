@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -15,275 +15,275 @@ NAMESPACE_CORE_MW_BEGIN
 // TODO: ConstIterator
 template <typename T>
 class StaticQueue:
-	private Uncopyable
+   private Uncopyable
 {
 public:
-	struct Link {
-		Link*    nextp;
-		T* const itemp;
+   struct Link {
+      Link*    nextp;
+      T* const itemp;
 
-		Link() : nextp(NULL), itemp(NULL) {}
+      Link() : nextp(NULL), itemp(NULL) {}
 
-		Link(
-				T& item
-		) : nextp(NULL), itemp(&item) {}
-	};
+      Link(
+         T& item
+      ) : nextp(NULL), itemp(&item) {}
+   };
 
-	class IteratorUnsafe
-	{
+   class IteratorUnsafe
+   {
 private:
-		const Link* curp;
+      const Link* curp;
 
 public:
-		IteratorUnsafe(
-				const IteratorUnsafe& rhs
-		) : curp(rhs.curp) {}
+      IteratorUnsafe(
+         const IteratorUnsafe& rhs
+      ) : curp(rhs.curp) {}
 
 private:
-		IteratorUnsafe(
-				const Link* beginp
-		) : curp(beginp) {}
+      IteratorUnsafe(
+         const Link* beginp
+      ) : curp(beginp) {}
 
-		friend class StaticQueue<T>;
-
-private:
-		IteratorUnsafe&
-		operator=(
-				const IteratorUnsafe& rhs
-		);
-
-
-public:
-		const Link*
-		operator->() const
-		{
-			return curp;
-		}
-
-		const Link&
-		operator*() const
-		{
-			return *curp;
-		}
-
-		IteratorUnsafe&
-		operator++()
-		{
-			curp = curp->nextp;
-			return *this;
-		}
-
-		const IteratorUnsafe
-		operator++(
-				int
-		)
-		{
-			IteratorUnsafe old(*this);
-
-			curp = curp->nextp;
-			return old;
-		}
-
-		bool
-		operator==(
-				const IteratorUnsafe& rhs
-		) const
-		{
-			return this->curp == rhs.curp;
-		}
-
-		bool
-		operator!=(
-				const IteratorUnsafe& rhs
-		) const
-		{
-			return this->curp != rhs.curp;
-		}
-	};
-
-	class Iterator
-	{
-private:
-		const Link* curp;
-
-public:
-		Iterator(
-				const Iterator& rhs
-		) : curp(rhs.curp) {}
+      friend class StaticQueue<T>;
 
 private:
-		Iterator(
-				const Link* beginp
-		) : curp(beginp) {}
-
-		friend class StaticQueue<T>;
-
-private:
-		Iterator&
-		operator=(
-				const Iterator& rhs
-		);
+      IteratorUnsafe&
+      operator=(
+         const IteratorUnsafe& rhs
+      );
 
 
 public:
-		const Link*
-		operator->() const
-		{
-			return curp;
-		}
+      const Link*
+      operator->() const
+      {
+         return curp;
+      }
 
-		const Link&
-		operator*() const
-		{
-			return *curp;
-		}
+      const Link&
+      operator*() const
+      {
+         return *curp;
+      }
 
-		Iterator&
-		operator++()
-		{
-			SysLock::acquire();
+      IteratorUnsafe&
+      operator++()
+      {
+         curp = curp->nextp;
+         return *this;
+      }
 
-			curp = curp->nextp;
-			SysLock::release();
-			return *this;
-		}
+      const IteratorUnsafe
+      operator++(
+         int
+      )
+      {
+         IteratorUnsafe old(*this);
 
-		const Iterator
-		operator++(
-				int
-		)
-		{
-			SysLock::acquire();
-			Iterator old(*this);
+         curp = curp->nextp;
+         return old;
+      }
 
-			curp = curp->nextp;
-			SysLock::release();
-			return old;
-		}
+      bool
+      operator==(
+         const IteratorUnsafe& rhs
+      ) const
+      {
+         return this->curp == rhs.curp;
+      }
 
-		bool
-		operator==(
-				const Iterator& rhs
-		) const
-		{
-			return this->curp == rhs.curp;
-		}
+      bool
+      operator!=(
+         const IteratorUnsafe& rhs
+      ) const
+      {
+         return this->curp != rhs.curp;
+      }
+   };
 
-		bool
-		operator!=(
-				const Iterator& rhs
-		) const
-		{
-			return this->curp != rhs.curp;
-		}
-	};
-
+   class Iterator
+   {
 private:
-	typedef StaticQueue_::Link Entry_impl;
-
-private:
-	StaticQueue_ impl;
+      const Link* curp;
 
 public:
-	bool
-	is_empty_unsafe() const
-	{
-		return impl.is_empty_unsafe();
-	}
+      Iterator(
+         const Iterator& rhs
+      ) : curp(rhs.curp) {}
 
-	void
-	post_unsafe(
-			Link& link
-	)
-	{
-		impl.post_unsafe(reinterpret_cast<Entry_impl&>(link));
-	}
+private:
+      Iterator(
+         const Link* beginp
+      ) : curp(beginp) {}
 
-	bool
-	peek_unsafe(
-			const Link*& linkp
-	) const
-	{
-		return impl.peek_unsafe(
-				reinterpret_cast<const Entry_impl*&>(linkp)
-		);
-	}
+      friend class StaticQueue<T>;
 
-	bool
-	fetch_unsafe(
-			Link& link
-	)
-	{
-		return impl.fetch_unsafe(reinterpret_cast<Entry_impl&>(link));
-	}
+private:
+      Iterator&
+      operator=(
+         const Iterator& rhs
+      );
 
-	bool
-	skip_unsafe()
-	{
-		return impl.skip_unsafe();
-	}
 
-	const IteratorUnsafe
-	begin_unsafe() const
-	{
-		return IteratorUnsafe(reinterpret_cast<const Link*>(
-				   impl.get_head_unsafe()
-				));
-	}
+public:
+      const Link*
+      operator->() const
+      {
+         return curp;
+      }
 
-	const IteratorUnsafe
-	end_unsafe() const
-	{
-		return IteratorUnsafe(NULL);
-	}
+      const Link&
+      operator*() const
+      {
+         return *curp;
+      }
 
-	bool
-	is_empty() const
-	{
-		return impl.is_empty();
-	}
+      Iterator&
+      operator++()
+      {
+         SysLock::acquire();
 
-	void
-	post(
-			Link& link
-	)
-	{
-		impl.post(reinterpret_cast<Entry_impl&>(link));
-	}
+         curp = curp->nextp;
+         SysLock::release();
+         return *this;
+      }
 
-	bool
-	peek(
-			const Link*& linkp
-	) const
-	{
-		return impl.peek(reinterpret_cast<const Entry_impl*&>(linkp));
-	}
+      const Iterator
+      operator++(
+         int
+      )
+      {
+         SysLock::acquire();
+         Iterator old(*this);
 
-	bool
-	fetch(
-			Link& link
-	)
-	{
-		return impl.fetch(reinterpret_cast<Entry_impl&>(link));
-	}
+         curp = curp->nextp;
+         SysLock::release();
+         return old;
+      }
 
-	bool
-	skip()
-	{
-		return impl.skip();
-	}
+      bool
+      operator==(
+         const Iterator& rhs
+      ) const
+      {
+         return this->curp == rhs.curp;
+      }
 
-	const Iterator
-	begin() const
-	{
-		return Iterator(reinterpret_cast<const Link*>(impl.get_head()));
-	}
+      bool
+      operator!=(
+         const Iterator& rhs
+      ) const
+      {
+         return this->curp != rhs.curp;
+      }
+   };
 
-	const Iterator
-	end() const
-	{
-		return Iterator(NULL);
-	}
+private:
+   typedef StaticQueue_::Link Entry_impl;
+
+private:
+   StaticQueue_ impl;
+
+public:
+   bool
+   is_empty_unsafe() const
+   {
+      return impl.is_empty_unsafe();
+   }
+
+   void
+   post_unsafe(
+      Link& link
+   )
+   {
+      impl.post_unsafe(reinterpret_cast<Entry_impl&>(link));
+   }
+
+   bool
+   peek_unsafe(
+      const Link*& linkp
+   ) const
+   {
+      return impl.peek_unsafe(
+         reinterpret_cast<const Entry_impl*&>(linkp)
+      );
+   }
+
+   bool
+   fetch_unsafe(
+      Link& link
+   )
+   {
+      return impl.fetch_unsafe(reinterpret_cast<Entry_impl&>(link));
+   }
+
+   bool
+   skip_unsafe()
+   {
+      return impl.skip_unsafe();
+   }
+
+   const IteratorUnsafe
+   begin_unsafe() const
+   {
+      return IteratorUnsafe(reinterpret_cast<const Link*>(
+                               impl.get_head_unsafe()
+                            ));
+   }
+
+   const IteratorUnsafe
+   end_unsafe() const
+   {
+      return IteratorUnsafe(NULL);
+   }
+
+   bool
+   is_empty() const
+   {
+      return impl.is_empty();
+   }
+
+   void
+   post(
+      Link& link
+   )
+   {
+      impl.post(reinterpret_cast<Entry_impl&>(link));
+   }
+
+   bool
+   peek(
+      const Link*& linkp
+   ) const
+   {
+      return impl.peek(reinterpret_cast<const Entry_impl*&>(linkp));
+   }
+
+   bool
+   fetch(
+      Link& link
+   )
+   {
+      return impl.fetch(reinterpret_cast<Entry_impl&>(link));
+   }
+
+   bool
+   skip()
+   {
+      return impl.skip();
+   }
+
+   const Iterator
+   begin() const
+   {
+      return Iterator(reinterpret_cast<const Link*>(impl.get_head()));
+   }
+
+   const Iterator
+   end() const
+   {
+      return Iterator(NULL);
+   }
 };
 
 

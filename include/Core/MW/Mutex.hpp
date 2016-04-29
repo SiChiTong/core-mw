@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -14,34 +14,34 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class Mutex:
-	private Uncopyable
+   private Uncopyable
 {
 private:
-	Mutex_ impl;
+   Mutex_ impl;
 
 public:
-	void
-	initialize();
+   void
+   initialize();
 
-	void
-	acquire_unsafe();
+   void
+   acquire_unsafe();
 
-	void
-	release_unsafe();
+   void
+   release_unsafe();
 
-	void
-	acquire();
+   void
+   acquire();
 
-	void
-	release();
+   void
+   release();
 
 
 public:
-	Mutex();
-	explicit
-	Mutex(
-			bool initialize
-	);
+   Mutex();
+   explicit
+   Mutex(
+      bool initialize
+   );
 };
 
 
@@ -49,50 +49,50 @@ inline
 void
 Mutex::initialize()
 {
-	impl.initialize();
+   impl.initialize();
 }
 
 inline
 void
 Mutex::acquire_unsafe()
 {
-	impl.acquire_unsafe();
+   impl.acquire_unsafe();
 }
 
 inline
 void
 Mutex::release_unsafe()
 {
-	impl.release_unsafe();
+   impl.release_unsafe();
 }
 
 inline
 void
 Mutex::acquire()
 {
-	impl.acquire();
+   impl.acquire();
 }
 
 inline
 void
 Mutex::release()
 {
-	impl.release();
+   impl.release();
 }
 
 inline
 Mutex::Mutex()
-	:
-	impl()
+   :
+   impl()
 {}
 
 
 inline
 Mutex::Mutex(
-		bool initialize
+   bool initialize
 )
-	:
-	impl(initialize)
+   :
+   impl(initialize)
 {}
 
 

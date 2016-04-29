@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -15,163 +15,163 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class Semaphore_:
-	private Uncopyable
+   private Uncopyable
 {
 public:
-	typedef cnt_t Count;
+   typedef cnt_t Count;
 
 private:
-	::semaphore_t impl;
+   ::semaphore_t impl;
 
 public:
-	void
-	initialize(
-			Count value = 0
-	);
+   void
+   initialize(
+      Count value = 0
+   );
 
-	void
-	reset_unsafe(
-			Count value = 0
-	);
+   void
+   reset_unsafe(
+      Count value = 0
+   );
 
-	void
-	signal_unsafe();
+   void
+   signal_unsafe();
 
-	void
-	wait_unsafe();
+   void
+   wait_unsafe();
 
-	bool
-	wait_unsafe(
-			const Time& timeout
-	);
+   bool
+   wait_unsafe(
+      const Time& timeout
+   );
 
-	void
-	reset(
-			Count value = 0
-	);
+   void
+   reset(
+      Count value = 0
+   );
 
-	void
-	signal();
+   void
+   signal();
 
-	void
-	wait();
+   void
+   wait();
 
-	bool
-	wait(
-			const Time& timeout
-	);
+   bool
+   wait(
+      const Time& timeout
+   );
 
 
-	::semaphore_t & get_impl();
+   ::semaphore_t & get_impl();
 
 public:
-	Semaphore_(
-			Count value = 0
-	);
-	explicit
-	Semaphore_(
-			bool  initialize,
-			Count value = 0
-	);
+   Semaphore_(
+      Count value = 0
+   );
+   explicit
+   Semaphore_(
+      bool  initialize,
+      Count value = 0
+   );
 };
 
 
 inline
 void
 Semaphore_::initialize(
-		Count value
+   Count value
 )
 {
-	chSemObjectInit(&impl, value);
+   chSemObjectInit(&impl, value);
 }
 
 inline
 void
 Semaphore_::reset_unsafe(
-		Count value
+   Count value
 )
 {
-	chSemResetI(&impl, value);
+   chSemResetI(&impl, value);
 }
 
 inline
 void
 Semaphore_::signal_unsafe()
 {
-	chSemSignalI(&impl);
+   chSemSignalI(&impl);
 }
 
 inline
 void
 Semaphore_::wait_unsafe()
 {
-	chSemWaitS(&impl);
+   chSemWaitS(&impl);
 }
 
 inline
 bool
 Semaphore_::wait_unsafe(
-		const Time& timeout
+   const Time& timeout
 )
 {
-	return chSemWaitTimeoutS(&impl, US2ST(timeout.to_us_raw())) == MSG_OK;
+   return chSemWaitTimeoutS(&impl, US2ST(timeout.to_us_raw())) == MSG_OK;
 }
 
 inline
 void
 Semaphore_::reset(
-		Count value
+   Count value
 )
 {
-	chSemReset(&impl, value);
+   chSemReset(&impl, value);
 }
 
 inline
 void
 Semaphore_::signal()
 {
-	chSemSignal(&impl);
+   chSemSignal(&impl);
 }
 
 inline
 void
 Semaphore_::wait()
 {
-	chSemWait(&impl);
+   chSemWait(&impl);
 }
 
 inline
 bool
 Semaphore_::wait(
-		const Time& timeout
+   const Time& timeout
 )
 {
-	return chSemWaitTimeout(&impl, US2ST(timeout.to_us_raw())) == MSG_OK;
+   return chSemWaitTimeout(&impl, US2ST(timeout.to_us_raw())) == MSG_OK;
 }
 
 inline
   ::semaphore_t& Semaphore_::get_impl() {
-	return impl;
+   return impl;
 }
 
 
 inline
 Semaphore_::Semaphore_(
-		Count value
+   Count value
 )
 {
-	initialize(value);
+   initialize(value);
 }
 
 inline
 Semaphore_::Semaphore_(
-		bool  initialize,
-		Count value
+   bool  initialize,
+   Count value
 )
 {
-	if (initialize) {
-		this->initialize(value);
-	}
+   if (initialize) {
+      this->initialize(value);
+   }
 }
 
 NAMESPACE_CORE_MW_END

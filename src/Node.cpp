@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #include <Core/MW/namespace.hpp>
 #include <Core/MW/Node.hpp>
 #include <Core/MW/Middleware.hpp>
@@ -17,107 +17,107 @@ NAMESPACE_CORE_MW_BEGIN
 
 bool
 Node::advertise(
-		LocalPublisher& pub,
-		const char*     namep,
-		const Time&     publish_timeout,
-		size_t          msg_size
+   LocalPublisher& pub,
+   const char*     namep,
+   const Time&     publish_timeout,
+   size_t          msg_size
 )
 {
-	// already advertised
-	if (pub.get_topic() != NULL) {
-		return false;
-	}
+   // already advertised
+   if (pub.get_topic() != NULL) {
+      return false;
+   }
 
-	if (Middleware::instance.advertise(pub, namep, publish_timeout, msg_size)) {
-		publishers.link(pub.by_node);
-		return true;
-	}
+   if (Middleware::instance.advertise(pub, namep, publish_timeout, msg_size)) {
+      publishers.link(pub.by_node);
+      return true;
+   }
 
-	return false;
+   return false;
 }
 
 bool
 Node::subscribe(
-		LocalSubscriber& sub,
-		const char*      namep,
-		Message          msgpool_buf[],
-		size_t           msg_size
+   LocalSubscriber& sub,
+   const char*      namep,
+   Message          msgpool_buf[],
+   size_t           msg_size
 )
 {
-	// already subscribed
-	if (sub.get_topic() != NULL) {
-		return false;
-	}
+   // already subscribed
+   if (sub.get_topic() != NULL) {
+      return false;
+   }
 
-	sub.nodep = this;
-	int index = subscribers.count();
-	subscribers.link(sub.by_node);
-	CORE_ASSERT(index >= 0);
-	CORE_ASSERT(index <= static_cast<int>(SpinEvent::MAX_INDEX));
-	sub.event_index = static_cast<uint_least8_t>(index);
+   sub.nodep = this;
+   int index = subscribers.count();
+   subscribers.link(sub.by_node);
+   CORE_ASSERT(index >= 0);
+   CORE_ASSERT(index <= static_cast<int>(SpinEvent::MAX_INDEX));
+   sub.event_index = static_cast<uint_least8_t>(index);
 
-	if (!Middleware::instance.subscribe(sub, namep, msgpool_buf,
-				 sub.get_queue_length(), msg_size)) {
-		subscribers.unlink(sub.by_node);
-		return false;
-	}
+   if (!Middleware::instance.subscribe(sub, namep, msgpool_buf,
+                                       sub.get_queue_length(), msg_size)) {
+      subscribers.unlink(sub.by_node);
+      return false;
+   }
 
-	return true;
+   return true;
 } // Node::subscribe
 
 bool
 Node::spin(
-		const Time& timeout
+   const Time& timeout
 )
 {
-	SpinEvent::Mask mask;
+   SpinEvent::Mask mask;
 
-	mask = event.wait(timeout);
+   mask = event.wait(timeout);
 
-	if (mask == 0) {
-		return false;
-	}
+   if (mask == 0) {
+      return false;
+   }
 
-	Time dummy_timestamp;
-	SpinEvent::Mask bit = 1;
+   Time dummy_timestamp;
+   SpinEvent::Mask bit = 1;
 
-	for (StaticList<LocalSubscriber>::Iterator i = subscribers.begin();
-	     i != subscribers.end() && mask != 0; bit <<= 1, ++i) {
-		if ((mask & bit) != 0) {
-			mask &= ~bit;
-			const LocalSubscriber::Callback callback = i->get_callback();
+   for (StaticList<LocalSubscriber>::Iterator i = subscribers.begin();
+        i != subscribers.end() && mask != 0; bit <<= 1, ++i) {
+      if ((mask & bit) != 0) {
+         mask &= ~bit;
+         const LocalSubscriber::Callback callback = i->get_callback();
 
-			if (callback != NULL) {
-				Message* msgp;
+         if (callback != NULL) {
+            Message* msgp;
 
-				while (i->fetch(msgp, dummy_timestamp)) {
-					(*callback)(*msgp, this);
-					i->release(*msgp);
-				}
-			}
-		}
-	}
+            while (i->fetch(msgp, dummy_timestamp)) {
+               (*callback)(*msgp, this);
+               i->release(*msgp);
+            }
+         }
+      }
+   }
 
-	return true;
+   return true;
 } // Node::spin
 
 Node::Node(
-		const char* namep,
-		bool        enabled
+   const char* namep,
+   bool        enabled
 )
-	:
-	namep(namep),
-	event(enabled ? &Thread::self() : NULL),
-	by_middleware(*this)
+   :
+   namep(namep),
+   event(enabled ? &Thread::self() : NULL),
+   by_middleware(*this)
 {
-	CORE_ASSERT(is_identifier(namep, NamingTraits<Node>::MAX_LENGTH));
+   CORE_ASSERT(is_identifier(namep, NamingTraits<Node>::MAX_LENGTH));
 
-	Middleware::instance.add(*this);
+   Middleware::instance.add(*this);
 }
 
 Node::~Node()
 {
-	Middleware::instance.confirm_stop(*this);
+   Middleware::instance.confirm_stop(*this);
 }
 
 NAMESPACE_CORE_MW_END

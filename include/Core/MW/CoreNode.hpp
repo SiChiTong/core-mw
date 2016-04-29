@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -18,130 +18,130 @@
 NAMESPACE_CORE_MW_BEGIN
 
 class CoreNode:
-	public ICoreNode,
-	protected Core::MW::Node
+   public ICoreNode,
+   protected Core::MW::Node
 {
 public:
-	virtual ~CoreNode() {}
+   virtual ~CoreNode() {}
 
-	CoreNode(
-			const char*                    name,
-			Core::MW::Thread::PriorityEnum priority = Core::MW::Thread::PriorityEnum::NORMAL
-	);
+   CoreNode(
+      const char*                    name,
+      Core::MW::Thread::PriorityEnum priority = Core::MW::Thread::PriorityEnum::NORMAL
+   );
 
-	bool
-	setup();
+   bool
+   setup();
 
-	bool
-	teardown();
+   bool
+   teardown();
 
-	bool
-	execute(
-			Action what
-	);
+   bool
+   execute(
+      Action what
+   );
 
-	State
-	state();
+   State
+   state();
 
-	const char*
-	name();
+   const char*
+   name();
 
 
 protected:
-	virtual bool
-	onInitialize();
+   virtual bool
+   onInitialize();
 
-	virtual bool
-	onConfigure();
+   virtual bool
+   onConfigure();
 
-	virtual bool
-	onPrepareHW();
+   virtual bool
+   onPrepareHW();
 
-	virtual bool
-	onPrepareMW();
+   virtual bool
+   onPrepareMW();
 
-	virtual bool
-	onStart();
+   virtual bool
+   onStart();
 
-	virtual bool
-	onLoop();
+   virtual bool
+   onLoop();
 
-	virtual bool
-	onStop();
+   virtual bool
+   onStop();
 
-	virtual bool
-	onError();
+   virtual bool
+   onError();
 
-	virtual bool
-	onFinalize();
+   virtual bool
+   onFinalize();
 
-	bool
-	mustLoop();
+   bool
+   mustLoop();
 
 
-	CoreNode();
+   CoreNode();
 
-	std::size_t _workingAreaSize;
-	Core::MW::Thread::Priority _priority;
+   std::size_t _workingAreaSize;
+   Core::MW::Thread::Priority _priority;
 
 private:
-	State
-	_state();
+   State
+   _state();
 
-	void
-	_state(
-			State state
-	);
+   void
+   _state(
+      State state
+   );
 
-	void
-	_run();
+   void
+   _run();
 
 
-	Core::MW::Thread* _runner;
+   Core::MW::Thread* _runner;
 
-	Core::MW::Mutex     _mutex;
-	Core::MW::Condition _condition;
+   Core::MW::Mutex     _mutex;
+   Core::MW::Condition _condition;
 
-	bool _mustRun;
-	bool _mustLoop;
-	bool _mustTeardown;
+   bool _mustRun;
+   bool _mustLoop;
+   bool _mustTeardown;
 
-	void
-	_doInitialize();
+   void
+   _doInitialize();
 
-	void
-	_doConfigure();
+   void
+   _doConfigure();
 
-	void
-	_doPrepareHW();
+   void
+   _doPrepareHW();
 
-	void
-	_doPrepareMW();
+   void
+   _doPrepareMW();
 
-	void
-	_doStart();
+   void
+   _doStart();
 
-	void
-	_doLoop();
+   void
+   _doLoop();
 
-	void
-	_doStop();
+   void
+   _doStop();
 
-	void
-	_doError();
+   void
+   _doError();
 
-	void
-	_doFinalize();
+   void
+   _doFinalize();
 
 
 public:
-	mutable Core::MW::StaticList<CoreNode>::Link link;
+   mutable Core::MW::StaticList<CoreNode>::Link link;
 };
 
 inline bool
 CoreNode::mustLoop()
 {
-	return _mustLoop;
+   return _mustLoop;
 }
 
 NAMESPACE_CORE_MW_END

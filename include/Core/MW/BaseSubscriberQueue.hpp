@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -16,10 +16,10 @@ class BaseSubscriber;
 
 
 class BaseSubscriberQueue:
-	public StaticQueue<BaseSubscriber>
+   public StaticQueue<BaseSubscriber>
 {
 public:
-	BaseSubscriberQueue();
+   BaseSubscriberQueue();
 };
 
 

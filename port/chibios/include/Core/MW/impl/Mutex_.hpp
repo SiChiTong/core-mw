@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -14,36 +14,36 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class Mutex_:
-	private Uncopyable
+   private Uncopyable
 {
 private:
-	::mutex_t impl;
+   ::mutex_t impl;
 
 public:
-	void
-	initialize();
+   void
+   initialize();
 
-	void
-	acquire_unsafe();
+   void
+   acquire_unsafe();
 
-	void
-	release_unsafe();
+   void
+   release_unsafe();
 
-	void
-	acquire();
+   void
+   acquire();
 
-	void
-	release();
+   void
+   release();
 
 
-	::mutex_t & get_impl();
+   ::mutex_t & get_impl();
 
 public:
-	Mutex_();
-	explicit
-	Mutex_(
-			bool initialize
-	);
+   Mutex_();
+   explicit
+   Mutex_(
+      bool initialize
+   );
 };
 
 
@@ -51,57 +51,57 @@ inline
 void
 Mutex_::initialize()
 {
-	chMtxObjectInit(&impl);
+   chMtxObjectInit(&impl);
 }
 
 inline
 void
 Mutex_::acquire_unsafe()
 {
-	chMtxLockS(&impl);
+   chMtxLockS(&impl);
 }
 
 inline
 void
 Mutex_::release_unsafe()
 {
-	chMtxUnlockS(&impl);
+   chMtxUnlockS(&impl);
 }
 
 inline
 void
 Mutex_::acquire()
 {
-	chMtxLock(&impl);
+   chMtxLock(&impl);
 }
 
 inline
 void
 Mutex_::release()
 {
-	chMtxUnlock(&impl);
+   chMtxUnlock(&impl);
 }
 
 inline
   ::mutex_t& Mutex_::get_impl() {
-	return impl;
+   return impl;
 }
 
 
 inline
 Mutex_::Mutex_()
 {
-	this->initialize();
+   this->initialize();
 }
 
 inline
 Mutex_::Mutex_(
-		bool initialize
+   bool initialize
 )
 {
-	if (initialize) {
-		this->initialize();
-	}
+   if (initialize) {
+      this->initialize();
+   }
 }
 
 NAMESPACE_CORE_MW_END

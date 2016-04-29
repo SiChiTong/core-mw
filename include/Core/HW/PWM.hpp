@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include "hal.h"
@@ -19,64 +19,64 @@ struct PWMDriverTraits {};
 
 template <>
 struct PWMDriverTraits<1> {
-	static constexpr auto driver = &PWMD1;
+   static constexpr auto driver = &PWMD1;
 };
 
 class PWMChannel
 {
 public:
-	using CountDataType = pwmcnt_t;
+   using CountDataType = pwmcnt_t;
 
-	virtual void
-	stop() = 0;
+   virtual void
+   stop() = 0;
 
-	virtual void
-	enable() = 0;
+   virtual void
+   enable() = 0;
 
-	virtual void
-	disable() = 0;
+   virtual void
+   disable() = 0;
 
-	virtual bool
-	set(
-			CountDataType value
-	) = 0;
+   virtual bool
+   set(
+      CountDataType value
+   ) = 0;
 };
 
 template <class _PWM, int _CHANNEL>
 class PWMChannel_:
-	public PWMChannel
+   public PWMChannel
 {
 public:
-	using PWM = _PWM;
-	const int CHANNEL = _CHANNEL;
+   using PWM = _PWM;
+   const int CHANNEL = _CHANNEL;
 
 public:
-	inline void
-	enable()
-	{
-		::pwmEnableChannel(PWM::driver, CHANNEL, 0);
-	}
+   inline void
+   enable()
+   {
+      ::pwmEnableChannel(PWM::driver, CHANNEL, 0);
+   }
 
-	inline void
-	disable()
-	{
-		::pwmDisableChannel(PWM::driver, CHANNEL);
-	}
+   inline void
+   disable()
+   {
+      ::pwmDisableChannel(PWM::driver, CHANNEL);
+   }
 
-	inline void
-	stop()
-	{
-		::pwmStop(PWM::driver);
-	}
+   inline void
+   stop()
+   {
+      ::pwmStop(PWM::driver);
+   }
 
-	inline bool
-	set(
-			CountDataType value
-	)
-	{
-		::pwmEnableChannel(PWM::driver, CHANNEL, value);
-		return true;
-	}
+   inline bool
+   set(
+      CountDataType value
+   )
+   {
+      ::pwmEnableChannel(PWM::driver, CHANNEL, value);
+      return true;
+   }
 };
 
 // --- Aliases -----------------------------------------------------------------

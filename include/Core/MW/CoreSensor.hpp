@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -14,27 +14,27 @@ template <typename _T>
 class CoreSensor
 {
 public:
-	using DataType = _T;
+   using DataType = _T;
 
-	virtual bool
-	init() = 0;
+   virtual bool
+   init() = 0;
 
-	virtual bool
-	start() = 0;
+   virtual bool
+   start() = 0;
 
-	virtual bool
-	stop() = 0;
+   virtual bool
+   stop() = 0;
 
-	virtual bool
-	waitUntilReady() = 0;
+   virtual bool
+   waitUntilReady() = 0;
 
-	virtual bool
-	update() = 0;
+   virtual bool
+   update() = 0;
 
-	virtual void
-	get(
-			DataType& data
-	) = 0;
+   virtual void
+   get(
+      DataType& data
+   ) = 0;
 };
 
 NAMESPACE_CORE_MW_END

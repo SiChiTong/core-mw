@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/HW/namespace.hpp>
@@ -18,79 +18,79 @@ struct GPIOPortTraits {};
 
 template <>
 struct GPIOPortTraits<0> {
-	static constexpr auto gpio = GPIOA;
+   static constexpr auto gpio = GPIOA;
 };
 
 template <>
 struct GPIOPortTraits<1> {
-	static constexpr auto gpio = GPIOB;
+   static constexpr auto gpio = GPIOB;
 };
 
 template <>
 struct GPIOPortTraits<2> {
-	static constexpr auto gpio = GPIOC;
+   static constexpr auto gpio = GPIOC;
 };
 
 template <>
 struct GPIOPortTraits<3> {
-	static constexpr auto gpio = GPIOD;
+   static constexpr auto gpio = GPIOD;
 };
 
 template <>
 struct GPIOPortTraits<4> {
-	static constexpr auto gpio = GPIOE;
+   static constexpr auto gpio = GPIOE;
 };
 
 template <>
 struct GPIOPortTraits<5> {
-	static constexpr auto gpio = GPIOF;
+   static constexpr auto gpio = GPIOF;
 };
 
 struct Pad {
-	virtual void
-	set() = 0;
+   virtual void
+   set() = 0;
 
-	virtual void
-	clear() = 0;
+   virtual void
+   clear() = 0;
 
-	virtual void
-	toggle() = 0;
+   virtual void
+   toggle() = 0;
 
-	virtual void
-	write(
-			unsigned on
-	) = 0;
+   virtual void
+   write(
+      unsigned on
+   ) = 0;
 };
 
 template <class _GPIO, std::size_t _PAD>
 struct Pad_:
-	public Pad {
-	using GPIO = _GPIO;
-	inline void
-	set()
-	{
-		palSetPad(GPIO::gpio, _PAD);
-	}
+   public Pad {
+   using GPIO = _GPIO;
+   inline void
+   set()
+   {
+      palSetPad(GPIO::gpio, _PAD);
+   }
 
-	inline void
-	clear()
-	{
-		palClearPad(GPIO::gpio, _PAD);
-	}
+   inline void
+   clear()
+   {
+      palClearPad(GPIO::gpio, _PAD);
+   }
 
-	inline void
-	toggle()
-	{
-		palTogglePad(GPIO::gpio, _PAD);
-	}
+   inline void
+   toggle()
+   {
+      palTogglePad(GPIO::gpio, _PAD);
+   }
 
-	inline void
-	write(
-			unsigned on
-	)
-	{
-		palWritePad(GPIO::gpio, _PAD, on);
-	}
+   inline void
+   write(
+      unsigned on
+   )
+   {
+      palWritePad(GPIO::gpio, _PAD, on);
+   }
 };
 
 // --- Aliases -----------------------------------------------------------------

@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -19,32 +19,32 @@ class Node;
 
 template <typename MessageType, unsigned QUEUE_LENGTH>
 class Subscriber:
-	public SubscriberExtBuf<MessageType>
+   public SubscriberExtBuf<MessageType>
 {
-	friend class Node;
+   friend class Node;
 
 public:
-	typedef typename SubscriberExtBuf<MessageType>::Callback Callback;
+   typedef typename SubscriberExtBuf<MessageType>::Callback Callback;
 
 private:
-	MessageType  msgpool_buf[QUEUE_LENGTH];
-	MessageType* queue_buf[QUEUE_LENGTH];
+   MessageType  msgpool_buf[QUEUE_LENGTH];
+   MessageType* queue_buf[QUEUE_LENGTH];
 
 public:
-	Subscriber(
-			Callback callback = NULL
-	);
-	~Subscriber();
+   Subscriber(
+      Callback callback = NULL
+   );
+   ~Subscriber();
 };
 
 
 template <typename MT, unsigned QL>
 inline
 Subscriber<MT, QL>::Subscriber(
-		Callback callback
+   Callback callback
 )
-	:
-	SubscriberExtBuf<MT>(queue_buf, QL, callback)
+   :
+   SubscriberExtBuf<MT>(queue_buf, QL, callback)
 {}
 
 

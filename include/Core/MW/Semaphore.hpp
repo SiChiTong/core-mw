@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -14,154 +14,154 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class Semaphore:
-	private Uncopyable
+   private Uncopyable
 {
 public:
-	typedef Semaphore_::Count Count;
+   typedef Semaphore_::Count Count;
 
 private:
-	Semaphore_ impl;
+   Semaphore_ impl;
 
 public:
-	void
-	initialize(
-			Count value = 0
-	);
+   void
+   initialize(
+      Count value = 0
+   );
 
-	void
-	reset_unsafe(
-			Count value = 0
-	);
+   void
+   reset_unsafe(
+      Count value = 0
+   );
 
-	void
-	signal_unsafe();
+   void
+   signal_unsafe();
 
-	void
-	wait_unsafe();
+   void
+   wait_unsafe();
 
-	bool
-	wait_unsafe(
-			const Time& timeout
-	);
+   bool
+   wait_unsafe(
+      const Time& timeout
+   );
 
-	void
-	reset(
-			Count value = 0
-	);
+   void
+   reset(
+      Count value = 0
+   );
 
-	void
-	signal();
+   void
+   signal();
 
-	void
-	wait();
+   void
+   wait();
 
-	bool
-	wait(
-			const Time& timeout
-	);
+   bool
+   wait(
+      const Time& timeout
+   );
 
 
 public:
-	Semaphore(
-			Count value = 0
-	);
-	explicit
-	Semaphore(
-			bool  initialize,
-			Count value = 0
-	);
+   Semaphore(
+      Count value = 0
+   );
+   explicit
+   Semaphore(
+      bool  initialize,
+      Count value = 0
+   );
 };
 
 
 inline
 void
 Semaphore::initialize(
-		Count value
+   Count value
 )
 {
-	impl.initialize(value);
+   impl.initialize(value);
 }
 
 inline
 void
 Semaphore::reset_unsafe(
-		Count value
+   Count value
 )
 {
-	impl.reset_unsafe(value);
+   impl.reset_unsafe(value);
 }
 
 inline
 void
 Semaphore::signal_unsafe()
 {
-	impl.signal_unsafe();
+   impl.signal_unsafe();
 }
 
 inline
 void
 Semaphore::wait_unsafe()
 {
-	impl.wait_unsafe();
+   impl.wait_unsafe();
 }
 
 inline
 bool
 Semaphore::wait_unsafe(
-		const Time& timeout
+   const Time& timeout
 )
 {
-	return impl.wait_unsafe(timeout);
+   return impl.wait_unsafe(timeout);
 }
 
 inline
 void
 Semaphore::reset(
-		Count value
+   Count value
 )
 {
-	impl.reset(value);
+   impl.reset(value);
 }
 
 inline
 void
 Semaphore::signal()
 {
-	impl.signal();
+   impl.signal();
 }
 
 inline
 void
 Semaphore::wait()
 {
-	impl.wait();
+   impl.wait();
 }
 
 inline
 bool
 Semaphore::wait(
-		const Time& timeout
+   const Time& timeout
 )
 {
-	return impl.wait(timeout);
+   return impl.wait(timeout);
 }
 
 inline
 Semaphore::Semaphore(
-		Count value
+   Count value
 )
-	:
-	impl(value)
+   :
+   impl(value)
 {}
 
 
 inline
 Semaphore::Semaphore(
-		bool  initialize,
-		Count value
+   bool  initialize,
+   Count value
 )
-	:
-	impl(initialize, value)
+   :
+   impl(initialize, value)
 {}
 
 

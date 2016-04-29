@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 /*
     ChibiOS/RT - Copyright (C) 2006,2007,2008,2009,2010,
                  2011,2012,2013 Giovanni Di Sirio.
@@ -22,7 +22,7 @@
 
     You should have received a copy of the GNU General Public License
     along with this program.  If not, see <http://www.gnu.org/licenses/>.
-*/
+ */
 
 /**
  * @file    chmemcore.c
@@ -54,27 +54,31 @@
 
 #if CH_USE_MEMCORE || defined(__DOXYGEN__)
 
-static uint8_t *nextmem;
-static uint8_t *endmem;
-static uint8_t *realendmem;
+static uint8_t* nextmem;
+static uint8_t* endmem;
+static uint8_t* realendmem;
 
 /**
  * @brief   Low level memory manager initialization.
  *
  * @notapi
  */
-void _core_init(void) {
+void
+_core_init(
+   void
+)
+{
 #if CH_MEMCORE_SIZE == 0
-  extern uint8_t __heap_base__[];
-  extern uint8_t __heap_end__[];
-  nextmem = (uint8_t *)MEM_ALIGN_NEXT(__heap_base__);
-  endmem = (uint8_t *)MEM_ALIGN_PREV(__heap_end__);
+   extern uint8_t __heap_base__[];
+   extern uint8_t __heap_end__[];
+   nextmem = (uint8_t*)MEM_ALIGN_NEXT(__heap_base__);
+   endmem  = (uint8_t*)MEM_ALIGN_PREV(__heap_end__);
 #else
-  static stkalign_t buffer[MEM_ALIGN_NEXT(CH_MEMCORE_SIZE)/MEM_ALIGN_SIZE];
-  nextmem = (uint8_t *)&buffer[0];
-  endmem = (uint8_t *)&buffer[MEM_ALIGN_NEXT(CH_MEMCORE_SIZE)/MEM_ALIGN_SIZE];
+   static stkalign_t buffer[MEM_ALIGN_NEXT(CH_MEMCORE_SIZE) / MEM_ALIGN_SIZE];
+   nextmem = (uint8_t*)&buffer[0];
+   endmem  = (uint8_t*)&buffer[MEM_ALIGN_NEXT(CH_MEMCORE_SIZE) / MEM_ALIGN_SIZE];
 #endif
-  realendmem = endmem;
+   realendmem = endmem;
 }
 
 /**
@@ -89,13 +93,17 @@ void _core_init(void) {
  *
  * @api
  */
-void *chCoreAlloc(size_t size) {
-  void *p;
+void*
+chCoreAlloc(
+   size_t size
+)
+{
+   void* p;
 
-  chSysLock();
-  p = chCoreAllocI(size);
-  chSysUnlock();
-  return p;
+   chSysLock();
+   p = chCoreAllocI(size);
+   chSysUnlock();
+   return p;
 }
 
 /**
@@ -110,17 +118,24 @@ void *chCoreAlloc(size_t size) {
  *
  * @iclass
  */
-void *chCoreAllocI(size_t size) {
-  void *p;
+void*
+chCoreAllocI(
+   size_t size
+)
+{
+   void* p;
 
-  chDbgCheckClassI();
+   chDbgCheckClassI();
 
-  size = MEM_ALIGN_NEXT(size);
-  if ((size_t)(endmem - nextmem) < size)
-    return NULL;
-  p = nextmem;
-  nextmem += size;
-  return p;
+   size = MEM_ALIGN_NEXT(size);
+
+   if ((size_t)(endmem - nextmem) < size) {
+      return NULL;
+   }
+
+   p        = nextmem;
+   nextmem += size;
+   return p;
 }
 
 /**
@@ -130,53 +145,73 @@ void *chCoreAllocI(size_t size) {
  *
  * @api
  */
-size_t chCoreStatus(void) {
-
-  return (size_t)(endmem - nextmem);
+size_t
+chCoreStatus(
+   void
+)
+{
+   return (size_t)(endmem - nextmem);
 }
 
+void*
+chCoreReserve(
+   size_t size
+)
+{
+   void* p;
 
-
-void *chCoreReserve(size_t size) {
-  void *p;
-
-  chSysLock();
-  p = chCoreReserveI(size);
-  chSysUnlock();
-  return p;
+   chSysLock();
+   p = chCoreReserveI(size);
+   chSysUnlock();
+   return p;
 }
 
-void *chCoreReserveI(size_t size) {
+void*
+chCoreReserveI(
+   size_t size
+)
+{
+   chDbgCheckClassI();
 
-  chDbgCheckClassI();
+   size = MEM_ALIGN_NEXT(size);
 
-  size = MEM_ALIGN_NEXT(size);
-  if ((size_t)(endmem - nextmem) < size)
-    return NULL;
-  endmem -= size;
-  return endmem;
+   if ((size_t)(endmem - nextmem) < size) {
+      return NULL;
+   }
+
+   endmem -= size;
+   return endmem;
 }
 
-void *chCoreUnreserve(size_t size) {
-  void *p;
+void*
+chCoreUnreserve(
+   size_t size
+)
+{
+   void* p;
 
-  chSysLock();
-  p = chCoreUnreserveI(size);
-  chSysUnlock();
-  return p;
+   chSysLock();
+   p = chCoreUnreserveI(size);
+   chSysUnlock();
+   return p;
 }
 
-void *chCoreUnreserveI(size_t size) {
+void*
+chCoreUnreserveI(
+   size_t size
+)
+{
+   chDbgCheckClassI();
 
-  chDbgCheckClassI();
+   size = MEM_ALIGN_NEXT(size);
 
-  size = MEM_ALIGN_NEXT(size);
-  if ((size_t)(realendmem - endmem) < size)
-    return NULL;
-  endmem += size;
-  return endmem;
+   if ((size_t)(realendmem - endmem) < size) {
+      return NULL;
+   }
+
+   endmem += size;
+   return endmem;
 }
-
 #endif /* CH_USE_MEMCORE */
 
 /** @} */

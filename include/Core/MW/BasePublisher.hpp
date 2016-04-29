@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -18,72 +18,72 @@ class Topic;
 
 
 class BasePublisher:
-	private Uncopyable
+   private Uncopyable
 {
 private:
-	Topic* topicp;
+   Topic* topicp;
 
 public:
-	Topic*
-	get_topic() const;
+   Topic*
+   get_topic() const;
 
-	void
-	notify_advertised(
-			Topic& topic
-	);
+   void
+   notify_advertised(
+      Topic& topic
+   );
 
-	bool
-	alloc_unsafe(
-			Message*& msgp
-	);
+   bool
+   alloc_unsafe(
+      Message*& msgp
+   );
 
-	bool
-	publish_unsafe(
-			Message& msg
-	);
+   bool
+   publish_unsafe(
+      Message& msg
+   );
 
-	bool
-	publish_locally_unsafe(
-			Message& msg
-	);
+   bool
+   publish_locally_unsafe(
+      Message& msg
+   );
 
-	bool
-	publish_remotely_unsafe(
-			Message& msg
-	);
+   bool
+   publish_remotely_unsafe(
+      Message& msg
+   );
 
-	bool
-	alloc(
-			Message*& msgp
-	);
+   bool
+   alloc(
+      Message*& msgp
+   );
 
-	bool
-	publish(
-			Message& msg
-	);
+   bool
+   publish(
+      Message& msg
+   );
 
-	bool
-	publish_locally(
-			Message& msg
-	);
+   bool
+   publish_locally(
+      Message& msg
+   );
 
-	bool
-	publish_remotely(
-			Message& msg
-	);
+   bool
+   publish_remotely(
+      Message& msg
+   );
 
 
 protected:
-	BasePublisher();
-	virtual
-	~BasePublisher() = 0;
+   BasePublisher();
+   virtual
+   ~BasePublisher() = 0;
 
 public:
-	static bool
-	has_topic(
-			const BasePublisher& pub,
-			const char*          namep
-	);
+   static bool
+   has_topic(
+      const BasePublisher& pub,
+      const char*          namep
+   );
 };
 
 
@@ -98,76 +98,76 @@ inline
 Topic*
 BasePublisher::get_topic() const
 {
-	return topicp;
+   return topicp;
 }
 
 inline
 void
 BasePublisher::notify_advertised(
-		Topic& topic
+   Topic& topic
 )
 {
-	CORE_ASSERT(topicp == NULL);
+   CORE_ASSERT(topicp == NULL);
 
-	topicp = &topic;
+   topicp = &topic;
 }
 
 inline
 bool
 BasePublisher::alloc_unsafe(
-		Message*& msgp
+   Message*& msgp
 )
 {
-	CORE_ASSERT(topicp != NULL);
+   CORE_ASSERT(topicp != NULL);
 
-	msgp = topicp->alloc_unsafe();
-	return msgp != NULL;
+   msgp = topicp->alloc_unsafe();
+   return msgp != NULL;
 }
 
 inline
 bool
 BasePublisher::alloc(
-		Message*& msgp
+   Message*& msgp
 )
 {
-	SysLock::acquire();
-	bool success = alloc_unsafe(msgp);
-	SysLock::release();
+   SysLock::acquire();
+   bool success = alloc_unsafe(msgp);
+   SysLock::release();
 
-	return success;
+   return success;
 }
 
 inline
 bool
 BasePublisher::publish_locally(
-		Message& msg
+   Message& msg
 )
 {
-	CORE_ASSERT(topicp != NULL);
+   CORE_ASSERT(topicp != NULL);
 
-	return topicp->notify_locals(msg, Time::now());
+   return topicp->notify_locals(msg, Time::now());
 }
 
 inline
 bool
 BasePublisher::publish_remotely(
-		Message& msg
+   Message& msg
 )
 {
-	CORE_ASSERT(topicp != NULL);
-	CORE_ASSERT(static_cast<MgmtMsg*>(&msg)->type != 0);
+   CORE_ASSERT(topicp != NULL);
+   CORE_ASSERT(static_cast<MgmtMsg*>(&msg)->type != 0);
 
-	return topicp->notify_remotes(msg, Time::now());
+   return topicp->notify_remotes(msg, Time::now());
 }
 
 inline
 bool
 BasePublisher::has_topic(
-		const BasePublisher& pub,
-		const char*          namep
+   const BasePublisher& pub,
+   const char*          namep
 )
 {
-	return pub.topicp != NULL && Topic::has_name(*pub.topicp, namep);
+   return pub.topicp != NULL && Topic::has_name(*pub.topicp, namep);
 }
 
 NAMESPACE_CORE_MW_END

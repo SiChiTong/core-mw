@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -16,28 +16,28 @@ class Transport;
 
 
 class RemoteSubscriber:
-	public BaseSubscriber
+   public BaseSubscriber
 {
-	friend class Transport;
-	friend class Topic;
+   friend class Transport;
+   friend class Topic;
 
 private:
-	Transport* transportp;
+   Transport* transportp;
 
-	mutable StaticList<RemoteSubscriber>::Link by_transport;
-	mutable StaticList<RemoteSubscriber>::Link by_topic;
+   mutable StaticList<RemoteSubscriber>::Link by_transport;
+   mutable StaticList<RemoteSubscriber>::Link by_topic;
 
 public:
-	Transport*
-	get_transport() const;
+   Transport*
+   get_transport() const;
 
 
 protected:
-	RemoteSubscriber(
-			Transport& transport
-	);
-	virtual
-	~RemoteSubscriber() = 0;
+   RemoteSubscriber(
+      Transport& transport
+   );
+   virtual
+   ~RemoteSubscriber() = 0;
 };
 
 
@@ -45,7 +45,7 @@ inline
 Transport*
 RemoteSubscriber::get_transport() const
 {
-	return transportp;
+   return transportp;
 }
 
 NAMESPACE_CORE_MW_END

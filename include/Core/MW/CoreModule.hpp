@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 // Led::toggle and Led::write are to be implemented in derived Board
 
 #pragma once
@@ -15,36 +15,36 @@
 NAMESPACE_CORE_MW_BEGIN
 
 class CoreModule:
-	public CoreNodeManager
+   public CoreNodeManager
 {
 public:
-	class Led
-	{
+   class Led
+   {
 public:
-		void
-		toggle();
+      void
+      toggle();
 
-		void
-		write(
-				unsigned on
-		);
-	};
+      void
+      write(
+         unsigned on
+      );
+   };
 
-	static Led& led;
-
-
-	bool
-	initialize();
-
-	static const void
-	halt(
-			const char* message
-	);
+   static Led& led;
 
 
-	CoreModule() {}
+   bool
+   initialize();
 
-	virtual ~CoreModule() {}
+   static const void
+   halt(
+      const char* message
+   );
+
+
+   CoreModule() {}
+
+   virtual ~CoreModule() {}
 };
 
 NAMESPACE_CORE_MW_END

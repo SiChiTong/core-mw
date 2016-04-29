@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -16,125 +16,125 @@ NAMESPACE_CORE_MW_BEGIN
 class Time;
 
 class Thread:
-	private Uncopyable
+   private Uncopyable
 {
 public:
-	enum PriorityEnum {
-		READY     = Thread_::READY,
-		IDLE      = Thread_::IDLE,
-		LOWEST    = Thread_::LOWEST,
-		NORMAL    = Thread_::NORMAL,
-		HIGHEST   = Thread_::HIGHEST,
-		INTERRUPT = Thread_::INTERRUPT
-	};
+   enum PriorityEnum {
+      READY     = Thread_::READY,
+      IDLE      = Thread_::IDLE,
+      LOWEST    = Thread_::LOWEST,
+      NORMAL    = Thread_::NORMAL,
+      HIGHEST   = Thread_::HIGHEST,
+      INTERRUPT = Thread_::INTERRUPT
+   };
 
-	enum {
-		OK = Thread_::OK
-	};
+   enum {
+      OK = Thread_::OK
+   };
 
-	typedef Thread_::Priority Priority;
-	typedef Thread_::Function Function;
-	typedef Thread_::Return   Return;
-	typedef Thread_::Argument Argument;
-
-private:
-	Thread_ impl;
-
-public:
-	const char*
-	get_name() const;
-
-	void
-	set_name(
-			const char* namep
-	);
-
+   typedef Thread_::Priority Priority;
+   typedef Thread_::Function Function;
+   typedef Thread_::Return   Return;
+   typedef Thread_::Argument Argument;
 
 private:
-	Thread();
+   Thread_ impl;
 
 public:
-	static size_t
-	compute_stack_size(
-			size_t userlen
-	);
+   const char*
+   get_name() const;
 
-	static Thread*
-	create_static(
-			void*       stackp,
-			size_t      stacklen,
-			Priority    priority,
-			Function    threadf,
-			void*       argp,
-			const char* namep = NULL
-	);
-
-	static Thread*
-	create_heap(
-			void*       heapp,
-			size_t      stacklen,
-			Priority    priority,
-			Function    threadf,
-			void*       argp,
-			const char* namep = NULL
-	);
+   void
+   set_name(
+      const char* namep
+   );
 
 
-	template <typename T>
-	static Thread*
-	create_pool(
-			MemoryPool<T>& mempool,
-			Priority       priority,
-			Function       threadf,
-			void*          argp,
-			const char*    namep = NULL
-	);
+private:
+   Thread();
 
-	static Thread&
-	self();
+public:
+   static size_t
+   compute_stack_size(
+      size_t userlen
+   );
 
-	static Priority
-	get_priority();
+   static Thread*
+   create_static(
+      void*       stackp,
+      size_t      stacklen,
+      Priority    priority,
+      Function    threadf,
+      void*       argp,
+      const char* namep = NULL
+   );
 
-	static void
-	set_priority(
-			Priority priority
-	);
+   static Thread*
+   create_heap(
+      void*       heapp,
+      size_t      stacklen,
+      Priority    priority,
+      Function    threadf,
+      void*       argp,
+      const char* namep = NULL
+   );
 
-	static void
-	yield();
 
-	static void
-	sleep(
-			const Time& delay
-	);
+   template <typename T>
+   static Thread*
+   create_pool(
+      MemoryPool<T>& mempool,
+      Priority       priority,
+      Function       threadf,
+      void*          argp,
+      const char*    namep = NULL
+   );
 
-	static void
-	sleep_until(
-			const Time& time
-	);
+   static Thread&
+   self();
 
-	static Return
-	sleep();
+   static Priority
+   get_priority();
 
-	static void
-	wake(
-			Thread& thread,
-			Return  msg
-	);
+   static void
+   set_priority(
+      Priority priority
+   );
 
-	static void
-	exit(
-			uint32_t msg
-	);
+   static void
+   yield();
 
-	static bool
-	join(
-			Thread& thread
-	);
+   static void
+   sleep(
+      const Time& delay
+   );
 
-	static bool
-	should_terminate();
+   static void
+   sleep_until(
+      const Time& time
+   );
+
+   static Return
+   sleep();
+
+   static void
+   wake(
+      Thread& thread,
+      Return  msg
+   );
+
+   static void
+   exit(
+      uint32_t msg
+   );
+
+   static bool
+   join(
+      Thread& thread
+   );
+
+   static bool
+   should_terminate();
 };
 
 
@@ -142,161 +142,161 @@ inline
 const char*
 Thread::get_name() const
 {
-	return impl.get_name();
+   return impl.get_name();
 }
 
 inline
 void
 Thread::set_name(
-		const char* namep
+   const char* namep
 )
 {
-	impl.set_name(namep);
+   impl.set_name(namep);
 }
 
 inline
 size_t
 Thread::compute_stack_size(
-		size_t userlen
+   size_t userlen
 )
 {
-	return Thread_::compute_stack_size(userlen);
+   return Thread_::compute_stack_size(userlen);
 }
 
 inline
 Thread*
 Thread::create_static(
-		void*       stackp,
-		size_t      stacklen,
-		Priority    priority,
-		Function    threadf,
-		void*       argp,
-		const char* namep
+   void*       stackp,
+   size_t      stacklen,
+   Priority    priority,
+   Function    threadf,
+   void*       argp,
+   const char* namep
 )
 {
-	return reinterpret_cast<Thread*>(
-	   Thread_::create_static(stackp, stacklen, priority, threadf, argp, namep)
-	);
+   return reinterpret_cast<Thread*>(
+      Thread_::create_static(stackp, stacklen, priority, threadf, argp, namep)
+   );
 }
 
 inline
 Thread*
 Thread::create_heap(
-		void*       heapp,
-		size_t      stacklen,
-		Priority    priority,
-		Function    threadf,
-		void*       argp,
-		const char* namep
+   void*       heapp,
+   size_t      stacklen,
+   Priority    priority,
+   Function    threadf,
+   void*       argp,
+   const char* namep
 )
 {
-	return reinterpret_cast<Thread*>(
-	   Thread_::create_heap(heapp, stacklen, priority, threadf, argp, namep)
-	);
+   return reinterpret_cast<Thread*>(
+      Thread_::create_heap(heapp, stacklen, priority, threadf, argp, namep)
+   );
 }
 
 template <typename T>
 inline
 Thread*
 Thread::create_pool(
-		MemoryPool<T>& mempool,
-		Priority       priority,
-		Function       threadf,
-		void*          argp,
-		const char*    namep
+   MemoryPool<T>& mempool,
+   Priority       priority,
+   Function       threadf,
+   void*          argp,
+   const char*    namep
 )
 {
-	return reinterpret_cast<Thread*>(
-	   Thread_::create_pool(mempool, priority, threadf, argp, namep)
-	);
+   return reinterpret_cast<Thread*>(
+      Thread_::create_pool(mempool, priority, threadf, argp, namep)
+   );
 }
 
 inline
 Thread&
 Thread::self()
 {
-	return reinterpret_cast<Thread&>(Thread_::self());
+   return reinterpret_cast<Thread&>(Thread_::self());
 }
 
 inline
 Thread::Priority
 Thread::get_priority()
 {
-	return Thread_::get_priority();
+   return Thread_::get_priority();
 }
 
 inline
 void
 Thread::set_priority(
-		Priority priority
+   Priority priority
 )
 {
-	Thread_::set_priority(priority);
+   Thread_::set_priority(priority);
 }
 
 inline
 void
 Thread::yield()
 {
-	Thread_::yield();
+   Thread_::yield();
 }
 
 inline
 void
 Thread::sleep(
-		const Time& delay
+   const Time& delay
 )
 {
-	Thread_::sleep(delay);
+   Thread_::sleep(delay);
 }
 
 inline
 void
 Thread::sleep_until(
-		const Time& time
+   const Time& time
 )
 {
-	Thread_::sleep_until(time);
+   Thread_::sleep_until(time);
 }
 
 inline
 Thread::Return
 Thread::sleep()
 {
-	return Thread_::sleep();
+   return Thread_::sleep();
 }
 
 inline void
 Thread::wake(
-		Thread&        thread,
-		Thread::Return msg
+   Thread&        thread,
+   Thread::Return msg
 )
 {
-	Thread_::wake(thread.impl, msg);
+   Thread_::wake(thread.impl, msg);
 }
 
 inline
 void
 Thread::exit(
-		uint32_t msg
+   uint32_t msg
 )
 {
-	Thread_::exit(msg);
+   Thread_::exit(msg);
 }
 
 inline
 bool
 Thread::join(
-		Thread& thread
+   Thread& thread
 )
 {
-	return Thread_::join(thread.impl);
+   return Thread_::join(thread.impl);
 }
 
 inline bool
 Thread::should_terminate()
 {
-	return Thread_::should_terminate();
+   return Thread_::should_terminate();
 }
 
 NAMESPACE_CORE_MW_END

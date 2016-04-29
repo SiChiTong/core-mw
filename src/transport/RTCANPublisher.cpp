@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #include <Core/MW/namespace.hpp>
 #include <Core/MW/transport/RTCANPublisher.hpp>
 
@@ -11,10 +11,10 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 RTCANPublisher::RTCANPublisher(
-		Transport& transport
+   Transport& transport
 )
-	:
-	RemotePublisher(transport)
+   :
+   RemotePublisher(transport)
 {}
 
 

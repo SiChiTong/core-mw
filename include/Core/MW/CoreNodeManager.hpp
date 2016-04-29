@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -16,39 +16,39 @@ NAMESPACE_CORE_MW_BEGIN
 class CoreNodeManager
 {
 public:
-	CoreNodeManager();
-	virtual
-	~CoreNodeManager();
+   CoreNodeManager();
+   virtual
+   ~CoreNodeManager();
 
-	void
-	add(
-			const CoreNode& node
-	);
+   void
+   add(
+      const CoreNode& node
+   );
 
-	bool
-	setup();
+   bool
+   setup();
 
-	bool
-	run();
+   bool
+   run();
 
-	bool
-	stop();
+   bool
+   stop();
 
-	bool
-	teardown();
+   bool
+   teardown();
 
-	bool
-	isOk();
+   bool
+   isOk();
 
 
 private:
-	Core::MW::StaticList<CoreNode> _nodes;
+   Core::MW::StaticList<CoreNode> _nodes;
 
-	bool
-	syncronize(
-			ICoreNode::Action action,
-			ICoreNode::State  state
-	);
+   bool
+   syncronize(
+      ICoreNode::Action action,
+      ICoreNode::State  state
+   );
 };
 
 NAMESPACE_CORE_MW_END

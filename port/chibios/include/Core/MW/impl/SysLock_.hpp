@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -14,17 +14,17 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class SysLock_:
-	private Uncopyable
+   private Uncopyable
 {
 private:
-	SysLock_();
+   SysLock_();
 
 public:
-	static void
-	acquire();
+   static void
+   acquire();
 
-	static void
-	release();
+   static void
+   release();
 };
 
 
@@ -32,14 +32,14 @@ inline
 void
 SysLock_::acquire()
 {
-	chSysLock();
+   chSysLock();
 }
 
 inline
 void
 SysLock_::release()
 {
-	chSysUnlock();
+   chSysUnlock();
 }
 
 NAMESPACE_CORE_MW_END

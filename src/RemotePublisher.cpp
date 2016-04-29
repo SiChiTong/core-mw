@@ -3,19 +3,19 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #include <Core/MW/namespace.hpp>
 #include <Core/MW/RemotePublisher.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
 RemotePublisher::RemotePublisher(
-		Transport& transport
+   Transport& transport
 )
-	:
-	BasePublisher(),
-	transportp(&transport),
-	by_transport(*this)
+   :
+   BasePublisher(),
+   transportp(&transport),
+   by_transport(*this)
 {}
 
 

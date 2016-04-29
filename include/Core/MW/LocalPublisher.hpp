@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -15,17 +15,17 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class LocalPublisher:
-	public BasePublisher
+   public BasePublisher
 {
-	friend class Node;
+   friend class Node;
 
 private:
-	mutable StaticList<LocalPublisher>::Link by_node;
+   mutable StaticList<LocalPublisher>::Link by_node;
 
 protected:
-	LocalPublisher();
-	virtual
-	~LocalPublisher() = 0;
+   LocalPublisher();
+   virtual
+   ~LocalPublisher() = 0;
 };
 
 

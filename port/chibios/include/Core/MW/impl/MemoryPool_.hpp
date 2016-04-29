@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <Core/MW/namespace.hpp>
@@ -14,65 +14,65 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class MemoryPool_:
-	private Uncopyable
+   private Uncopyable
 {
 public:
-	typedef ::memgetfunc_t Allocator;
+   typedef ::memgetfunc_t Allocator;
 
 private:
-	::memory_pool_t impl;
+   ::memory_pool_t impl;
 
 public:
-	size_t
-	get_item_size() const;
+   size_t
+   get_item_size() const;
 
-	Allocator
-	get_allocator() const;
+   Allocator
+   get_allocator() const;
 
-	void*
-	alloc_unsafe();
+   void*
+   alloc_unsafe();
 
-	void
-	free_unsafe(
-			void* objp
-	);
+   void
+   free_unsafe(
+      void* objp
+   );
 
-	void*
-	alloc();
+   void*
+   alloc();
 
-	void
-	free(
-			void* objp
-	);
+   void
+   free(
+      void* objp
+   );
 
-	void
-	extend(
-			void*  arrayp,
-			size_t arraylen
-	);
+   void
+   extend(
+      void*  arrayp,
+      size_t arraylen
+   );
 
 
-	::memory_pool_t & get_impl();
+   ::memory_pool_t & get_impl();
 
 public:
-	MemoryPool_(
-			size_t blocklen
-	);
-	MemoryPool_(
-			void*  arrayp,
-			size_t length,
-			size_t blocklen
-	);
-	MemoryPool_(
-			size_t    blocklen,
-			Allocator allocator
-	);
-	MemoryPool_(
-			void*     arrayp,
-			size_t    length,
-			size_t    blocklen,
-			Allocator allocator
-	);
+   MemoryPool_(
+      size_t blocklen
+   );
+   MemoryPool_(
+      void*  arrayp,
+      size_t length,
+      size_t blocklen
+   );
+   MemoryPool_(
+      size_t    blocklen,
+      Allocator allocator
+   );
+   MemoryPool_(
+      void*     arrayp,
+      size_t    length,
+      size_t    blocklen,
+      Allocator allocator
+   );
 };
 
 
@@ -80,106 +80,106 @@ inline
 size_t
 MemoryPool_::get_item_size() const
 {
-	return impl.mp_object_size;
+   return impl.mp_object_size;
 }
 
 inline
 MemoryPool_::Allocator
 MemoryPool_::get_allocator() const
 {
-	return impl.mp_provider;
+   return impl.mp_provider;
 }
 
 inline
 void*
 MemoryPool_::alloc_unsafe()
 {
-	return chPoolAllocI(&impl);
+   return chPoolAllocI(&impl);
 }
 
 inline
 void
 MemoryPool_::free_unsafe(
-		void* objp
+   void* objp
 )
 {
-	if (objp != NULL) {
-		chPoolFreeI(&impl, objp);
-	}
+   if (objp != NULL) {
+      chPoolFreeI(&impl, objp);
+   }
 }
 
 inline
 void*
 MemoryPool_::alloc()
 {
-	return chPoolAlloc(&impl);
+   return chPoolAlloc(&impl);
 }
 
 inline
 void
 MemoryPool_::free(
-		void* objp
+   void* objp
 )
 {
-	if (objp != NULL) {
-		chPoolFree(&impl, objp);
-	}
+   if (objp != NULL) {
+      chPoolFree(&impl, objp);
+   }
 }
 
 inline
 void
 MemoryPool_::extend(
-		void*  arrayp,
-		size_t length
+   void*  arrayp,
+   size_t length
 )
 {
-	chPoolLoadArray(&impl, arrayp, length);
+   chPoolLoadArray(&impl, arrayp, length);
 }
 
 inline
   ::memory_pool_t& MemoryPool_::get_impl() {
-	return impl;
+   return impl;
 }
 
 
 inline
 MemoryPool_::MemoryPool_(
-		size_t blocklen
+   size_t blocklen
 )
 {
-	chPoolObjectInit(&impl, blocklen, reinterpret_cast<Allocator>(NULL));
+   chPoolObjectInit(&impl, blocklen, reinterpret_cast<Allocator>(NULL));
 }
 
 inline
 MemoryPool_::MemoryPool_(
-		void*  arrayp,
-		size_t length,
-		size_t blocklen
+   void*  arrayp,
+   size_t length,
+   size_t blocklen
 )
 {
-	chPoolObjectInit(&impl, blocklen, reinterpret_cast<Allocator>(NULL));
-	extend(arrayp, length);
+   chPoolObjectInit(&impl, blocklen, reinterpret_cast<Allocator>(NULL));
+   extend(arrayp, length);
 }
 
 inline
 MemoryPool_::MemoryPool_(
-		size_t    blocklen,
-		Allocator allocator
+   size_t    blocklen,
+   Allocator allocator
 )
 {
-	chPoolObjectInit(&impl, blocklen, reinterpret_cast<Allocator>(allocator));
+   chPoolObjectInit(&impl, blocklen, reinterpret_cast<Allocator>(allocator));
 }
 
 inline
 MemoryPool_::MemoryPool_(
-		void*     arrayp,
-		size_t    length,
-		size_t    blocklen,
-		Allocator allocator
+   void*     arrayp,
+   size_t    length,
+   size_t    blocklen,
+   Allocator allocator
 )
 {
-	chPoolObjectInit(&impl, blocklen, reinterpret_cast<Allocator>(allocator));
-	extend(arrayp, length);
+   chPoolObjectInit(&impl, blocklen, reinterpret_cast<Allocator>(allocator));
+   extend(arrayp, length);
 }
 
 NAMESPACE_CORE_MW_END

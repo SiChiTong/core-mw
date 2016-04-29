@@ -3,7 +3,7 @@
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
  */
- 
+
 #pragma once
 
 #include <cstddef>
@@ -41,29 +41,29 @@ CORE_FORCE_INLINE
 void
 static_cast_check()
 {
-	register const Test* const pd = NULL;
-	register const Base* const pb = pd;
+   register const Test* const pd = NULL;
+   register const Base* const pb = pd;
 
-	(void)pd;
-	(void)pb;
+   (void)pd;
+   (void)pb;
 }
 
 inline
 size_t
 bit_mask(
-		size_t num_bits
+   size_t num_bits
 )
 {
-	return (static_cast<size_t>(1) << num_bits) - 1;
+   return (static_cast<size_t>(1) << num_bits) - 1;
 }
 
 inline
 size_t
 byte_mask(
-		size_t num_bytes
+   size_t num_bytes
 )
 {
-	return bit_mask(num_bytes << 3);
+   return bit_mask(num_bytes << 3);
 }
 
 template <typename T>
@@ -71,53 +71,53 @@ inline
 size_t
 type_mask()
 {
-	return byte_mask(sizeof(T));
+   return byte_mask(sizeof(T));
 }
 
 template <typename T>
 inline
 size_t
 compute_chunk_size(
-		const T* startp,
-		const T* endxp
+   const T* startp,
+   const T* endxp
 )
 {
-	return static_cast<size_t>(
-	   reinterpret_cast<ptrdiff_t>(endxp) - reinterpret_cast<ptrdiff_t>(startp)
-	);
+   return static_cast<size_t>(
+      reinterpret_cast<ptrdiff_t>(endxp) - reinterpret_cast<ptrdiff_t>(startp)
+   );
 }
 
 inline
 bool
 check_bounds(
-		const void* valuep,
-		size_t      valuelen,
-		const void* slotp,
-		size_t      slotlen
+   const void* valuep,
+   size_t      valuelen,
+   const void* slotp,
+   size_t      slotlen
 )
 {
-	register const uint8_t* const vp = reinterpret_cast<const uint8_t*>(valuep);
-	register const uint8_t* const sp = reinterpret_cast<const uint8_t*>(slotp);
+   register const uint8_t* const vp = reinterpret_cast<const uint8_t*>(valuep);
+   register const uint8_t* const sp = reinterpret_cast<const uint8_t*>(slotp);
 
-	return vp >= sp && (vp + valuelen) <= (sp + slotlen);
+   return vp >= sp && (vp + valuelen) <= (sp + slotlen);
 }
 
 inline
 size_t
 compute_segment(
-		const void* ptr,
-		size_t      segment_size
+   const void* ptr,
+   size_t      segment_size
 )
 {
-	return reinterpret_cast<size_t>(ptr) & ~(segment_size - 1);
+   return reinterpret_cast<size_t>(ptr) & ~(segment_size - 1);
 }
 
 inline
 size_t
 compute_offset(
-		const void* ptr,
-		size_t      segment_size
+   const void* ptr,
+   size_t      segment_size
 )
 {
-	return reinterpret_cast<size_t>(ptr) & (segment_size - 1);
+   return reinterpret_cast<size_t>(ptr) & (segment_size - 1);
 }
