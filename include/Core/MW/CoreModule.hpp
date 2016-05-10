@@ -41,8 +41,20 @@ public:
       const char* message
    );
 
+   static void
+   reset();
 
-   CoreModule() {}
+   static void
+   keepAlive();
+
+   static void
+   disableBootloader();
+
+   static void
+   enableBootloader();
+
+
+   CoreModule();
 
    virtual ~CoreModule() {}
 };

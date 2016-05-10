@@ -9,6 +9,8 @@
 #include "ch.h"
 #include "hal.h"
 
+#include <Core/HW/IWDG.hpp>
+
 #include <Configuration.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
@@ -30,6 +32,32 @@ CoreModule::halt(
 {
    osalSysHalt(message);
 }
+
+void
+CoreModule::reset()
+{
+   Core::HW::IWDG_::woof();
+}
+
+void
+CoreModule::keepAlive()
+{
+   Core::HW::IWDG_::reload();
+}
+
+void
+CoreModule::disableBootloader()
+{
+   RTC->BKP0R = 0x55AA55AA; // TODO: wrap it somewhere.
+}
+
+void
+CoreModule::enableBootloader()
+{
+   RTC->BKP0R = 0xB0BAFE77; // TODO: wrap it somewhere.
+}
+
+CoreModule::CoreModule() {}
 
 /*
    Led& Board::led() {
