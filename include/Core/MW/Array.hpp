@@ -183,6 +183,14 @@ struct Array {
    {
       return std::__addressof(Traits::ref(_data, 0));
    }
+
+   operator pointer() {
+      return data();
+   }
+
+   operator const_pointer() {
+      return data();
+   }
 };
 
 NAMESPACE_CORE_MW_END
