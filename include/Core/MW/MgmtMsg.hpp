@@ -36,6 +36,9 @@ public:
 
       // Path messages
       PATH = 0x31,
+      
+      // Bootloader
+      BOOTLOADER = 0x41,
    };
 
    enum {
