@@ -228,12 +228,12 @@ public:
    ~DebugTransport();
 
 private:
-   static Thread::Return
+   static void
    rx_threadf(
       Thread::Argument arg
    );
 
-   static Thread::Return
+   static void
    tx_threadf(
       Thread::Argument arg
    );

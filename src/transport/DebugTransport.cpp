@@ -273,13 +273,11 @@ DebugTransport::initialize(
    send_lock.initialize();
 
    // Create the transmission pump thread
-   tx_threadp = Thread::create_static(tx_stackp, tx_stacklen, tx_priority,
-                                      tx_threadf, this, "DEBUG_TX");
+   tx_threadp = Thread::create_static(tx_stackp, tx_stacklen, tx_priority, tx_threadf, this, "DEBUG_TX");
    CORE_ASSERT(tx_threadp != NULL);
 
    // Create the reception pump thread
-   rx_threadp = Thread::create_static(rx_stackp, rx_stacklen, rx_priority,
-                                      rx_threadf, this, "DEBUG_RX");
+   rx_threadp = Thread::create_static(rx_stackp, rx_stacklen, rx_priority, rx_threadf, this, "DEBUG_RX");
    CORE_ASSERT(rx_threadp != NULL);
 
    // Clear any previous crap caused by serial port initialization
@@ -478,7 +476,7 @@ DebugTransport::spin_rx()
 #endif
 } // DebugTransport::spin_rx
 
-Thread::Return
+void
 DebugTransport::rx_threadf(
    Thread::Argument arg
 )
@@ -492,10 +490,10 @@ DebugTransport::rx_threadf(
       (void)ok;
    }
 
-   return static_cast<Thread::Return>(0);
+   chThdExitS(Thread::OK);
 }
 
-Thread::Return
+void
 DebugTransport::tx_threadf(
    Thread::Argument arg
 )
@@ -507,7 +505,7 @@ DebugTransport::tx_threadf(
       reinterpret_cast<DebugTransport*>(arg)->spin_tx();
    }
 
-   return static_cast<Thread::Return>(0);
+   chThdExitS(Thread::OK);
 }
 
 DebugTransport::DebugTransport(
