@@ -6,12 +6,12 @@
 
 #pragma once
 
-//TODO: hal
-
 #include <Core/HW/namespace.hpp>
 #include <Core/HW/common.hpp>
 
 #include <functional>
+
+#include "hal.h"
 
 NAMESPACE_CORE_HW_BEGIN
 
