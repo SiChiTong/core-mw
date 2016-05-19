@@ -78,29 +78,9 @@ private:
    MgmtMsg* mgmt_queue_buf[MGMT_BUFFER_LENGTH];
    MgmtMsg  mgmt_msg_buf[MGMT_BUFFER_LENGTH];
 
-#if CORE_USE_BOOTLOADER
-   enum {
-      REBOOTED_MAGIC = 0xFEB007ED
-   };
-
-   enum {
-      BOOT_MODE_MAGIC = 0x51B0077A
-   };
-
-   enum {
-      BOOT_PAGE_LENGTH = 1 << 10
-   };
-
-   enum {
-      BOOT_BUFFER_LENGTH = 4
-   };
-
+#if CORE_IS_BOOTLOADER_BRIDGE
    Topic   boot_topic;
-   void*   boot_stackp;
-   size_t  boot_stacklen;
-   Thread* boot_threadp;
-   Thread::Priority boot_priority;
-#endif // CORE_USE_BOOTLOADER
+#endif
 #if CORE_USE_BRIDGE_MODE
    PubSubStep* pubsub_stepsp;
    MemoryPool<PubSubStep> pubsub_pool;
@@ -296,16 +276,6 @@ private:
    alloc_pubsub_step();
 #endif
 
-#if CORE_USE_BOOTLOADER
-   static Thread::Return
-   boot_threadf(
-      Thread::Argument
-   );
-
-   void
-   do_boot_thread();
-#endif
-
 public:
    static bool
    is_rebooted();
@@ -357,13 +327,14 @@ Middleware::is_stopped() const
    return stopped;
 }
 
-#if CORE_USE_BOOTLOADER
+#if CORE_IS_BOOTLOADER_BRIDGE
 inline
 Topic&
 Middleware::get_boot_topic()
 {
    return boot_topic;
 }
+#endif
 
 inline
 void
@@ -371,23 +342,8 @@ Middleware::preload_bootloader_mode(
    bool enable
 )
 {
-   boot_mode_magic = enable ? BOOT_MODE_MAGIC : ~BOOT_MODE_MAGIC;
+   // DAVIDE
 }
-
-inline
-bool
-Middleware::is_rebooted()
-{
-   return rebooted_magic == REBOOTED_MAGIC;
-}
-
-inline
-bool
-Middleware::is_bootloader_mode()
-{
-   return boot_mode_magic == BOOT_MODE_MAGIC;
-}
-#endif // if CORE_USE_BOOTLOADER
 
 inline
 bool

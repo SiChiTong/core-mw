@@ -42,19 +42,9 @@ Middleware::initialize(
    this->mgmt_stackp   = mgmt_stackp;
    this->mgmt_stacklen = mgmt_stacklen;
    this->mgmt_priority = mgmt_priority;
-#if CORE_USE_BOOTLOADER
-   this->boot_stackp   = boot_stackp;
-   this->boot_stacklen = boot_stacklen;
-   this->boot_priority = boot_priority;
-#endif
 
-#if CORE_USE_BOOTLOADER
-   if (is_bootloader_mode()) {
-      CORE_ASSERT(boot_stackp != NULL);
-      CORE_ASSERT(boot_stacklen > 0);
-
-      topics.link(boot_topic.by_middleware);
-   }
+#if CORE_IS_BOOTLOADER_BRIDGE
+   topics.link(boot_topic.by_middleware);
 #endif
    topics.link(mgmt_topic.by_middleware);
 } // Middleware::initialize
@@ -62,18 +52,6 @@ Middleware::initialize(
 void
 Middleware::start()
 {
-#if CORE_USE_BOOTLOADER
-   if (is_bootloader_mode()) {
-      CORE_ASSERT(boot_stackp != NULL);
-
-      boot_threadp = Thread::create_static(
-         boot_stackp, boot_stacklen, boot_priority,
-         boot_threadf, NULL, "CORE_BOOT"
-                     );
-      CORE_ASSERT(boot_threadp != NULL);
-   }
-#endif
-
    mgmt_threadp = Thread::create_static(
       mgmt_stackp, mgmt_stacklen, mgmt_priority,
       mgmt_threadf, NULL, "CORE_MGMT"
@@ -90,16 +68,6 @@ Middleware::start()
    }
 
    SysLock::release();
-
-#if CORE_USE_BOOTLOADER
-   if (!is_bootloader_mode()) {
-      // Launch all installed apps
-      bool success;
-      (void)success;
-      success = Bootloader::launch_all();
-      CORE_ASSERT(success);
-   }
-#endif
 } // Middleware::start
 
 void
@@ -412,10 +380,6 @@ Middleware::do_mgmt_thread()
               NamingTraits<Middleware>::MAX_LENGTH);
       SysLock::acquire();
       msgp->module.flags.stopped = is_stopped() ? 1 : 0;
-#if CORE_USE_BOOTLOADER
-      msgp->module.flags.rebooted  = is_rebooted() ? 1 : 0;
-      msgp->module.flags.boot_mode = is_bootloader_mode() ? 1 : 0;
-#endif
       SysLock::release();
       mgmt_pub.publish_remotely(*msgp);
    }
@@ -473,9 +437,7 @@ Middleware::do_mgmt_thread()
               {
                  if (0 == strncmp(module_namep, msgp->module.name,
                                   NamingTraits<Middleware>::MAX_LENGTH)) {
-#if CORE_USE_BOOTLOADER
                     preload_bootloader_mode(false);
-#endif
                     reboot();
                  }
 
@@ -487,7 +449,6 @@ Middleware::do_mgmt_thread()
                  mgmt_sub.release(*msgp);
                  break;
               }
-#if CORE_USE_BOOTLOADER
               case MgmtMsg::BOOTLOAD:
               {
                  if (0 == strncmp(module_namep, msgp->module.name,
@@ -504,7 +465,6 @@ Middleware::do_mgmt_thread()
                  mgmt_sub.release(*msgp);
                  break;
               }
-#endif // if CORE_USE_BOOTLOADER
               default:
               {
 // [MARTINO]
@@ -545,10 +505,6 @@ Middleware::do_mgmt_thread()
                        NamingTraits<Middleware>::MAX_LENGTH);
                SysLock::acquire();
                msgp->module.flags.stopped = is_stopped() ? 1 : 0;
-#if CORE_USE_BOOTLOADER
-               msgp->module.flags.rebooted  = is_rebooted() ? 1 : 0;
-               msgp->module.flags.boot_mode = is_bootloader_mode() ? 1 : 0;
-#endif
                SysLock::release();
                mgmt_pub.publish_remotely(*msgp);
             }
@@ -877,12 +833,8 @@ Middleware::Middleware(
    mgmt_node("CORE_MGMT", false),
    mgmt_pub(),
    mgmt_sub(mgmt_queue_buf, MGMT_BUFFER_LENGTH, NULL),
-#if CORE_USE_BOOTLOADER
+#if CORE_IS_BOOTLOADER_BRIDGE
    boot_topic(bootloader_namep, sizeof(BootMsg)),
-   boot_stackp(NULL),
-   boot_stacklen(0),
-   boot_threadp(NULL),
-   boot_priority(Thread::LOWEST),
 #endif
 #if CORE_USE_BRIDGE_MODE
    pubsub_stepsp(NULL),
@@ -906,39 +858,5 @@ Middleware::mgmt_threadf(
    instance.do_mgmt_thread();
    chThdExitS(Thread::OK);
 }
-
-#if CORE_USE_BOOTLOADER
-Thread::Return
-Middleware::boot_threadf(
-   Thread::Argument
-)
-{
-   Flasher::Data* flash_page_bufp = new Flasher::Data[BOOT_PAGE_LENGTH];
-
-   CORE_ASSERT(flash_page_bufp != NULL);
-
-   BootMsg  msgbuf[BOOT_BUFFER_LENGTH];
-   BootMsg* msgqueue_buf[BOOT_BUFFER_LENGTH];
-   SubscriberExtBuf<BootMsg> sub(msgqueue_buf, BOOT_BUFFER_LENGTH);
-   Publisher<BootMsg>        pub;
-
-   Node node("CORE_BOOT");
-   {
-      bool success;
-      (void)success;
-      success = node.advertise(pub, instance.boot_topic.get_name());
-      CORE_ASSERT(success);
-      success = node.subscribe(sub, instance.boot_topic.get_name(), msgbuf);
-      CORE_ASSERT(success);
-   }
-
-   Bootloader bootloader(flash_page_bufp, pub, sub);
-   bootloader.spin_loop();
-
-   CORE_ASSERT(false);
-   return Thread::OK;
-} // Middleware::boot_threadf
-#endif // if CORE_USE_BOOTLOADER
-
 
 NAMESPACE_CORE_MW_END

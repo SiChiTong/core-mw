@@ -51,6 +51,7 @@ private:
    DebugPublisher  mgmt_rpub;
 
 #if CORE_USE_BOOTLOADER
+   // DAVIDE ???
    enum {
       BOOT_BUFFER_LENGTH = 4
    };
