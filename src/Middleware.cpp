@@ -10,7 +10,6 @@
 #include <Core/MW/Thread.hpp>
 #include <Core/MW/MgmtMsg.hpp>
 #include <Core/MW/BootMsg.hpp>
-#include <Core/MW/Bootloader.hpp>
 #include <Core/MW/Topic.hpp>
 #include <Core/MW/Node.hpp>
 #include <Core/MW/Transport.hpp>

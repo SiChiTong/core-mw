@@ -17,7 +17,6 @@
 #include <Core/MW/Subscriber.hpp>
 #include <Core/MW/SubscriberExtBuf.hpp>
 #include <Core/MW/Node.hpp>
-#include <Core/MW/Bootloader.hpp>
 #include <Core/MW/ReMutex.hpp>
 #include <Core/MW/transport/DebugTransport.hpp>
 #include <Core/MW/transport/RTCANTransport.hpp>

@@ -13,7 +13,6 @@
 #include <Core/MW/TimestampedMsgPtrQueue.hpp>
 #include <Core/MW/Mutex.hpp>
 #include <Core/MW/MgmtMsg.hpp>
-#include <Core/MW/Bootloader.hpp>
 #include <Core/MW/BootMsg.hpp>
 #include <Core/MW/Semaphore.hpp>
 
