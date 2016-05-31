@@ -212,7 +212,7 @@ RTCANTransport::topic_id(
    if (Topic::has_name(topic, "bootloader")) {
       return((0xFD << 8) | stm32_id8());
    }
-   
+
    // id 254 reserved to test topic
    if (Topic::has_name(topic, "test")) {
       return((0xFE << 8) | stm32_id8());
