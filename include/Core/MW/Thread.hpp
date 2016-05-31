@@ -19,7 +19,12 @@ class Thread:
    private Uncopyable
 {
 public:
-   enum PriorityEnum {
+   using Priority = Thread_::Priority;
+   using Function = Thread_::Function;
+   using Return   = Thread_::Return;
+   using Argument = Thread_::Argument;
+
+   enum PriorityEnum : Priority {
       READY     = Thread_::READY,
       IDLE      = Thread_::IDLE,
       LOWEST    = Thread_::LOWEST,
@@ -31,11 +36,6 @@ public:
    enum {
       OK = Thread_::OK
    };
-
-   typedef Thread_::Priority Priority;
-   typedef Thread_::Function Function;
-   typedef Thread_::Return   Return;
-   typedef Thread_::Argument Argument;
 
 private:
    Thread_ impl;

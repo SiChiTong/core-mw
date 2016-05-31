@@ -9,8 +9,8 @@
 NAMESPACE_CORE_MW_BEGIN
 
 CoreNode::CoreNode(
-   const char*                    name,
-   Core::MW::Thread::PriorityEnum priority
+   const char*                name,
+   Core::MW::Thread::Priority priority
 ) :
    Core::MW::Node(name, false),
    _workingAreaSize(0),
