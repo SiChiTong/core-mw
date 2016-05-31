@@ -301,9 +301,9 @@ DebugTransport::initialize(
 #endif
 
    // Register remote publisher and subscriber for the management thread
-   success = advertise(mgmt_rpub, "R2P", Time::INFINITE, sizeof(MgmtMsg));
+   success = advertise(mgmt_rpub, MANAGEMENT_TOPIC_NAME, Time::INFINITE, sizeof(MgmtMsg));
    CORE_ASSERT(success);
-   success = subscribe(mgmt_rsub, "R2P", mgmt_msgbuf, MGMT_BUFFER_LENGTH);
+   success = subscribe(mgmt_rsub, MANAGEMENT_TOPIC_NAME, mgmt_msgbuf, MGMT_BUFFER_LENGTH);
    CORE_ASSERT(success);
 
    Middleware::instance.add(*this);

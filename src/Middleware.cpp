@@ -19,11 +19,6 @@
 
 NAMESPACE_CORE_MW_BEGIN
 
-
-uint32_t Middleware::rebooted_magic  CORE_NORESET;
-uint32_t Middleware::boot_mode_magic CORE_NORESET;
-
-
 void
 Middleware::initialize(
    void*            mgmt_stackp,
@@ -43,10 +38,10 @@ Middleware::initialize(
    this->mgmt_stacklen = mgmt_stacklen;
    this->mgmt_priority = mgmt_priority;
 
+   topics.link(mgmt_topic.by_middleware);
 #if CORE_IS_BOOTLOADER_BRIDGE
    topics.link(boot_topic.by_middleware);
 #endif
-   topics.link(mgmt_topic.by_middleware);
 } // Middleware::initialize
 
 void
@@ -183,7 +178,10 @@ Middleware::advertise(
    lists_lock.release();
 
    if (topicp != &mgmt_topic) {
-      {
+#if CORE_IS_BOOTLOADER_BRIDGE
+   if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
+#endif
+   {
          SysLock::Scope lock;
 
          if (mgmt_pub.get_topic() == NULL) {
@@ -202,6 +200,9 @@ Middleware::advertise(
          mgmt_pub.publish_remotely(*msgp);
       }
    }
+#if CORE_IS_BOOTLOADER_BRIDGE
+   }
+#endif
 
    return true;
 } // Middleware::advertise
@@ -250,6 +251,9 @@ Middleware::subscribe(
    lists_lock.release();
 
    if (topicp != &mgmt_topic) {
+#if CORE_IS_BOOTLOADER_BRIDGE
+   if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
+#endif
       for (StaticList<Transport>::Iterator i = transports.begin();
            i != transports.end(); ++i) {
          {
@@ -274,6 +278,9 @@ Middleware::subscribe(
          }
       }
    }
+#if CORE_IS_BOOTLOADER_BRIDGE
+   }
+#endif
 
    return true;
 } // Middleware::subscribe
@@ -818,14 +825,14 @@ Middleware::alloc_pubsub_step()
 
 Middleware::Middleware(
    const char* module_namep,
-   const char* bootloader_namep,
+   const char* bootloader_namep, // DAVIDE Remove...
    PubSubStep  pubsub_buf[],
    size_t      pubsub_length
 )
    :
    module_namep(module_namep),
    lists_lock(false),
-   mgmt_topic("R2P", sizeof(MgmtMsg), false),
+   mgmt_topic(MANAGEMENT_TOPIC_NAME, sizeof(MgmtMsg), false),
    mgmt_stackp(NULL),
    mgmt_stacklen(0),
    mgmt_threadp(NULL),
@@ -834,7 +841,7 @@ Middleware::Middleware(
    mgmt_pub(),
    mgmt_sub(mgmt_queue_buf, MGMT_BUFFER_LENGTH, NULL),
 #if CORE_IS_BOOTLOADER_BRIDGE
-   boot_topic(bootloader_namep, sizeof(BootMsg)),
+   boot_topic(BOOTLOADER_TOPIC_NAME, sizeof(BootMsg), false),
 #endif
 #if CORE_USE_BRIDGE_MODE
    pubsub_stepsp(NULL),

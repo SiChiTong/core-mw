@@ -79,7 +79,7 @@ private:
    MgmtMsg  mgmt_msg_buf[MGMT_BUFFER_LENGTH];
 
 #if CORE_IS_BOOTLOADER_BRIDGE
-   Topic   boot_topic;
+   Topic boot_topic;
 #endif
 #if CORE_USE_BRIDGE_MODE
    PubSubStep* pubsub_stepsp;
@@ -102,8 +102,6 @@ private:
 
 public:
    static Middleware instance;
-   static uint32_t   rebooted_magic;
-   static uint32_t   boot_mode_magic;
 
 public:
    const char*
@@ -124,8 +122,11 @@ public:
    Topic&
    get_mgmt_topic();
 
+
+#if CORE_IS_BOOTLOADER_BRIDGE
    Topic&
    get_boot_topic();
+#endif
 
    bool
    is_stopped() const;
@@ -135,7 +136,7 @@ public:
       void*            mgmt_stackp,
       size_t           mgmt_stacklen,
       Thread::Priority mgmt_priority,
-      void*            boot_stackp = NULL,
+      void*            boot_stackp = NULL, // DAVIDE remove
       size_t           boot_stacklen = 0,
       Thread::Priority boot_priority = Thread::LOWEST
    );
@@ -275,13 +276,6 @@ private:
    PubSubStep*
    alloc_pubsub_step();
 #endif
-
-public:
-   static bool
-   is_rebooted();
-
-   static bool
-   is_bootloader_mode();
 };
 
 
@@ -320,13 +314,6 @@ Middleware::get_mgmt_topic()
    return mgmt_topic;
 }
 
-inline
-bool
-Middleware::is_stopped() const
-{
-   return stopped;
-}
-
 #if CORE_IS_BOOTLOADER_BRIDGE
 inline
 Topic&
@@ -337,12 +324,10 @@ Middleware::get_boot_topic()
 #endif
 
 inline
-void
-Middleware::preload_bootloader_mode(
-   bool enable
-)
+bool
+Middleware::is_stopped() const
 {
-   // DAVIDE
+   return stopped;
 }
 
 inline

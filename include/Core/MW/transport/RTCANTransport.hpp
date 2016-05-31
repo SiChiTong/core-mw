@@ -46,6 +46,17 @@ private:
    RTCANSubscriber* mgmt_rsub;
    RTCANPublisher*  mgmt_rpub;
 
+#if CORE_IS_BOOTLOADER_BRIDGE
+   enum {
+      BOOT_BUFFER_LENGTH = 4
+   };
+
+   MgmtMsg boot_msgbuf[BOOT_BUFFER_LENGTH];
+   TimestampedMsgPtrQueue::Entry boot_msgqueue_buf[BOOT_BUFFER_LENGTH];
+   RTCANSubscriber* boot_rsub;
+   RTCANPublisher*  boot_rpub;
+#endif
+
 public:
    bool
    send(
