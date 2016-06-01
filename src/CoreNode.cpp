@@ -46,7 +46,7 @@ CoreNode::setup()
 
    if (_state() == State::NONE) {
       _mustRun = true;
-      _runner  = Core::MW::Thread::create_heap(NULL, THD_WORKING_AREA_SIZE(_workingAreaSize), Core::MW::Thread::get_priority(),
+      _runner  = Core::MW::Thread::create_heap(NULL, THD_WORKING_AREA_SIZE(_workingAreaSize), Core::MW::Thread::PriorityEnum::NORMAL,
                                                [](void* arg) {
          reinterpret_cast<CoreNode*>(arg)->_run(); // execute the thread code in the thread
       }, this, get_name());
@@ -301,31 +301,31 @@ CoreNode::onFinalize()
 inline void
 CoreNode::_doInitialize()
 {
-   if (!onInitialize()) {
+   if (onInitialize()) {
+      _state(State::INITIALIZED);
+   } else {
       _doError();
    }
-
-   _state(State::INITIALIZED);
 }
 
 inline void
 CoreNode::_doConfigure()
 {
-   if (!onConfigure()) {
+   if (onConfigure()) {
+      _state(State::CONFIGURED);
+   } else {
       _doError();
    }
-
-   _state(State::CONFIGURED);
 }
 
 inline void
 CoreNode::_doPrepareHW()
 {
-   if (!onPrepareHW()) {
+   if (onPrepareHW()) {
+      _state(State::HW_READY);
+   } else {
       _doError();
    }
-
-   _state(State::HW_READY);
 }
 
 inline void
@@ -333,23 +333,23 @@ CoreNode::_doPrepareMW()
 {
    set_enabled(true); // Enable event dispatching for this Node
 
-   if (!onPrepareMW()) {
+   if (onPrepareMW()) {
+      _state(State::MW_READY);
+      _state(State::IDLE);
+   } else {
       _doError();
    }
-
-   _state(State::MW_READY);
-   _state(State::IDLE);
 }
 
 inline void
 CoreNode::_doStart()
 {
-   if (!onStart()) {
+   if (onStart()) {
+      _mustLoop = true;
+      _state(State::LOOPING);
+   } else {
       _doError();
    }
-
-   _mustLoop = true;
-   _state(State::LOOPING);
 }
 
 inline void
@@ -368,18 +368,20 @@ CoreNode::_doLoop()
       }
    }
 
+   Core::MW::Thread::set_priority(Core::MW::Thread::PriorityEnum::NORMAL);
+
    _state(State::STOPPING);
-}
+} // CoreNode::_doLoop
 
 inline void
 CoreNode::_doStop()
 {
-   if (!onStop()) {
+   if (onStop()) {
+      _mustLoop = false;
+      _state(State::IDLE);
+   } else {
       _doError();
    }
-
-   _mustLoop = false;
-   _state(State::IDLE);
 }
 
 inline void
@@ -394,11 +396,11 @@ CoreNode::_doFinalize()
 {
    set_enabled(false); // Disable event dispatching for this Node
 
-   if (!onFinalize()) {
+   if (onFinalize()) {
+      _state(State::SET_UP);
+   } else {
       _doError();
    }
-
-   _state(State::SET_UP);
 }
 
 NAMESPACE_CORE_MW_END
