@@ -525,7 +525,7 @@ DebugTransport::DebugTransport(
    mgmt_rsub(*this, mgmt_msgqueue_buf, MGMT_BUFFER_LENGTH),
    mgmt_rpub(*this)
 #if CORE_USE_BOOTLOADER
-	 // DAVIDE ???
+   // DAVIDE ???
    ,
    boot_rsub(*this, boot_msgqueue_buf, BOOT_BUFFER_LENGTH),
    boot_rpub(*this)

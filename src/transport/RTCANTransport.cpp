@@ -181,8 +181,8 @@ RTCANTransport::initialize(
    rtcanInit();
    rtcanStart(&rtcan, &rtcan_config);
 
-   Topic&     mgmt_topic = Middleware::instance.get_mgmt_topic();
-   rtcan_id_t mgmt_topic_rtcan_id   = topic_id(mgmt_topic);
+   Topic&     mgmt_topic          = Middleware::instance.get_mgmt_topic();
+   rtcan_id_t mgmt_topic_rtcan_id = topic_id(mgmt_topic);
 
    mgmt_rsub = reinterpret_cast<RTCANSubscriber*>(create_subscriber(mgmt_topic, mgmt_msgqueue_buf, MGMT_BUFFER_LENGTH));
    subscribe(*mgmt_rsub, MANAGEMENT_TOPIC_NAME, mgmt_msgbuf, MGMT_BUFFER_LENGTH, sizeof(MgmtMsg));
@@ -191,8 +191,8 @@ RTCANTransport::initialize(
    advertise(*mgmt_rpub, MANAGEMENT_TOPIC_NAME, Time::INFINITE, sizeof(MgmtMsg));
 
 #if CORE_IS_BOOTLOADER_BRIDGE
-   Topic&     boot_topic = Middleware::instance.get_boot_topic();
-   rtcan_id_t boot_topic_rtcan_id   = topic_id(boot_topic);
+   Topic&     boot_topic          = Middleware::instance.get_boot_topic();
+   rtcan_id_t boot_topic_rtcan_id = topic_id(boot_topic);
 
    boot_rsub = reinterpret_cast<RTCANSubscriber*>(create_subscriber(boot_topic, boot_msgqueue_buf, BOOT_BUFFER_LENGTH));
    subscribe(*boot_rsub, BOOTLOADER_TOPIC_NAME, boot_msgbuf, BOOT_BUFFER_LENGTH, sizeof(BootMsg));
@@ -202,15 +202,16 @@ RTCANTransport::initialize(
 #endif
 
    Middleware::instance.add(*this);
-}
+} // RTCANTransport::initialize
 
 RTCANTransport::RTCANTransport(
    RTCANDriver& rtcan
 ) :
 #if CORE_IS_BOOTLOADER_BRIDGE
-	Transport("rtcan"), rtcan(rtcan), header_pool(header_buffer, 10), mgmt_rsub(NULL), mgmt_rpub(NULL), boot_rsub(NULL), boot_rpub(NULL) {}
+   Transport("rtcan"), rtcan(rtcan), header_pool(header_buffer, 10), mgmt_rsub(NULL), mgmt_rpub(NULL), boot_rsub(NULL), boot_rpub(NULL) {}
+
 #else
-  Transport("rtcan"), rtcan(rtcan), header_pool(header_buffer, 10), mgmt_rsub(NULL), mgmt_rpub(NULL) {}
+   Transport("rtcan"), rtcan(rtcan), header_pool(header_buffer, 10), mgmt_rsub(NULL), mgmt_rpub(NULL) {}
 #endif
 
 

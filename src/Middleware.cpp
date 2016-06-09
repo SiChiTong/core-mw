@@ -179,9 +179,9 @@ Middleware::advertise(
 
    if (topicp != &mgmt_topic) {
 #if CORE_IS_BOOTLOADER_BRIDGE
-   if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
+      if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
 #endif
-   {
+      {
          SysLock::Scope lock;
 
          if (mgmt_pub.get_topic() == NULL) {
@@ -200,8 +200,9 @@ Middleware::advertise(
          mgmt_pub.publish_remotely(*msgp);
       }
    }
+
 #if CORE_IS_BOOTLOADER_BRIDGE
-   }
+} // Middleware::advertise
 #endif
 
    return true;
@@ -252,8 +253,9 @@ Middleware::subscribe(
 
    if (topicp != &mgmt_topic) {
 #if CORE_IS_BOOTLOADER_BRIDGE
-   if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
+      if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
 #endif
+
       for (StaticList<Transport>::Iterator i = transports.begin();
            i != transports.end(); ++i) {
          {
@@ -278,8 +280,9 @@ Middleware::subscribe(
          }
       }
    }
+
 #if CORE_IS_BOOTLOADER_BRIDGE
-   }
+} // Middleware::subscribe
 #endif
 
    return true;
@@ -802,7 +805,7 @@ Middleware::alloc_pubsub_step()
       pubsub_stepsp    = stepp;
       return stepp;
    } else {
-      Time        now     = Time::now();
+      Time now = Time::now();
       PubSubStep* oldestp = pubsub_stepsp;
 
       for (stepp = pubsub_stepsp; stepp != NULL; stepp = stepp->nextp) {

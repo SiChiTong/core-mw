@@ -16,10 +16,12 @@ NAMESPACE_CORE_MW_BEGIN
 class BootMsg:
    public Message
 {
-	public:
-		uint8_t command;
-		uint8_t seqId;
-		uint8_t payload[48-2];
-} CORE_PACKED;
+public:
+   uint8_t command;
+   uint8_t seqId;
+   uint8_t payload[48 - 2];
+}
+
+CORE_PACKED;
 
 NAMESPACE_CORE_MW_END

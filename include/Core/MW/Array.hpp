@@ -192,11 +192,15 @@ struct Array {
       return data();
    }
 
-		void copyTo(typename Traits::Type to) const{
-			for (std::size_t i = 0; i < S; i++) {
-				to[i] = _data[i];
-			}
-		}
+   void
+   copyTo(
+      typename Traits::Type to
+   ) const
+   {
+      for (std::size_t i = 0; i < S; i++) {
+         to[i] = _data[i];
+      }
+   }
 };
 
 NAMESPACE_CORE_MW_END
