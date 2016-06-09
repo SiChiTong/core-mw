@@ -16,11 +16,22 @@ NAMESPACE_CORE_MW_BEGIN
 class IOStream
 {
 public:
+   using Stream = BaseSequentialStream *;
    virtual int
    printf(
       const char* fmt,
       ...
    ) = 0;
+
+   virtual constexpr
+   Stream
+   rawStream();
+};
+
+
+template <class _SD>
+struct SDStreamTraits {
+   static constexpr auto stream = (IOStream::Stream)_SD::driver;
 };
 
 template <class _STREAM>
@@ -41,10 +52,16 @@ public:
       int     formatted_bytes;
 
       va_start(ap, fmt);
-      formatted_bytes = chvprintf(STREAM::stream, fmt, ap);
+      formatted_bytes = chvprintf(rawStream(), fmt, ap);
       va_end(ap);
 
       return formatted_bytes;
+   }
+
+   inline constexpr Stream
+   rawStream()
+   {
+      return STREAM::stream;
    }
 };
 
