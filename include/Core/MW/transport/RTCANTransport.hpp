@@ -22,7 +22,6 @@
 #include "RTCANPublisher.hpp"
 #include "RTCANSubscriber.hpp"
 
-extern uint32_t ziocanta;
 
 NAMESPACE_CORE_MW_BEGIN
 

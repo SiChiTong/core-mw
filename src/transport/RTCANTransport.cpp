@@ -12,11 +12,10 @@
 
 #include <rtcan.h>
 
-uint32_t ziocanta;
-
 //FIXME needed for header pool, should use abstract allocator
 #include <ch.h>
 #include <hal.h>
+
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -72,10 +71,6 @@ RTCANTransport::recv_cb(
    Message*        msgp = const_cast<Message*>(&Message::get_msg_from_raw_data(rtcan_msg.data));
 
    if (rtcan_msg.status == RTCAN_MSG_BUSY) {
-
-  	 if((rtcan_msg.id >> 8) == BOOTLOADER_TOPIC_ID) {
-  		 ziocanta++;
-  	 }
 #if CORE_USE_BRIDGE_MODE
       CORE_ASSERT(pubp->get_transport() != NULL);
       {
@@ -119,8 +114,8 @@ RTCANTransport::create_publisher(
 ) const
 {
    RTCANPublisher* rpubp = new RTCANPublisher(*const_cast<RTCANTransport*>(this));
-   Message* msgp;
-   bool     success;
+   Message*        msgp;
+   bool success;
 
    CORE_ASSERT(rpubp != NULL);
 
