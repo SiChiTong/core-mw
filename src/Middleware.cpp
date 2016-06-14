@@ -47,10 +47,7 @@ Middleware::initialize(
 void
 Middleware::start()
 {
-   mgmt_threadp = Thread::create_static(
-      mgmt_stackp, mgmt_stacklen, mgmt_priority,
-      mgmt_threadf, NULL, "CORE_MGMT"
-                  );
+   mgmt_threadp = Thread::create_static(mgmt_stackp, mgmt_stacklen, mgmt_priority, mgmt_threadf, NULL, "CORE_MGMT");
    CORE_ASSERT(mgmt_threadp != NULL);
 
    // Wait until the info topic is fully initialized
@@ -193,10 +190,8 @@ Middleware::advertise(
 
       if (mgmt_pub.alloc(msgp)) {
          msgp->type = MgmtMsg::ADVERTISE;
-         strncpy(msgp->pubsub.topic, topicp->get_name(),
-                 NamingTraits<Topic>::MAX_LENGTH);
-         msgp->pubsub.payload_size
-            = static_cast<uint16_t>(topicp->get_payload_size());
+         strncpy(msgp->pubsub.topic, topicp->get_name(), NamingTraits<Topic>::MAX_LENGTH);
+         msgp->pubsub.payload_size = static_cast<uint16_t>(topicp->get_payload_size());
          mgmt_pub.publish_remotely(*msgp);
       }
    }
@@ -256,8 +251,7 @@ Middleware::subscribe(
       if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
 #endif
 
-      for (StaticList<Transport>::Iterator i = transports.begin();
-           i != transports.end(); ++i) {
+      for (StaticList<Transport>::Iterator i = transports.begin(); i != transports.end(); ++i) {
          {
             SysLock::Scope lock;
 
@@ -270,12 +264,9 @@ Middleware::subscribe(
 
          if (mgmt_pub.alloc(msgp)) {
             msgp->type = MgmtMsg::SUBSCRIBE_REQUEST;
-            strncpy(msgp->pubsub.topic, topicp->get_name(),
-                    NamingTraits<Topic>::MAX_LENGTH);
-            msgp->pubsub.payload_size
-               = static_cast<uint16_t>(topicp->get_payload_size());
-            msgp->pubsub.queue_length
-               = static_cast<uint16_t>(msgpool_buflen);
+            strncpy(msgp->pubsub.topic, topicp->get_name(), NamingTraits<Topic>::MAX_LENGTH);
+            msgp->pubsub.payload_size = static_cast<uint16_t>(topicp->get_payload_size());
+            msgp->pubsub.queue_length = static_cast<uint16_t>(msgpool_buflen);
             mgmt_pub.publish_remotely(*msgp);
          }
       }
@@ -386,8 +377,7 @@ Middleware::do_mgmt_thread()
    if (mgmt_pub.alloc(msgp)) {
       Message::reset_payload(*msgp);
       msgp->type = MgmtMsg::ALIVE;
-      strncpy(msgp->module.name, module_namep,
-              NamingTraits<Middleware>::MAX_LENGTH);
+      strncpy(msgp->module.name, module_namep, NamingTraits<Middleware>::MAX_LENGTH);
       SysLock::acquire();
       msgp->module.flags.stopped = is_stopped() ? 1 : 0;
       SysLock::release();
@@ -430,8 +420,7 @@ Middleware::do_mgmt_thread()
               }
               case MgmtMsg::STOP:
               {
-                 if (0 == strncmp(module_namep, msgp->module.name,
-                                  NamingTraits<Middleware>::MAX_LENGTH)) {
+                 if (0 == strncmp(module_namep, msgp->module.name, NamingTraits<Middleware>::MAX_LENGTH)) {
                     stop();
                  }
 
@@ -445,8 +434,7 @@ Middleware::do_mgmt_thread()
               }
               case MgmtMsg::REBOOT:
               {
-                 if (0 == strncmp(module_namep, msgp->module.name,
-                                  NamingTraits<Middleware>::MAX_LENGTH)) {
+                 if (0 == strncmp(module_namep, msgp->module.name, NamingTraits<Middleware>::MAX_LENGTH)) {
                     preload_bootloader_mode(false);
                     reboot();
                  }
@@ -461,8 +449,7 @@ Middleware::do_mgmt_thread()
               }
               case MgmtMsg::BOOTLOAD:
               {
-                 if (0 == strncmp(module_namep, msgp->module.name,
-                                  NamingTraits<Middleware>::MAX_LENGTH)) {
+                 if (0 == strncmp(module_namep, msgp->module.name, NamingTraits<Middleware>::MAX_LENGTH)) {
                     preload_bootloader_mode(true);
                     reboot();
                  }
@@ -511,8 +498,7 @@ Middleware::do_mgmt_thread()
             if (mgmt_pub.alloc(msgp)) {
                Message::reset_payload(*msgp);
                msgp->type = MgmtMsg::ALIVE;
-               strncpy(msgp->module.name, module_namep,
-                       NamingTraits<Middleware>::MAX_LENGTH);
+               strncpy(msgp->module.name, module_namep, NamingTraits<Middleware>::MAX_LENGTH);
                SysLock::acquire();
                msgp->module.flags.stopped = is_stopped() ? 1 : 0;
                SysLock::release();
@@ -525,12 +511,9 @@ Middleware::do_mgmt_thread()
                msgp->type = MgmtMsg::ADVERTISE;
                lists_lock.acquire();
                const Topic& topic = *iter_publishers->get_topic();
-               msgp->pubsub.payload_size
-                  = static_cast<uint16_t>(topic.get_payload_size());
-               strncpy(msgp->pubsub.topic, topic.get_name(),
-                       NamingTraits<Topic>::MAX_LENGTH);
-               msgp->pubsub.queue_length
-                  = static_cast<uint16_t>(topic.get_max_queue_length());
+               msgp->pubsub.payload_size = static_cast<uint16_t>(topic.get_payload_size());
+               strncpy(msgp->pubsub.topic, topic.get_name(), NamingTraits<Topic>::MAX_LENGTH);
+               msgp->pubsub.queue_length = static_cast<uint16_t>(topic.get_max_queue_length());
                lists_lock.release();
                msgp->acquire();
 
@@ -548,8 +531,7 @@ Middleware::do_mgmt_thread()
                SysLock::acquire();
                const Topic& topic = *iter_subscribers->get_topic();
                msgp->pubsub.payload_size = topic.get_payload_size();
-               strncpy(msgp->pubsub.topic, topic.get_name(),
-                       NamingTraits<Topic>::MAX_LENGTH);
+               strncpy(msgp->pubsub.topic, topic.get_name(), NamingTraits<Topic>::MAX_LENGTH);
                msgp->pubsub.queue_length = topic.get_max_queue_length();
                SysLock::release();
                msgp->acquire();
@@ -606,13 +588,10 @@ Middleware::do_cmd_advertise(
       if (mgmt_pub.alloc(msgp)) {
          Message::reset_payload(*msgp);
          msgp->type = MgmtMsg::SUBSCRIBE_REQUEST;
-         strncpy(msgp->pubsub.topic, topicp->get_name(),
-                 NamingTraits<Topic>::MAX_LENGTH);
-         msgp->pubsub.payload_size
-            = static_cast<uint16_t>(topicp->get_payload_size());
+         strncpy(msgp->pubsub.topic, topicp->get_name(), NamingTraits<Topic>::MAX_LENGTH);
+         msgp->pubsub.payload_size = static_cast<uint16_t>(topicp->get_payload_size());
          SysLock::acquire();
-         msgp->pubsub.queue_length
-            = static_cast<uint16_t>(topicp->get_max_queue_length());
+         msgp->pubsub.queue_length = static_cast<uint16_t>(topicp->get_max_queue_length());
          SysLock::release();
          msgp->acquire();
 #if CORE_USE_BRIDGE_MODE
@@ -629,9 +608,7 @@ Middleware::do_cmd_advertise(
       PubSubStep* curp;
 
       for (curp = pubsub_stepsp; curp != NULL; curp = curp->nextp) {
-         if ((0 == strncmp(curp->topic, msg.pubsub.topic,
-                           NamingTraits<Topic>::MAX_LENGTH))
-             && (curp->type == MgmtMsg::ADVERTISE)) {
+         if ((0 == strncmp(curp->topic, msg.pubsub.topic, NamingTraits<Topic>::MAX_LENGTH)) && (curp->type == MgmtMsg::ADVERTISE)) {
             // Advertisement already cached
             curp->timestamp = Time::now();
             break;
@@ -678,22 +655,17 @@ Middleware::do_cmd_subscribe_request(
       if (mgmt_pub.alloc(msgp)) {
          Message::reset_payload(*msgp);
          msgp->type = MgmtMsg::SUBSCRIBE_RESPONSE;
-         strncpy(msgp->pubsub.topic, topicp->get_name(),
-                 NamingTraits<Topic>::MAX_LENGTH);
-         msgp->pubsub.payload_size
-            = static_cast<uint16_t>(topicp->get_payload_size());
+         strncpy(msgp->pubsub.topic, topicp->get_name(), NamingTraits<Topic>::MAX_LENGTH);
+         msgp->pubsub.payload_size = static_cast<uint16_t>(topicp->get_payload_size());
          SysLock::acquire();
-         msgp->pubsub.queue_length
-            = static_cast<uint16_t>(topicp->get_max_queue_length());
+         msgp->pubsub.queue_length = static_cast<uint16_t>(topicp->get_max_queue_length());
          SysLock::release();
          msgp->acquire();
 #if CORE_USE_BRIDGE_MODE
-         msg.get_source()->subscribe_cb(*topicp, msg.pubsub.queue_length,
-                                        msgp->pubsub.raw_params);
+         msg.get_source()->subscribe_cb(*topicp, msg.pubsub.queue_length, msgp->pubsub.raw_params);
          mgmt_topic.forward_copy(*msgp, topicp->compute_deadline());
 #else // CORE_USE_BRIDGE_MODE
-         transports.begin()->subscribe_cb(*topicp, msg.pubsub.queue_length,
-                                          msgp->pubsub.raw_params);
+         transports.begin()->subscribe_cb(*topicp, msg.pubsub.queue_length, msgp->pubsub.raw_params);
          mgmt_pub.publish_remotely(*msgp);
 #endif // CORE_USE_BRIDGE_MODE
          mgmt_sub.release(*msgp);
@@ -705,8 +677,7 @@ Middleware::do_cmd_subscribe_request(
       PubSubStep* curp, * prevp = NULL;
 
       for (curp = pubsub_stepsp; curp != NULL; prevp = curp, curp = curp->nextp) {
-         if (0 == strncmp(curp->topic, msg.pubsub.topic,
-                          NamingTraits<Topic>::MAX_LENGTH)) {
+         if (0 == strncmp(curp->topic, msg.pubsub.topic, NamingTraits<Topic>::MAX_LENGTH)) {
             if (curp->type == MgmtMsg::SUBSCRIBE_REQUEST) {
                // Subscription request already cached
                curp->timestamp = Time::now();
@@ -717,11 +688,10 @@ Middleware::do_cmd_subscribe_request(
                   prevp->nextp = curp->nextp;
                }
 
-               char* namep = new char[NamingTraits < Topic > ::MAX_LENGTH];
+               char* namep = new char[NamingTraits <Topic> ::MAX_LENGTH];
                CORE_ASSERT(namep != NULL);
                strncpy(namep, curp->topic, NamingTraits<Topic>::MAX_LENGTH);
-               topicp = touch_topic(namep,
-                                    Message::get_type_size(curp->payload_size));
+               topicp = touch_topic(namep, Message::get_type_size(curp->payload_size));
                CORE_ASSERT(topicp != NULL);
                pubsub_pool.free(curp);
                curp = NULL;
@@ -760,9 +730,7 @@ Middleware::do_cmd_subscribe_response(
       PubSubStep* curp, * prevp = NULL;
 
       for (curp = pubsub_stepsp; curp != NULL; prevp = curp, curp = curp->nextp) {
-         if ((0 == strncmp(curp->topic, msg.pubsub.topic,
-                           NamingTraits<Topic>::MAX_LENGTH))
-             && (curp->type == MgmtMsg::SUBSCRIBE_REQUEST)) {
+         if ((0 == strncmp(curp->topic, msg.pubsub.topic, NamingTraits<Topic>::MAX_LENGTH)) && (curp->type == MgmtMsg::SUBSCRIBE_REQUEST)) {
             // Subscription response matching request
             if (prevp != NULL) {
                prevp->nextp = curp->nextp;
@@ -853,8 +821,7 @@ Middleware::Middleware(
    stopped(false),
    num_running_nodes(0)
 {
-   CORE_ASSERT(is_identifier(module_namep,
-                             NamingTraits<Middleware>::MAX_LENGTH));
+   CORE_ASSERT(is_identifier(module_namep, NamingTraits<Middleware>::MAX_LENGTH));
    (void)bootloader_namep;
    (void)pubsub_buf;
    (void)pubsub_length;

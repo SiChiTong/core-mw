@@ -12,6 +12,8 @@
 
 #include <rtcan.h>
 
+uint32_t ziocanta;
+
 //FIXME needed for header pool, should use abstract allocator
 #include <ch.h>
 #include <hal.h>
@@ -70,6 +72,10 @@ RTCANTransport::recv_cb(
    Message*        msgp = const_cast<Message*>(&Message::get_msg_from_raw_data(rtcan_msg.data));
 
    if (rtcan_msg.status == RTCAN_MSG_BUSY) {
+
+  	 if((rtcan_msg.id >> 8) == BOOTLOADER_TOPIC_ID) {
+  		 ziocanta++;
+  	 }
 #if CORE_USE_BRIDGE_MODE
       CORE_ASSERT(pubp->get_transport() != NULL);
       {
@@ -112,12 +118,7 @@ RTCANTransport::create_publisher(
    const uint8_t raw_params[]
 ) const
 {
-   RTCANPublisher* rpubp      = new RTCANPublisher(*const_cast<RTCANTransport*>(this));
-   Topic&          mgmt_topic = Middleware::instance.get_mgmt_topic();
-
-#if CORE_IS_BOOTLOADER_BRIDGE
-   Topic& boot_topic = Middleware::instance.get_boot_topic();
-#endif
+   RTCANPublisher* rpubp = new RTCANPublisher(*const_cast<RTCANTransport*>(this));
    Message* msgp;
    bool     success;
 
@@ -135,12 +136,8 @@ RTCANTransport::create_publisher(
 
    rtcan_headerp->status = RTCAN_MSG_READY;
 
-   if (&topic == &mgmt_topic) {
+   if (Topic::has_name(topic, MANAGEMENT_TOPIC_NAME) || Topic::has_name(topic, BOOTLOADER_TOPIC_NAME)) {
       rtcanReceiveMask(&RTCAND1, rtcan_headerp, 0xFF00);
-#if CORE_IS_BOOTLOADER_BRIDGE
-   } else if (Topic::has_name(topic, BOOTLOADER_TOPIC_NAME)) {
-      rtcanReceiveMask(&RTCAND1, rtcan_headerp, 0xFF00);
-#endif
    } else {
       rtcanReceiveMask(&RTCAND1, rtcan_headerp, 0xFFFF);
    }
@@ -229,18 +226,17 @@ RTCANTransport::topic_id(
 
    // id 0 reserved to management topic
    if (&topic == &mgmt_topic) {
-      return((0x00 << 8) | stm32_id8());
+      return((MANAGEMENT_TOPIC_ID << 8) | stm32_id8());
    }
 
-   // DAVIDE
    // id 253 reserved to bootloader topic
    if (Topic::has_name(topic, BOOTLOADER_TOPIC_NAME)) {
-      return((0xFD << 8) | stm32_id8());
+      return((BOOTLOADER_TOPIC_ID << 8) | stm32_id8());
    }
 
    // id 254 reserved to test topic
-   if (Topic::has_name(topic, "test")) {
-      return((0xFE << 8) | stm32_id8());
+   if (Topic::has_name(topic, TEST_TOPIC_NAME)) {
+      return((TEST_TOPIC_ID << 8) | stm32_id8());
    }
 
    if (index < 0) {

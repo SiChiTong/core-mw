@@ -56,8 +56,7 @@ Node::subscribe(
    CORE_ASSERT(index <= static_cast<int>(SpinEvent::MAX_INDEX));
    sub.event_index = static_cast<uint_least8_t>(index);
 
-   if (!Middleware::instance.subscribe(sub, namep, msgpool_buf,
-                                       sub.get_queue_length(), msg_size)) {
+   if (!Middleware::instance.subscribe(sub, namep, msgpool_buf, sub.get_queue_length(), msg_size)) {
       subscribers.unlink(sub.by_node);
       return false;
    }
@@ -81,8 +80,7 @@ Node::spin(
    Time dummy_timestamp;
    SpinEvent::Mask bit = 1;
 
-   for (StaticList<LocalSubscriber>::Iterator i = subscribers.begin();
-        i != subscribers.end() && mask != 0; bit <<= 1, ++i) {
+   for (StaticList<LocalSubscriber>::Iterator i = subscribers.begin(); i != subscribers.end() && mask != 0; bit <<= 1, ++i) {
       if ((mask & bit) != 0) {
          mask &= ~bit;
          const LocalSubscriber::Callback callback = i->get_callback();

@@ -136,7 +136,7 @@ public:
       void*            mgmt_stackp,
       size_t           mgmt_stacklen,
       Thread::Priority mgmt_priority,
-      void*            boot_stackp = NULL, // DAVIDE remove
+      void*            boot_stackp = NULL,
       size_t           boot_stacklen = 0,
       Thread::Priority boot_priority = Thread::LOWEST
    );

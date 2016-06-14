@@ -13,6 +13,7 @@
 #include <Core/MW/TimestampedMsgPtrQueue.hpp>
 #include <Core/MW/Mutex.hpp>
 #include <Core/MW/MgmtMsg.hpp>
+#include <Core/MW/BootMsg.hpp>
 #include <Core/MW/Semaphore.hpp>
 #include <Core/MW/Thread.hpp>
 #include <Core/MW/MemoryPool.hpp>
@@ -21,6 +22,7 @@
 #include "RTCANPublisher.hpp"
 #include "RTCANSubscriber.hpp"
 
+extern uint32_t ziocanta;
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -51,7 +53,7 @@ private:
       BOOT_BUFFER_LENGTH = 4
    };
 
-   MgmtMsg boot_msgbuf[BOOT_BUFFER_LENGTH];
+   BootMsg boot_msgbuf[BOOT_BUFFER_LENGTH];
    TimestampedMsgPtrQueue::Entry boot_msgqueue_buf[BOOT_BUFFER_LENGTH];
    RTCANSubscriber* boot_rsub;
    RTCANPublisher*  boot_rpub;
