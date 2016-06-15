@@ -10,6 +10,7 @@
 #include "hal.h"
 
 #include <Core/HW/IWDG.hpp>
+#include <Core/HW/UID.hpp>
 
 #include <Configuration.hpp>
 
@@ -58,6 +59,12 @@ CoreModule::enableBootloader()
 }
 
 CoreModule::CoreModule() {}
+
+const CoreModule::UID&
+CoreModule::uid()
+{
+   return Core::HW::UID_::get();
+}
 
 /*
    Led& Board::led() {
