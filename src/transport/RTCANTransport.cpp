@@ -16,6 +16,7 @@
 #include <ch.h>
 #include <hal.h>
 
+
 NAMESPACE_CORE_MW_BEGIN
 
 bool
@@ -112,8 +113,7 @@ RTCANTransport::create_publisher(
    const uint8_t raw_params[]
 ) const
 {
-   RTCANPublisher* rpubp      = new RTCANPublisher(*const_cast<RTCANTransport*>(this));
-   Topic&          mgmt_topic = Middleware::instance.get_mgmt_topic();
+   RTCANPublisher* rpubp = new RTCANPublisher(*const_cast<RTCANTransport*>(this));
    Message*        msgp;
    bool success;
 
@@ -131,7 +131,7 @@ RTCANTransport::create_publisher(
 
    rtcan_headerp->status = RTCAN_MSG_READY;
 
-   if (&topic == &mgmt_topic) {
+   if (Topic::has_name(topic, MANAGEMENT_TOPIC_NAME) || Topic::has_name(topic, BOOTLOADER_TOPIC_NAME)) {
       rtcanReceiveMask(&RTCAND1, rtcan_headerp, 0xFF00);
    } else {
       rtcanReceiveMask(&RTCAND1, rtcan_headerp, 0xFFFF);
@@ -170,25 +170,42 @@ RTCANTransport::initialize(
    const RTCANConfig& rtcan_config
 )
 {
-   Topic&     mgmt_topic = Middleware::instance.get_mgmt_topic();
-   rtcan_id_t rtcan_id   = topic_id(mgmt_topic);
-
    rtcanInit();
    rtcanStart(&rtcan, &rtcan_config);
 
-   mgmt_rsub = reinterpret_cast<RTCANSubscriber*>(create_subscriber(mgmt_topic, mgmt_msgqueue_buf, MGMT_BUFFER_LENGTH));
-   subscribe(*mgmt_rsub, "R2P", mgmt_msgbuf, MGMT_BUFFER_LENGTH, sizeof(MgmtMsg));
+   Topic&     mgmt_topic          = Middleware::instance.get_mgmt_topic();
+   rtcan_id_t mgmt_topic_rtcan_id = topic_id(mgmt_topic);
 
-   mgmt_rpub = reinterpret_cast<RTCANPublisher*>(create_publisher(mgmt_topic, reinterpret_cast<const uint8_t*>(&rtcan_id)));
-   advertise(*mgmt_rpub, "R2P", Time::INFINITE, sizeof(MgmtMsg));
+   mgmt_rsub = reinterpret_cast<RTCANSubscriber*>(create_subscriber(mgmt_topic, mgmt_msgqueue_buf, MGMT_BUFFER_LENGTH));
+   subscribe(*mgmt_rsub, MANAGEMENT_TOPIC_NAME, mgmt_msgbuf, MGMT_BUFFER_LENGTH, sizeof(MgmtMsg));
+
+   mgmt_rpub = reinterpret_cast<RTCANPublisher*>(create_publisher(mgmt_topic, reinterpret_cast<const uint8_t*>(&mgmt_topic_rtcan_id)));
+   advertise(*mgmt_rpub, MANAGEMENT_TOPIC_NAME, Time::INFINITE, sizeof(MgmtMsg));
+
+#if CORE_IS_BOOTLOADER_BRIDGE
+   Topic&     boot_topic          = Middleware::instance.get_boot_topic();
+   rtcan_id_t boot_topic_rtcan_id = topic_id(boot_topic);
+
+   boot_rsub = reinterpret_cast<RTCANSubscriber*>(create_subscriber(boot_topic, boot_msgqueue_buf, BOOT_BUFFER_LENGTH));
+   subscribe(*boot_rsub, BOOTLOADER_TOPIC_NAME, boot_msgbuf, BOOT_BUFFER_LENGTH, sizeof(BootMsg));
+
+   boot_rpub = reinterpret_cast<RTCANPublisher*>(create_publisher(boot_topic, reinterpret_cast<const uint8_t*>(&boot_topic_rtcan_id)));
+   advertise(*boot_rpub, BOOTLOADER_TOPIC_NAME, Time::INFINITE, sizeof(BootMsg));
+#endif
 
    Middleware::instance.add(*this);
-}
+} // RTCANTransport::initialize
 
 RTCANTransport::RTCANTransport(
    RTCANDriver& rtcan
 ) :
+#if CORE_IS_BOOTLOADER_BRIDGE
+   Transport("rtcan"), rtcan(rtcan), header_pool(header_buffer, 10), mgmt_rsub(NULL), mgmt_rpub(NULL), boot_rsub(NULL), boot_rpub(NULL) {}
+
+#else
    Transport("rtcan"), rtcan(rtcan), header_pool(header_buffer, 10), mgmt_rsub(NULL), mgmt_rpub(NULL) {}
+#endif
+
 
 RTCANTransport::~RTCANTransport() {}
 
@@ -204,18 +221,17 @@ RTCANTransport::topic_id(
 
    // id 0 reserved to management topic
    if (&topic == &mgmt_topic) {
-      return((0x00 << 8) | stm32_id8());
+      return((MANAGEMENT_TOPIC_ID << 8) | stm32_id8());
    }
 
-   // DAVIDE
    // id 253 reserved to bootloader topic
-   if (Topic::has_name(topic, "bootloader")) {
-      return((0xFD << 8) | stm32_id8());
+   if (Topic::has_name(topic, BOOTLOADER_TOPIC_NAME)) {
+      return((BOOTLOADER_TOPIC_ID << 8) | stm32_id8());
    }
 
    // id 254 reserved to test topic
-   if (Topic::has_name(topic, "test")) {
-      return((0xFE << 8) | stm32_id8());
+   if (Topic::has_name(topic, TEST_TOPIC_NAME)) {
+      return((TEST_TOPIC_ID << 8) | stm32_id8());
    }
 
    if (index < 0) {

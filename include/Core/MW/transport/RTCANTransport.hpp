@@ -13,6 +13,7 @@
 #include <Core/MW/TimestampedMsgPtrQueue.hpp>
 #include <Core/MW/Mutex.hpp>
 #include <Core/MW/MgmtMsg.hpp>
+#include <Core/MW/BootMsg.hpp>
 #include <Core/MW/Semaphore.hpp>
 #include <Core/MW/Thread.hpp>
 #include <Core/MW/MemoryPool.hpp>
@@ -45,6 +46,17 @@ private:
    TimestampedMsgPtrQueue::Entry mgmt_msgqueue_buf[MGMT_BUFFER_LENGTH];
    RTCANSubscriber* mgmt_rsub;
    RTCANPublisher*  mgmt_rpub;
+
+#if CORE_IS_BOOTLOADER_BRIDGE
+   enum {
+      BOOT_BUFFER_LENGTH = 4
+   };
+
+   BootMsg boot_msgbuf[BOOT_BUFFER_LENGTH];
+   TimestampedMsgPtrQueue::Entry boot_msgqueue_buf[BOOT_BUFFER_LENGTH];
+   RTCANSubscriber* boot_rsub;
+   RTCANPublisher*  boot_rpub;
+#endif
 
 public:
    bool

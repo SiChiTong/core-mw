@@ -13,7 +13,6 @@
 #include <Core/MW/TimestampedMsgPtrQueue.hpp>
 #include <Core/MW/Mutex.hpp>
 #include <Core/MW/MgmtMsg.hpp>
-#include <Core/MW/Bootloader.hpp>
 #include <Core/MW/BootMsg.hpp>
 #include <Core/MW/Semaphore.hpp>
 
@@ -52,6 +51,7 @@ private:
    DebugPublisher  mgmt_rpub;
 
 #if CORE_USE_BOOTLOADER
+   // DAVIDE ???
    enum {
       BOOT_BUFFER_LENGTH = 4
    };

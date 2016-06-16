@@ -6,13 +6,12 @@
 
 #pragma once
 
-//TODO: hal
-
 #include <Core/HW/namespace.hpp>
 #include <Core/HW/common.hpp>
 
 #include <Core/HW/GPIO.hpp>
 
+#include "hal.h"
 #include "qei.h"
 
 NAMESPACE_CORE_HW_BEGIN

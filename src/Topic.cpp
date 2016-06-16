@@ -21,9 +21,7 @@ Topic::notify_locals_unsafe(
 )
 {
    if (has_local_subscribers()) {
-      for (StaticList<LocalSubscriber>::IteratorUnsafe i
-              = local_subscribers.begin_unsafe();
-           i != local_subscribers.end_unsafe(); ++i) {
+      for (StaticList<LocalSubscriber>::IteratorUnsafe i = local_subscribers.begin_unsafe(); i != local_subscribers.end_unsafe(); ++i) {
          msg.acquire_unsafe();
 
          if (!i->notify_unsafe(msg, timestamp)) {
@@ -42,9 +40,7 @@ Topic::notify_remotes_unsafe(
 )
 {
    if (has_remote_subscribers()) {
-      for (StaticList<RemoteSubscriber>::IteratorUnsafe i
-              = remote_subscribers.begin_unsafe();
-           i != remote_subscribers.end_unsafe(); ++i) {
+      for (StaticList<RemoteSubscriber>::IteratorUnsafe i = remote_subscribers.begin_unsafe(); i != remote_subscribers.end_unsafe(); ++i) {
 #if CORE_USE_BRIDGE_MODE
          CORE_ASSERT(i->get_transport() != NULL);
 
@@ -72,9 +68,7 @@ Topic::forward_copy_unsafe(
 {
    bool all = true;
 
-   for (StaticList<RemoteSubscriber>::IteratorUnsafe i
-           = remote_subscribers.begin_unsafe();
-        i != remote_subscribers.end_unsafe(); ++i) {
+   for (StaticList<RemoteSubscriber>::IteratorUnsafe i = remote_subscribers.begin_unsafe(); i != remote_subscribers.end_unsafe(); ++i) {
 #if CORE_USE_BRIDGE_MODE
       CORE_ASSERT(i->get_transport() != NULL);
 
@@ -119,8 +113,7 @@ Topic::notify_locals(
 )
 {
    if (has_local_subscribers()) {
-      for (StaticList<LocalSubscriber>::Iterator i = local_subscribers.begin();
-           i != local_subscribers.end(); ++i) {
+      for (StaticList<LocalSubscriber>::Iterator i = local_subscribers.begin(); i != local_subscribers.end(); ++i) {
          msg.acquire();
 
          if (!i->notify(msg, timestamp)) {
@@ -146,8 +139,7 @@ Topic::notify_remotes(
       }
    }
 
-   for (StaticList<RemoteSubscriber>::Iterator i = remote_subscribers.begin();
-        i != remote_subscribers.end(); ++i) {
+   for (StaticList<RemoteSubscriber>::Iterator i = remote_subscribers.begin(); i != remote_subscribers.end(); ++i) {
 #if CORE_USE_BRIDGE_MODE
       {
          SysLock::Scope lock;
@@ -177,8 +169,7 @@ Topic::forward_copy(
 {
    bool all = true;
 
-   for (StaticList<RemoteSubscriber>::Iterator i = remote_subscribers.begin();
-        i != remote_subscribers.end(); ++i) {
+   for (StaticList<RemoteSubscriber>::Iterator i = remote_subscribers.begin(); i != remote_subscribers.end(); ++i) {
 #if CORE_USE_BRIDGE_MODE
       CORE_ASSERT(i->get_transport() != NULL);
 

@@ -121,3 +121,12 @@ compute_offset(
 {
    return reinterpret_cast<size_t>(ptr) & (segment_size - 1);
 }
+
+#define MANAGEMENT_TOPIC_NAME "R2P"
+#define MANAGEMENT_TOPIC_ID ((uint8_t)0x00)
+
+#define BOOTLOADER_TOPIC_NAME "BOOTLOADER"
+#define BOOTLOADER_TOPIC_ID ((uint8_t)0xFD)
+
+#define TEST_TOPIC_NAME "test"
+#define TEST_TOPIC_ID ((uint8_t)0xFE)

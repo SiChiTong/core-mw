@@ -17,7 +17,6 @@
 #include <Core/MW/Subscriber.hpp>
 #include <Core/MW/SubscriberExtBuf.hpp>
 #include <Core/MW/Node.hpp>
-#include <Core/MW/Bootloader.hpp>
 #include <Core/MW/ReMutex.hpp>
 #include <Core/MW/transport/DebugTransport.hpp>
 #include <Core/MW/transport/RTCANTransport.hpp>
@@ -79,29 +78,9 @@ private:
    MgmtMsg* mgmt_queue_buf[MGMT_BUFFER_LENGTH];
    MgmtMsg  mgmt_msg_buf[MGMT_BUFFER_LENGTH];
 
-#if CORE_USE_BOOTLOADER
-   enum {
-      REBOOTED_MAGIC = 0xFEB007ED
-   };
-
-   enum {
-      BOOT_MODE_MAGIC = 0x51B0077A
-   };
-
-   enum {
-      BOOT_PAGE_LENGTH = 1 << 10
-   };
-
-   enum {
-      BOOT_BUFFER_LENGTH = 4
-   };
-
-   Topic   boot_topic;
-   void*   boot_stackp;
-   size_t  boot_stacklen;
-   Thread* boot_threadp;
-   Thread::Priority boot_priority;
-#endif // CORE_USE_BOOTLOADER
+#if CORE_IS_BOOTLOADER_BRIDGE
+   Topic boot_topic;
+#endif
 #if CORE_USE_BRIDGE_MODE
    PubSubStep* pubsub_stepsp;
    MemoryPool<PubSubStep> pubsub_pool;
@@ -123,8 +102,6 @@ private:
 
 public:
    static Middleware instance;
-   static uint32_t   rebooted_magic;
-   static uint32_t   boot_mode_magic;
 
 public:
    const char*
@@ -145,8 +122,11 @@ public:
    Topic&
    get_mgmt_topic();
 
+
+#if CORE_IS_BOOTLOADER_BRIDGE
    Topic&
    get_boot_topic();
+#endif
 
    bool
    is_stopped() const;
@@ -296,23 +276,6 @@ private:
    PubSubStep*
    alloc_pubsub_step();
 #endif
-
-#if CORE_USE_BOOTLOADER
-   static Thread::Return
-   boot_threadf(
-      Thread::Argument
-   );
-
-   void
-   do_boot_thread();
-#endif
-
-public:
-   static bool
-   is_rebooted();
-
-   static bool
-   is_bootloader_mode();
 };
 
 
@@ -351,44 +314,21 @@ Middleware::get_mgmt_topic()
    return mgmt_topic;
 }
 
-inline
-bool
-Middleware::is_stopped() const
-{
-   return stopped;
-}
-
-#if CORE_USE_BOOTLOADER
+#if CORE_IS_BOOTLOADER_BRIDGE
 inline
 Topic&
 Middleware::get_boot_topic()
 {
    return boot_topic;
 }
-
-inline
-void
-Middleware::preload_bootloader_mode(
-   bool enable
-)
-{
-   boot_mode_magic = enable ? BOOT_MODE_MAGIC : ~BOOT_MODE_MAGIC;
-}
+#endif
 
 inline
 bool
-Middleware::is_rebooted()
+Middleware::is_stopped() const
 {
-   return rebooted_magic == REBOOTED_MAGIC;
+   return stopped;
 }
-
-inline
-bool
-Middleware::is_bootloader_mode()
-{
-   return boot_mode_magic == BOOT_MODE_MAGIC;
-}
-#endif // if CORE_USE_BOOTLOADER
 
 inline
 bool

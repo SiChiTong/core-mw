@@ -289,6 +289,7 @@ DebugTransport::initialize(
    send_lock.release();
 
 #if CORE_USE_BOOTLOADER
+   // DAVIDE ???
    if (Middleware::instance.is_bootloader_mode()) {
       // Register remote publisher and subscriber for the bootloader thread
       const char* namep = Middleware::instance.get_boot_topic().get_name();
@@ -300,9 +301,9 @@ DebugTransport::initialize(
 #endif
 
    // Register remote publisher and subscriber for the management thread
-   success = advertise(mgmt_rpub, "R2P", Time::INFINITE, sizeof(MgmtMsg));
+   success = advertise(mgmt_rpub, MANAGEMENT_TOPIC_NAME, Time::INFINITE, sizeof(MgmtMsg));
    CORE_ASSERT(success);
-   success = subscribe(mgmt_rsub, "R2P", mgmt_msgbuf, MGMT_BUFFER_LENGTH);
+   success = subscribe(mgmt_rsub, MANAGEMENT_TOPIC_NAME, mgmt_msgbuf, MGMT_BUFFER_LENGTH);
    CORE_ASSERT(success);
 
    Middleware::instance.add(*this);
@@ -524,6 +525,7 @@ DebugTransport::DebugTransport(
    mgmt_rsub(*this, mgmt_msgqueue_buf, MGMT_BUFFER_LENGTH),
    mgmt_rpub(*this)
 #if CORE_USE_BOOTLOADER
+   // DAVIDE ???
    ,
    boot_rsub(*this, boot_msgqueue_buf, BOOT_BUFFER_LENGTH),
    boot_rpub(*this)

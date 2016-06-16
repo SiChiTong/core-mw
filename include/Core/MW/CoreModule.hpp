@@ -11,12 +11,16 @@
 #include <Core/MW/namespace.hpp>
 #include <Core/MW/common.hpp>
 #include <Core/MW/CoreNodeManager.hpp>
+#include <Core/HW/UID.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
 class CoreModule:
    public CoreNodeManager
 {
+public:
+   using UID = Core::HW::UID;  // Alias for cleanliness
+
 public:
    class Led
    {
@@ -32,6 +36,8 @@ public:
 
    static Led& led;
 
+   static const UID&
+   uid();
 
    bool
    initialize();
