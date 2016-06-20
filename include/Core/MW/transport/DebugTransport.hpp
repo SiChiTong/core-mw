@@ -50,8 +50,7 @@ private:
    DebugSubscriber mgmt_rsub;
    DebugPublisher  mgmt_rpub;
 
-#if CORE_USE_BOOTLOADER
-   // DAVIDE ???
+#if CORE_IS_BOOTLOADER_BRIDGE
    enum {
       BOOT_BUFFER_LENGTH = 4
    };
