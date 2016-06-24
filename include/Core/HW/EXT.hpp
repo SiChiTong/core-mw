@@ -36,6 +36,9 @@ public:
    setCallback(
       std::function<void()>callback
    ) = 0;
+
+   virtual void
+   resetCallback() = 0;
 };
 
 template <class _EXT, std::size_t _CH, uint32_t _MODE>
@@ -72,6 +75,17 @@ public:
 
       tmp.mode = _MODE;
       tmp.cb   = _callback;
+
+      extSetChannelMode(EXT::driver, _CH, &tmp);
+   }
+
+   inline void
+   resetCallback()
+   {
+      EXTChannelConfig tmp;
+
+      tmp.mode = _MODE;
+      tmp.cb   = nullptr;
 
       extSetChannelMode(EXT::driver, _CH, &tmp);
    }
