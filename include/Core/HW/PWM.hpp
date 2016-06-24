@@ -22,6 +22,52 @@ struct PWMDriverTraits<1> {
    static constexpr auto driver = &PWMD1;
 };
 
+class PWMMaster
+{
+   virtual void
+   setCallback(
+      std::function<void()>callback
+   ) = 0;
+
+   virtual void
+   resetCallback() = 0;
+};
+
+template <class _PWM>
+class PWMMaster_:
+   PWMMaster
+{
+   using PWM = _PWM;
+
+public:
+   static std::function<void()> callback_impl;
+
+   inline void
+   setCallback(
+      std::function<void()>callback
+   )
+   {
+      callback_impl = callback;
+
+      const_cast<PWMConfig*>(PWM::driver->config)->callback = _callback;
+   }
+
+   inline void
+   resetCallback()
+   {
+      const_cast<PWMConfig*>(PWM::driver->config)->callback = nullptr;
+   }
+
+private:
+   static inline void
+   _callback(
+      PWMDriver* pwmp
+   )
+   {
+      callback_impl();
+   }
+};
+
 class PWMChannel
 {
 public:
@@ -42,13 +88,16 @@ public:
    ) = 0;
 };
 
-template <class _PWM, int _CHANNEL>
+template <class _PWM, std::size_t _CHANNEL>
 class PWMChannel_:
    public PWMChannel
 {
 public:
    using PWM = _PWM;
    const int CHANNEL = _CHANNEL;
+
+public:
+   static std::function<void()> callback_impl;
 
 public:
    inline void
@@ -78,6 +127,9 @@ public:
       return true;
    }
 };
+
+template <class _PWM>
+std::function<void()>PWMMaster_<_PWM>::callback_impl;
 
 // --- Aliases -----------------------------------------------------------------
 
