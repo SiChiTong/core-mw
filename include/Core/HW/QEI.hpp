@@ -19,10 +19,19 @@ NAMESPACE_CORE_HW_BEGIN
 template <std::size_t E>
 struct QEIDriverTraits {};
 
+#if STM32_QEI_USE_TIM2
+template <>
+struct QEIDriverTraits<2> {
+   static constexpr auto driver = &QEID2;
+};
+#endif
+
+#if STM32_QEI_USE_TIM4
 template <>
 struct QEIDriverTraits<4> {
    static constexpr auto driver = &QEID4;
 };
+#endif
 
 class QEI
 {
@@ -100,6 +109,7 @@ public:
 
 // --- Aliases -----------------------------------------------------------------
 
+using QEI_2 = QEIDriverTraits<2>;
 using QEI_4 = QEIDriverTraits<4>;
 
 NAMESPACE_CORE_HW_END
