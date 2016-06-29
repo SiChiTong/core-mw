@@ -155,7 +155,6 @@ BasePublisher::publish_remotely(
 )
 {
    CORE_ASSERT(topicp != NULL);
-   CORE_ASSERT(static_cast<MgmtMsg*>(&msg)->type != 0);
 
    return topicp->notify_remotes(msg, Time::now());
 }
