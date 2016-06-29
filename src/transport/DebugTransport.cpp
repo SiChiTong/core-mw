@@ -460,7 +460,7 @@ DebugTransport::spin_rx()
 
    // Forward the message locally
 #if CORE_USE_BRIDGE_MODE
-   bool success = pubp->publish_locally(*msgp);
+   bool success = pubp->publish_locally(*msgp, true);
 
    if (pubp->get_topic()->is_forwarding()) {
       success = success && pubp->publish_remotely(*msgp);

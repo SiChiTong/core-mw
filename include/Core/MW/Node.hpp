@@ -90,7 +90,8 @@ public:
 
    void
    notify_unsafe(
-      unsigned event_index
+      unsigned event_index,
+      bool     mustReschedule = false
    );
 
    void
@@ -226,10 +227,11 @@ Node::subscribe(
 inline
 void
 Node::notify_unsafe(
-   unsigned event_index
+   unsigned event_index,
+   bool     mustReschedule
 )
 {
-   event.signal_unsafe(event_index);
+   event.signal_unsafe(event_index, mustReschedule);
 }
 
 inline

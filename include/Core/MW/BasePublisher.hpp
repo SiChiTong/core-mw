@@ -59,12 +59,14 @@ public:
 
    bool
    publish(
-      Message& msg
+      Message& msg,
+      bool     mustReschedule = false
    );
 
    bool
    publish_locally(
-      Message& msg
+      Message& msg,
+      bool     mustReschedule = false
    );
 
    bool
@@ -140,12 +142,13 @@ BasePublisher::alloc(
 inline
 bool
 BasePublisher::publish_locally(
-   Message& msg
+   Message& msg,
+   bool     mustReschedule
 )
 {
    CORE_ASSERT(topicp != NULL);
 
-   return topicp->notify_locals(msg, Time::now());
+   return topicp->notify_locals(msg, Time::now(), mustReschedule);
 }
 
 inline

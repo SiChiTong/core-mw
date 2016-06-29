@@ -69,7 +69,8 @@ BasePublisher::publish_remotely_unsafe(
 
 bool
 BasePublisher::publish(
-   Message& msg
+   Message& msg,
+   bool     mustReschedule
 )
 {
    CORE_ASSERT(topicp != NULL);
@@ -78,7 +79,7 @@ BasePublisher::publish(
 
    Time now = Time::now();
    bool success;
-   success = topicp->notify_locals(msg, now);
+   success = topicp->notify_locals(msg, now, mustReschedule);
    success = topicp->notify_remotes(msg, now) && success;
 
    if (!msg.release()) {

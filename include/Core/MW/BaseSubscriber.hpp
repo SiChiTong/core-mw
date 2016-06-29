@@ -57,7 +57,8 @@ public:
    virtual bool
    notify(
       Message&    msg,
-      const Time& timestamp
+      const Time& timestamp,
+      bool        mustReschedule = false
    ) = 0;
 
    virtual bool

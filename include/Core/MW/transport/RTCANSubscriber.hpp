@@ -52,7 +52,8 @@ public:
    bool
    notify(
       Message&    msg,
-      const Time& timestamp
+      const Time& timestamp,
+      bool        mustReschedule = false
    );
 
    size_t
@@ -73,7 +74,8 @@ inline
 bool
 RTCANSubscriber::notify(
    Message&    msg,
-   const Time& timestamp
+   const Time& timestamp,
+   bool        mustReschedule
 )
 {
    SysLock::acquire();

@@ -59,7 +59,8 @@ public:
    bool
    notify(
       Message&    msg,
-      const Time& timestamp
+      const Time& timestamp,
+      bool        mustReschedule = false
    );
 
 
@@ -77,7 +78,8 @@ inline
 bool
 DebugSubscriber::notify(
    Message&    msg,
-   const Time& timestamp
+   const Time& timestamp,
+   bool        mustReschedule
 )
 {
    SysLock::acquire();

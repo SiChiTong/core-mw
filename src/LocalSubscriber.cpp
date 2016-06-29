@@ -48,14 +48,15 @@ LocalSubscriber::fetch(
 bool
 LocalSubscriber::notify(
    Message&    msg,
-   const Time& timestamp
+   const Time& timestamp,
+   bool        mustReschedule
 )
 {
    (void)timestamp;
    SysLock::acquire();
 
    if (msgp_queue.post_unsafe(&msg)) {
-      nodep->notify_unsafe(event_index);
+      nodep->notify_unsafe(event_index, mustReschedule);
       SysLock::release();
       return true;
    } else {

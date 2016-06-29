@@ -39,7 +39,8 @@ public:
 
    void
    signal_unsafe(
-      unsigned event_index
+      unsigned event_index,
+      bool     mustReschedule = false
    );
 
    void
@@ -79,10 +80,11 @@ SpinEvent::set_thread(
 inline
 void
 SpinEvent::signal_unsafe(
-   unsigned event_index
+   unsigned event_index,
+   bool     mustReschedule
 )
 {
-   impl.signal_unsafe(event_index);
+   impl.signal_unsafe(event_index, mustReschedule);
 }
 
 inline

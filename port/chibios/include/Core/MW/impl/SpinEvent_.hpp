@@ -37,7 +37,8 @@ public:
 
    void
    signal_unsafe(
-      unsigned event_index
+      unsigned event_index,
+      bool     mustReschedule = false
    );
 
    void
@@ -77,12 +78,19 @@ SpinEvent_::set_thread(
 inline
 void
 SpinEvent_::signal_unsafe(
-   unsigned event_index
+   unsigned event_index,
+   bool     mustReschedule
 )
 {
    if (threadp != NULL) {
       CORE_ASSERT(event_index < 8 * sizeof(Mask));
       chEvtSignalI(reinterpret_cast<ChThread*>(threadp), 1 << event_index);
+#if CORE_USE_BRIDGE_MODE
+// DAVIDE if we are calling this from a Thread we must reschedule. If we call it from a ISR, the ISR takes care of the reschedule...
+      if (mustReschedule) {
+         chSchRescheduleS();
+      }
+#endif
    }
 }
 

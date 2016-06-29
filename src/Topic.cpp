@@ -109,14 +109,15 @@ Topic::alloc()
 bool
 Topic::notify_locals(
    Message&    msg,
-   const Time& timestamp
+   const Time& timestamp,
+   bool        mustReschedule
 )
 {
    if (has_local_subscribers()) {
       for (StaticList<LocalSubscriber>::Iterator i = local_subscribers.begin(); i != local_subscribers.end(); ++i) {
          msg.acquire();
 
-         if (!i->notify(msg, timestamp)) {
+         if (!i->notify(msg, timestamp, mustReschedule)) {
             msg.release();
          }
       }
@@ -307,7 +308,7 @@ Topic::Topic(
 #if CORE_USE_BRIDGE_MODE
    forwarding(CORE_DEFAULT_FORWARDING_RULE),
 #else
-	 forwarding(forwarding),
+   forwarding(forwarding),
 #endif
    by_middleware(*this)
 {

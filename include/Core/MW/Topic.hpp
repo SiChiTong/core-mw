@@ -168,7 +168,8 @@ public:
    bool
    notify_locals(
       Message&    msg,
-      const Time& timestamp
+      const Time& timestamp,
+      bool        mustReschedule = false
    );
 
    bool
