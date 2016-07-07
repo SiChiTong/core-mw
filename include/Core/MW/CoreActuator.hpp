@@ -30,7 +30,7 @@ public:
 
    virtual bool
    set(
-      DataType& data
+      const DataType& data
    ) = 0;
 };
 
