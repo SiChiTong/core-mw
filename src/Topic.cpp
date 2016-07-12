@@ -307,8 +307,6 @@ Topic::Topic(
    max_queue_length(0),
 #if CORE_USE_BRIDGE_MODE
    forwarding(CORE_DEFAULT_FORWARDING_RULE),
-#else
-   forwarding(forwarding),
 #endif
    by_middleware(*this)
 {
