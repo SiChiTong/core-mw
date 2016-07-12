@@ -52,7 +52,7 @@ private:
 
 #if CORE_IS_BOOTLOADER_BRIDGE
    enum {
-      BOOT_BUFFER_LENGTH = 4
+      BOOT_BUFFER_LENGTH = 8
    };
 
    TimestampedMsgPtrQueue::Entry boot_msgqueue_buf[BOOT_BUFFER_LENGTH];
