@@ -24,6 +24,8 @@ private: \
 #define CORE_CONFIGURATION_MAP_ENTRY(__name__, __field__) { # __field__, Core::MW::pointer_to_helper<__name__, decltype(__name__::__field__), & __name__::__field__>::pointer},
 #define CORE_CONFIGURATION_MAP_END() } \
    };
+#define CORE_CONFIGURATION_SIGNATURE(__s__) \
+		static const uint32_t SIGNATURE = __s__;
 #define CORE_CONFIGURATION_END() \
 private: \
    iterator begin() { \
