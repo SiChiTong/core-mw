@@ -4,9 +4,9 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/LocalSubscriber.hpp>
-#include <Core/MW/Node.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/LocalSubscriber.hpp>
+#include <core/mw/Node.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 

@@ -4,15 +4,15 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/Transport.hpp>
-#include <Core/MW/Message.hpp>
-#include <Core/MW/Middleware.hpp>
-#include <Core/MW/RemotePublisher.hpp>
-#include <Core/MW/RemoteSubscriber.hpp>
-#include <Core/MW/TimestampedMsgPtrQueue.hpp>
-#include <Core/MW/ScopedLock.hpp>
-#include <Core/MW/transport/RTCANPublisher.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/Transport.hpp>
+#include <core/mw/Message.hpp>
+#include <core/mw/Middleware.hpp>
+#include <core/mw/RemotePublisher.hpp>
+#include <core/mw/RemoteSubscriber.hpp>
+#include <core/mw/TimestampedMsgPtrQueue.hpp>
+#include <core/mw/ScopedLock.hpp>
+#include <core/mw/transport/RTCANPublisher.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 

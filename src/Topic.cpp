@@ -4,12 +4,12 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/Topic.hpp>
-#include <Core/MW/Middleware.hpp>
-#include <Core/MW/NamingTraits.hpp>
-#include <Core/MW/Message.hpp>
-#include <Core/MW/Transport.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/Topic.hpp>
+#include <core/mw/Middleware.hpp>
+#include <core/mw/NamingTraits.hpp>
+#include <core/mw/Message.hpp>
+#include <core/mw/Transport.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 

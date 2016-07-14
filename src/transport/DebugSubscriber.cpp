@@ -4,10 +4,10 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/transport/DebugSubscriber.hpp>
-#include <Core/MW/transport/DebugTransport.hpp>
-#include <Core/MW/Topic.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/transport/DebugSubscriber.hpp>
+#include <core/mw/transport/DebugTransport.hpp>
+#include <core/mw/Topic.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 

@@ -4,13 +4,13 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/Node.hpp>
-#include <Core/MW/Middleware.hpp>
-#include <Core/MW/Thread.hpp>
-#include <Core/MW/MgmtMsg.hpp>
-#include <Core/MW/Publisher.hpp>
-#include <Core/MW/Subscriber.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/Node.hpp>
+#include <core/mw/Middleware.hpp>
+#include <core/mw/Thread.hpp>
+#include <core/mw/MgmtMsg.hpp>
+#include <core/mw/Publisher.hpp>
+#include <core/mw/Subscriber.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 

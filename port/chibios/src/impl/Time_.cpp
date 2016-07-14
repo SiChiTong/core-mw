@@ -4,8 +4,8 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/Time.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/Time.hpp>
 #include <ch.h>
 
 NAMESPACE_CORE_MW_BEGIN
