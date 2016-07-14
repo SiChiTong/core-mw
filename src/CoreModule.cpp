@@ -4,13 +4,13 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/CoreModule.hpp>
+#include <core/mw/CoreModule.hpp>
 
 #include "ch.h"
 #include "hal.h"
 
-#include <Core/HW/IWDG.hpp>
-#include <Core/HW/UID.hpp>
+#include <core/hw/IWDG.hpp>
+#include <core/hw/UID.hpp>
 
 #include <Configuration.hpp>
 
@@ -37,13 +37,13 @@ CoreModule::halt(
 void
 CoreModule::reset()
 {
-   Core::HW::IWDG_::woof();
+   core::hw::IWDG_::woof();
 }
 
 void
 CoreModule::keepAlive()
 {
-   Core::HW::IWDG_::reload();
+   core::hw::IWDG_::reload();
 }
 
 void
@@ -63,7 +63,7 @@ CoreModule::CoreModule() {}
 const CoreModule::UID&
 CoreModule::uid()
 {
-   return Core::HW::UID_::get();
+   return core::hw::UID_::get();
 }
 
 /*

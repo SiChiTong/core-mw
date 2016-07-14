@@ -4,11 +4,11 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/transport/RTCANTransport.hpp>
-#include <Core/MW/transport/RTCANPublisher.hpp>
-#include <Core/MW/transport/RTCANSubscriber.hpp>
-#include <Core/MW/Middleware.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/transport/RTCANTransport.hpp>
+#include <core/mw/transport/RTCANPublisher.hpp>
+#include <core/mw/transport/RTCANSubscriber.hpp>
+#include <core/mw/Middleware.hpp>
 
 #include <rtcan.h>
 

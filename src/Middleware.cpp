@@ -4,18 +4,18 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/Middleware.hpp>
-#include <Core/MW/NamingTraits.hpp>
-#include <Core/MW/Thread.hpp>
-#include <Core/MW/MgmtMsg.hpp>
-#include <Core/MW/BootMsg.hpp>
-#include <Core/MW/Topic.hpp>
-#include <Core/MW/Node.hpp>
-#include <Core/MW/Transport.hpp>
-#include <Core/MW/Publisher.hpp>
-#include <Core/MW/Subscriber.hpp>
-#include <Core/MW/ScopedLock.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/Middleware.hpp>
+#include <core/mw/NamingTraits.hpp>
+#include <core/mw/Thread.hpp>
+#include <core/mw/MgmtMsg.hpp>
+#include <core/mw/BootMsg.hpp>
+#include <core/mw/Topic.hpp>
+#include <core/mw/Node.hpp>
+#include <core/mw/Transport.hpp>
+#include <core/mw/Publisher.hpp>
+#include <core/mw/Subscriber.hpp>
+#include <core/mw/ScopedLock.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -688,7 +688,7 @@ Middleware::do_cmd_subscribe_request(
                   prevp->nextp = curp->nextp;
                }
 
-               char* namep = new char[NamingTraits <Topic> ::MAX_LENGTH];
+               char* namep = new char[NamingTraits < Topic > ::MAX_LENGTH];
                CORE_ASSERT(namep != NULL);
                strncpy(namep, curp->topic, NamingTraits<Topic>::MAX_LENGTH);
                topicp = touch_topic(namep, Message::get_type_size(curp->payload_size));

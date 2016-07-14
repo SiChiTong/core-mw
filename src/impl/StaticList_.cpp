@@ -4,8 +4,8 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/impl/StaticList_.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/impl/StaticList_.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 

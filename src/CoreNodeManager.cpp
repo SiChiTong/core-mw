@@ -4,7 +4,7 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/CoreNodeManager.hpp>
+#include <core/mw/CoreNodeManager.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -27,7 +27,7 @@ CoreNodeManager::add(
 }
 
 #define FOREACH_NODE(_x_) \
-   for (Core::MW::StaticList<CoreNode>::Iterator _x_ = _nodes.begin(); _x_ != _nodes.end(); _x_++)
+   for (core::mw::StaticList<CoreNode>::Iterator _x_ = _nodes.begin(); _x_ != _nodes.end(); _x_++)
 
 bool
 CoreNodeManager::syncronize(
@@ -46,7 +46,7 @@ CoreNodeManager::syncronize(
       done  = true;
       error = false;
 
-      Core::MW::Thread::yield();
+      core::mw::Thread::yield();
 
       FOREACH_NODE(node) {
          ICoreNode::State state2 = node->state();

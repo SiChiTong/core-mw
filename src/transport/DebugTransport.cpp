@@ -4,13 +4,13 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/transport/DebugTransport.hpp>
-#include <Core/MW/transport/DebugPublisher.hpp>
-#include <Core/MW/transport/DebugSubscriber.hpp>
-#include <Core/MW/Middleware.hpp>
-#include <Core/MW/ScopedLock.hpp>
-#include <Core/MW/Checksummer.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/transport/DebugTransport.hpp>
+#include <core/mw/transport/DebugPublisher.hpp>
+#include <core/mw/transport/DebugSubscriber.hpp>
+#include <core/mw/Middleware.hpp>
+#include <core/mw/ScopedLock.hpp>
+#include <core/mw/Checksummer.hpp>
 
 #include <cstring>
 #include <locale>
