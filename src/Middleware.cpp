@@ -688,7 +688,7 @@ Middleware::do_cmd_subscribe_request(
                   prevp->nextp = curp->nextp;
                }
 
-               char* namep = new char[NamingTraits <Topic> ::MAX_LENGTH];
+               char* namep = new char[NamingTraits < Topic > ::MAX_LENGTH];
                CORE_ASSERT(namep != NULL);
                strncpy(namep, curp->topic, NamingTraits<Topic>::MAX_LENGTH);
                topicp = touch_topic(namep, Message::get_type_size(curp->payload_size));

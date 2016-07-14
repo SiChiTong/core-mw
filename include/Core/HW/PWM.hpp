@@ -94,7 +94,8 @@ public:
 
 
 template <class _PWM>
-class PWMMaster_: public
+class PWMMaster_:
+   public
    PWMMaster
 {
    using PWM = _PWM;
@@ -114,7 +115,7 @@ public:
    inline void
    stop()
    {
-  	 //PWM::driver->tim->CR1 |= STM32_TIM_CR1_CMS(2); // TODO: Mettere al posto giusto
+      //PWM::driver->tim->CR1 |= STM32_TIM_CR1_CMS(2); // TODO: Mettere al posto giusto
       ::pwmStop(PWM::driver);
    }
 

@@ -200,59 +200,59 @@ struct CoreTypeTraits<T, 0>{
 };
 
 namespace CoreTypeUtils {
-   template <typename T, std::size_t S>
-   inline std::size_t
-   size(
-      const T(&v)[S]
-   )
-   {
-      return S;
-   }
+template <typename T, std::size_t S>
+inline std::size_t
+size(
+   const T(&v)[S]
+)
+{
+   return S;
+}
 
-   template <typename T, std::size_t S>
-   inline std::size_t
-   size(
-      const Array<T, S> (&v)
-   )
-   {
-      return S;
-   }
+template <typename T, std::size_t S>
+inline std::size_t
+size(
+   const Array<T, S> (&v)
+)
+{
+   return S;
+}
 
-   template <typename T>
-   inline std::size_t
-   size(
-      const T(&v)
-   )
-   {
-      return 1;
-   }
+template <typename T>
+inline std::size_t
+size(
+   const T(&v)
+)
+{
+   return 1;
+}
 
-   template <typename T, std::size_t S>
-   inline CoreType
-   coreType(
-      const T(&v)[S]
-   )
-   {
-      return CoreTypeTraitsHelperB<T>::types;
-   }
+template <typename T, std::size_t S>
+inline CoreType
+coreType(
+   const T(&v)[S]
+)
+{
+   return CoreTypeTraitsHelperB<T>::types;
+}
 
-   template <typename T, std::size_t S>
-   inline CoreType
-   coreType(
-      const Array<T, S> (&v)
-   )
-   {
-      return CoreTypeTraitsHelperB<T>::types;
-   }
+template <typename T, std::size_t S>
+inline CoreType
+coreType(
+   const Array<T, S> (&v)
+)
+{
+   return CoreTypeTraitsHelperB<T>::types;
+}
 
-   template <typename T>
-   inline CoreType
-   coreType(
-      const T(&v)
-   )
-   {
-      return CoreTypeTraitsHelperB<T>::types;
-   }
+template <typename T>
+inline CoreType
+coreType(
+   const T(&v)
+)
+{
+   return CoreTypeTraitsHelperB<T>::types;
+}
 }
 
 NAMESPACE_CORE_MW_END

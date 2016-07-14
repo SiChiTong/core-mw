@@ -25,7 +25,11 @@ private: \
 #define CORE_CONFIGURATION_MAP_END() } \
    };
 #define CORE_CONFIGURATION_SIGNATURE(__s__) \
-		static const uint32_t SIGNATURE = __s__;
+   Core::MW::CoreConfiguration::Signature getSignature() const { \
+      return __s__; \
+   } \
+public: \
+   static const Core::MW::CoreConfiguration::Signature SIGNATURE = __s__;
 #define CORE_CONFIGURATION_END() \
 private: \
    iterator begin() { \
@@ -638,7 +642,8 @@ struct CoreParameter<T, 0> :
 class CoreConfiguration
 {
 public:
-   typedef const char* Key;
+   using Key       = const char*;
+   using Signature = uint32_t;
 
    struct KeyValue {
       Key key;
@@ -661,8 +666,12 @@ public:
       return strcmp(a, b) == 0;
    }
 
+   virtual uint32_t
+   getSignature() const = 0;
+
+
 protected:
-   typedef const KeyValue* iterator;
+   using iterator = const KeyValue *;
 
    virtual iterator
    begin() = 0;
@@ -679,5 +688,56 @@ struct pointer_to_helper {
 
 
 #define p__(__class__, __member__) { # __member__, Core::MW::pointer_to_helper<__class__, decltype(__class__::__member__), & __class__::__member__>::pointer}
+
+class CoreConfigurableBase
+{
+public:
+   CoreConfigurableBase() : _configuration(nullptr) {}
+
+   void
+   setConfiguration(
+      const CoreConfiguration& configuration
+   )
+   {
+      _configuration = &configuration;
+   }
+
+   const CoreConfiguration&
+   getConfiguration() const
+   {
+      CORE_ASSERT(_configuration != nullptr);
+      return *_configuration;
+   }
+
+   inline bool
+   isConfigured() const
+   {
+      return _configuration != nullptr;
+   }
+
+protected:
+   const CoreConfiguration* _configuration;
+};
+
+template <typename T>
+class CoreConfigurable:
+   public CoreConfigurableBase
+{
+public:
+   void
+   setConfiguration(
+      const CoreConfiguration& configuration
+   )
+   {
+      CORE_ASSERT(configuration.getSignature() == T::SIGNATURE);  // Make sure we are doing something good...
+      _configuration = &configuration;
+   }
+
+   inline const T&
+   configuration() const
+   {
+      return *(reinterpret_cast<const T*>(_configuration));
+   }
+};
 
 NAMESPACE_CORE_MW_END

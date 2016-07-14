@@ -47,6 +47,15 @@ struct GPIOPortTraits<5> {
 };
 
 struct Pad {
+   enum Mode : iomode_t {
+      INPUT            = PAL_MODE_INPUT,
+      INPUT_PULLUP     = PAL_MODE_INPUT_PULLUP,
+      INPUT_PULLDOWN   = PAL_MODE_INPUT_PULLDOWN,
+      INPUT_ANALOG     = PAL_MODE_INPUT_ANALOG,
+      OUTPUT_PUSHPULL  = PAL_MODE_OUTPUT_PUSHPULL,
+      OUTPUT_OPENDRAIN = PAL_MODE_OUTPUT_OPENDRAIN
+   };
+
    virtual void
    set() = 0;
 
@@ -58,7 +67,15 @@ struct Pad {
 
    virtual void
    write(
-      unsigned on
+      bool high
+   ) = 0;
+
+   virtual bool
+   read() = 0;
+
+   virtual void
+   setMode(
+      Mode mode
    ) = 0;
 };
 
@@ -86,10 +103,24 @@ struct Pad_:
 
    inline void
    write(
-      unsigned on
+      bool high
    )
    {
-      palWritePad(GPIO::gpio, _PAD, on);
+      palWritePad(GPIO::gpio, _PAD, high ? PAL_HIGH : PAL_LOW);
+   }
+
+   inline bool
+   read()
+   {
+      return palReadPad(GPIO::gpio, _PAD) == PAL_HIGH;
+   }
+
+   inline void
+   setMode(
+      Mode mode
+   )
+   {
+      palSetPadMode(GPIO::gpio, _PAD, mode);
    }
 };
 
