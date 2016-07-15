@@ -27,6 +27,7 @@ Transport::touch_publisher(
 
    // Check if the remote publisher already exists
    RemotePublisher* pubp;
+
    pubp = publishers.find_first(BasePublisher::has_topic, topic.get_name());
 
    if (pubp != NULL) {
@@ -58,6 +59,7 @@ Transport::touch_subscriber(
 
    // Check if the remote subscriber already exists
    RemoteSubscriber* subp;
+
    subp = subscribers.find_first(BaseSubscriber::has_topic, topic.get_name());
 
    if (subp != NULL) {
@@ -119,10 +121,10 @@ Transport::subscribe_cb(
 
 bool
 Transport::advertise(
-   RemotePublisher& pub,
-   const char*      namep,
-   const core::os::Time&      publish_timeout,
-   size_t           type_size
+   RemotePublisher&      pub,
+   const char*           namep,
+   const core::os::Time& publish_timeout,
+   size_t                type_size
 )
 {
    publishers_lock.acquire();

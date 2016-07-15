@@ -15,6 +15,7 @@ void
 Message::acquire()
 {
    core::os::SysLock::acquire();
+
    acquire_unsafe();
    core::os::SysLock::release();
 }

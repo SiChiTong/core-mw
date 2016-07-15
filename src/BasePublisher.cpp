@@ -22,7 +22,7 @@ BasePublisher::publish_unsafe(
    msg.acquire_unsafe();
 
    core::os::Time now = core::os::Time::now();
-   bool success;
+   bool           success;
    success = topicp->notify_locals_unsafe(msg, now);
    success = topicp->notify_remotes_unsafe(msg, now) && success;
 
@@ -78,7 +78,7 @@ BasePublisher::publish(
    msg.acquire();
 
    core::os::Time now = core::os::Time::now();
-   bool success;
+   bool           success;
    success = topicp->notify_locals(msg, now, mustReschedule);
    success = topicp->notify_remotes(msg, now) && success;
 

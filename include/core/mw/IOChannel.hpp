@@ -25,27 +25,27 @@ public:
 
    virtual std::size_t
    put(
-      const uint8_t& x,
+      const uint8_t&         x,
       core::mwcore::os::Time timeout
    ) = 0;
 
    virtual std::size_t
    get(
-      uint8_t&       x,
+      uint8_t&               x,
       core::mwcore::os::Time timeout
    ) = 0;
 
    virtual std::size_t
    write(
-      const uint8_t* buffer,
-      std::size_t    size,
+      const uint8_t*         buffer,
+      std::size_t            size,
       core::mwcore::os::Time timeout
    ) = 0;
 
    virtual std::size_t
    read(
-      uint8_t*       buffer,
-      std::size_t    size,
+      uint8_t*               buffer,
+      std::size_t            size,
       core::mwcore::os::Time timeout
    ) = 0;
 
@@ -80,7 +80,7 @@ public:
 
    inline std::size_t
    put(
-      const uint8_t& x,
+      const uint8_t&         x,
       core::mwcore::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
@@ -89,7 +89,7 @@ public:
 
    inline std::size_t
    get(
-      uint8_t&       x,
+      uint8_t&               x,
       core::mwcore::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
@@ -105,8 +105,8 @@ public:
 
    inline std::size_t
    write(
-      const uint8_t* buffer,
-      std::size_t    size,
+      const uint8_t*         buffer,
+      std::size_t            size,
       core::mwcore::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
@@ -115,8 +115,8 @@ public:
 
    inline std::size_t
    read(
-      uint8_t*       buffer,
-      std::size_t    size,
+      uint8_t*               buffer,
+      std::size_t            size,
       core::mwcore::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
@@ -193,8 +193,8 @@ public:
 
    inline int
    read(
-      char*          buffer,
-      std::size_t    size,
+      char*                  buffer,
+      std::size_t            size,
       core::mwcore::os::Time timeout = core::mwcore::os::Time::INFINITE
    )
    {

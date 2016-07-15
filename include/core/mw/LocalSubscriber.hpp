@@ -57,13 +57,13 @@ public:
 public:
    bool
    fetch_unsafe(
-      Message*& msgp,
-      core::os::Time&     timestamp
+      Message*&       msgp,
+      core::os::Time& timestamp
    );
 
    bool
    notify_unsafe(
-      Message&    msg,
+      Message&              msg,
       const core::os::Time& timestamp
    );
 
@@ -74,15 +74,15 @@ public:
 
    bool
    fetch(
-      Message*& msgp,
-      core::os::Time&     timestamp
+      Message*&       msgp,
+      core::os::Time& timestamp
    );
 
    bool
    notify(
-      Message&    msg,
+      Message&              msg,
       const core::os::Time& timestamp,
-      bool        mustReschedule = false
+      bool                  mustReschedule = false
    );
 
 
@@ -130,8 +130,8 @@ LocalSubscriber::get_queue_length() const
 inline
 bool
 LocalSubscriber::fetch_unsafe(
-   Message*& msgp,
-   core::os::Time&     timestamp
+   Message*&       msgp,
+   core::os::Time& timestamp
 )
 {
    if (msgp_queue.fetch_unsafe(msgp)) {
@@ -145,7 +145,7 @@ LocalSubscriber::fetch_unsafe(
 inline
 bool
 LocalSubscriber::notify_unsafe(
-   Message&    msg,
+   Message&              msg,
    const core::os::Time& timestamp
 )
 {

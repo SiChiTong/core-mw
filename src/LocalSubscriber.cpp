@@ -16,40 +16,40 @@ LocalSubscriber::fetch(
    Message*& msgp
 )
 {
-	core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (msgp_queue.fetch_unsafe(msgp)) {
-	   core::os::SysLock::release();
+      core::os::SysLock::release();
       return true;
    } else {
-	   core::os::SysLock::release();
+      core::os::SysLock::release();
       return false;
    }
 }
 
 bool
 LocalSubscriber::fetch(
-   Message*& msgp,
-   core::os::Time&     timestamp
+   Message*&       msgp,
+   core::os::Time& timestamp
 )
 {
-	core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (msgp_queue.fetch_unsafe(msgp)) {
-	   core::os::SysLock::release();
+      core::os::SysLock::release();
       timestamp = core::os::Time::now();
       return true;
    } else {
-	   core::os::SysLock::release();
+      core::os::SysLock::release();
       return false;
    }
 }
 
 bool
 LocalSubscriber::notify(
-   Message&    msg,
+   Message&              msg,
    const core::os::Time& timestamp,
-   bool        mustReschedule
+   bool                  mustReschedule
 )
 {
    (void)timestamp;
@@ -60,7 +60,7 @@ LocalSubscriber::notify(
       core::os::SysLock::release();
       return true;
    } else {
-	   core::os::SysLock::release();
+      core::os::SysLock::release();
       return false;
    }
 }

@@ -37,8 +37,8 @@ private:
    const char* const           namep;
    StaticList<LocalPublisher>  publishers;
    StaticList<LocalSubscriber> subscribers;
-   core::os::SpinEvent event;
-   core::os::Time      timeout;
+   core::os::SpinEvent         event;
+   core::os::Time timeout;
 
    mutable StaticList<Node>::Link by_middleware;
 
@@ -66,8 +66,8 @@ public:
    template <typename MT>
    bool
    advertise(
-      Publisher<MT>& pub,
-      const char*    namep,
+      Publisher<MT>&        pub,
+      const char*           namep,
       const core::os::Time& publish_timeout = core::os::Time::INFINITE
    );
 
@@ -114,10 +114,10 @@ public:
 private:
    bool
    advertise(
-      LocalPublisher& pub,
-      const char*     namep,
-      const core::os::Time&     publish_timeout,
-      size_t          msg_size
+      LocalPublisher&       pub,
+      const char*           namep,
+      const core::os::Time& publish_timeout,
+      size_t                msg_size
    );
 
    bool
@@ -196,7 +196,7 @@ bool
 Node::advertise(
    Publisher<MessageType>& pub,
    const char*             namep,
-   const core::os::Time&             publish_timeout
+   const core::os::Time&   publish_timeout
 )
 {
    return advertise(pub, namep, publish_timeout, sizeof(MessageType));

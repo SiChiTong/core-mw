@@ -85,10 +85,10 @@ protected:
 
    bool
    advertise(
-      RemotePublisher& pub,
-      const char*      namep,
-      const core::os::Time&      publish_timeout,
-      size_t           type_size
+      RemotePublisher&      pub,
+      const char*           namep,
+      const core::os::Time& publish_timeout,
+      size_t                type_size
    );
 
    bool
@@ -104,9 +104,9 @@ protected:
    template <typename MessageType>
    bool
    advertise(
-      RemotePublisher& pub,
-      const char*      namep,
-      const core::os::Time&      publish_timeout
+      RemotePublisher&      pub,
+      const char*           namep,
+      const core::os::Time& publish_timeout
    );
 
 
@@ -182,9 +182,9 @@ template <typename MessageType>
 inline
 bool
 Transport::advertise(
-   RemotePublisher& pub,
-   const char*      namep,
-   const core::os::Time&      publish_timeout
+   RemotePublisher&      pub,
+   const char*           namep,
+   const core::os::Time& publish_timeout
 )
 {
    static_cast_check<MessageType, Message>();

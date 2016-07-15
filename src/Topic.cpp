@@ -15,7 +15,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 bool
 Topic::notify_locals_unsafe(
-   Message&    msg,
+   Message&              msg,
    const core::os::Time& timestamp
 )
 {
@@ -34,7 +34,7 @@ Topic::notify_locals_unsafe(
 
 bool
 Topic::notify_remotes_unsafe(
-   Message&    msg,
+   Message&              msg,
    const core::os::Time& timestamp
 )
 {
@@ -61,8 +61,8 @@ Topic::notify_remotes_unsafe(
 
 bool
 Topic::forward_copy_unsafe(
-   const Message& msg,
-   const core::os::Time&    timestamp
+   const Message&        msg,
+   const core::os::Time& timestamp
 )
 {
    bool all = true;
@@ -98,7 +98,7 @@ Topic::forward_copy_unsafe(
 Message*
 Topic::alloc()
 {
-	core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
    Message* msgp = alloc_unsafe();
    core::os::SysLock::release();
 
@@ -107,9 +107,9 @@ Topic::alloc()
 
 bool
 Topic::notify_locals(
-   Message&    msg,
+   Message&              msg,
    const core::os::Time& timestamp,
-   bool        mustReschedule
+   bool                  mustReschedule
 )
 {
    if (has_local_subscribers()) {
@@ -127,12 +127,12 @@ Topic::notify_locals(
 
 bool
 Topic::notify_remotes(
-   Message&    msg,
+   Message&              msg,
    const core::os::Time& timestamp
 )
 {
    {
-	   core::os::SysLock::Scope lock;
+      core::os::SysLock::Scope lock;
 
       if (!has_remote_subscribers()) {
          return true;
@@ -142,7 +142,7 @@ Topic::notify_remotes(
    for (StaticList<RemoteSubscriber>::Iterator i = remote_subscribers.begin(); i != remote_subscribers.end(); ++i) {
 #if CORE_USE_BRIDGE_MODE
       {
-    	  core::os::SysLock::Scope lock;
+         core::os::SysLock::Scope lock;
          CORE_ASSERT(i->get_transport() != NULL);
 
          if (msg.get_source() == i->get_transport()) {
@@ -163,8 +163,8 @@ Topic::notify_remotes(
 
 bool
 Topic::forward_copy(
-   const Message& msg,
-   const core::os::Time&    timestamp
+   const Message&        msg,
+   const core::os::Time& timestamp
 )
 {
    bool all = true;
@@ -199,8 +199,8 @@ Topic::forward_copy(
 
 void
 Topic::advertise(
-   LocalPublisher& pub,
-   const core::os::Time&     publish_timeout
+   LocalPublisher&       pub,
+   const core::os::Time& publish_timeout
 )
 {
    (void)pub;
@@ -216,8 +216,8 @@ Topic::advertise(
 
 void
 Topic::advertise(
-   RemotePublisher& pub,
-   const core::os::Time&      publish_timeout
+   RemotePublisher&      pub,
+   const core::os::Time& publish_timeout
 )
 {
    (void)pub;
@@ -253,7 +253,7 @@ Topic::subscribe(
    size_t            queue_length
 )
 {
-	core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (max_queue_length < queue_length) {
       max_queue_length = queue_length;

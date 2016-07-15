@@ -42,8 +42,8 @@ public:
 
    bool
    fetch(
-      MessageType*& msgp,
-      core::os::Time&         timestamp
+      MessageType*&   msgp,
+      core::os::Time& timestamp
    );
 
    bool
@@ -77,7 +77,7 @@ template <typename MT>
 inline
 bool
 SubscriberExtBuf<MT>::fetch(
-   MT*&  msgp,
+   MT*&            msgp,
    core::os::Time& timestamp
 )
 {

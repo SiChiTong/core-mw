@@ -13,8 +13,8 @@ NAMESPACE_CORE_MW_BEGIN
 
 bool
 RTCANSubscriber::fetch_unsafe(
-   Message*& msgp,
-   core::os::Time&     timestamp
+   Message*&       msgp,
+   core::os::Time& timestamp
 )
 {
    (void)msgp;
@@ -36,7 +36,7 @@ RTCANSubscriber::fetch_unsafe(
 
 bool
 RTCANSubscriber::notify_unsafe(
-   Message&    msg,
+   Message&              msg,
    const core::os::Time& timestamp
 )
 {

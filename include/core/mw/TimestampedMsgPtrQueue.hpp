@@ -20,8 +20,8 @@ class TimestampedMsgPtrQueue
 {
 public:
    struct Entry {
-      Message* msgp;
-      core::os::Time     timestamp;
+      Message*       msgp;
+      core::os::Time timestamp;
 
       Entry&
       operator=(
@@ -31,7 +31,7 @@ public:
 
       Entry();
       Entry(
-         Message*    msgp,
+         Message*              msgp,
          const core::os::Time& timestamp
       );
    };
@@ -91,7 +91,7 @@ TimestampedMsgPtrQueue::Entry::operator=(
 
 inline
 TimestampedMsgPtrQueue::Entry::Entry(
-   Message*    msgp,
+   Message*              msgp,
    const core::os::Time& timestamp
 )
    :

@@ -181,10 +181,10 @@ DebugTransport::recv_string(
 
 bool
 DebugTransport::send_msg(
-   const Message& msg,
-   size_t         msg_size,
-   const char*    topicp,
-   const core::os::Time&    deadline
+   const Message&        msg,
+   size_t                msg_size,
+   const char*           topicp,
+   const core::os::Time& deadline
 )
 {
 #if CORE_USE_BRIDGE_MODE
@@ -261,11 +261,11 @@ DebugTransport::send_msg(
 
 void
 DebugTransport::initialize(
-   void*            rx_stackp,
-   size_t           rx_stacklen,
+   void*                      rx_stackp,
+   size_t                     rx_stacklen,
    core::os::Thread::Priority rx_priority,
-   void*            tx_stackp,
-   size_t           tx_stacklen,
+   void*                      tx_stackp,
+   size_t                     tx_stacklen,
    core::os::Thread::Priority tx_priority
 )
 {
@@ -308,8 +308,8 @@ DebugTransport::initialize(
 bool
 DebugTransport::spin_tx()
 {
-   Message* msgp;
-   core::os::Time     timestamp;
+   Message*       msgp;
+   core::os::Time timestamp;
    const BaseSubscriberQueue::Link* subp_linkp;
 
    core::os::SysLock::acquire();
@@ -325,7 +325,7 @@ DebugTransport::spin_tx()
    bool requeued = false;
 
    while (queue_length-- > 0) {
-	   core::os::SysLock::acquire();
+      core::os::SysLock::acquire();
       sub.fetch_unsafe(msgp, timestamp);
 
       if (queue_length == 0) {
@@ -373,7 +373,7 @@ DebugTransport::spin_rx()
    Thread::sleep(Time::ms(100));
 #endif
    {
-	   core::os::Time deadline;
+      core::os::Time deadline;
 
       if (!recv_value(deadline.raw)) {
          return false;
@@ -475,7 +475,7 @@ DebugTransport::spin_rx()
 
 void
 DebugTransport::rx_threadf(
-		core::os::Thread::Argument arg
+   core::os::Thread::Argument arg
 )
 {
    CORE_ASSERT(arg != static_cast<core::os::Thread::Argument>(NULL));
@@ -492,7 +492,7 @@ DebugTransport::rx_threadf(
 
 void
 DebugTransport::tx_threadf(
-		core::os::Thread::Argument arg
+   core::os::Thread::Argument arg
 )
 {
    CORE_ASSERT(arg != static_cast<core::os::Thread::Argument>(NULL));

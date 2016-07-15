@@ -21,11 +21,11 @@ NAMESPACE_CORE_MW_BEGIN
 
 void
 Middleware::initialize(
-   void*            mgmt_stackp,
-   size_t           mgmt_stacklen,
+   void*                      mgmt_stackp,
+   size_t                     mgmt_stacklen,
    core::os::Thread::Priority mgmt_priority,
-   void*            boot_stackp,
-   size_t           boot_stacklen,
+   void*                      boot_stackp,
+   size_t                     boot_stacklen,
    core::os::Thread::Priority boot_priority
 )
 {
@@ -54,8 +54,8 @@ Middleware::start()
    core::os::SysLock::acquire();
 
    while (!mgmt_topic.has_local_publishers() || !mgmt_topic.has_local_subscribers()) {
-	   core::os::SysLock::release();
-	   core::os::Thread::sleep(core::os::Time::ms(500)); // TODO: configure
+      core::os::SysLock::release();
+      core::os::Thread::sleep(core::os::Time::ms(500)); // TODO: configure
       core::os::SysLock::acquire();
    }
 
@@ -66,7 +66,7 @@ void
 Middleware::stop()
 {
    {
-	   core::os::SysLock::Scope lock;
+      core::os::SysLock::Scope lock;
 
       if (!stopped) {
          stopped = true;
@@ -83,7 +83,7 @@ Middleware::stop()
 
       core::os::Thread::sleep(core::os::Time::ms(500)); // TODO: Configure delay
       {
-    	  core::os::SysLock::Scope lock;
+         core::os::SysLock::Scope lock;
 
          if (num_running_nodes == 0) {
             break;
@@ -130,7 +130,7 @@ Middleware::add(
    Node& node
 )
 {
-	core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
 
    nodes.link_unsafe(node.by_middleware);
    ++num_running_nodes;
@@ -157,10 +157,10 @@ Middleware::add(
 
 bool
 Middleware::advertise(
-   LocalPublisher& pub,
-   const char*     namep,
-   const core::os::Time&     publish_timeout,
-   size_t          type_size
+   LocalPublisher&       pub,
+   const char*           namep,
+   const core::os::Time& publish_timeout,
+   size_t                type_size
 )
 {
    lists_lock.acquire();
@@ -179,7 +179,7 @@ Middleware::advertise(
       if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
 #endif
       {
-    	  core::os::SysLock::Scope lock;
+         core::os::SysLock::Scope lock;
 
          if (mgmt_pub.get_topic() == NULL) {
             return true;
@@ -205,10 +205,10 @@ Middleware::advertise(
 
 bool
 Middleware::advertise(
-   RemotePublisher& pub,
-   const char*      namep,
-   const core::os::Time&      publish_timeout,
-   size_t           type_size
+   RemotePublisher&      pub,
+   const char*           namep,
+   const core::os::Time& publish_timeout,
+   size_t                type_size
 )
 {
    lists_lock.acquire();
@@ -253,7 +253,7 @@ Middleware::subscribe(
 
       for (StaticList<Transport>::Iterator i = transports.begin(); i != transports.end(); ++i) {
          {
-        	 core::os::SysLock::Scope lock;
+            core::os::SysLock::Scope lock;
 
             if (mgmt_pub.get_topic() == NULL) {
                return true;
@@ -306,7 +306,7 @@ Middleware::confirm_stop(
    const Node& node
 )
 {
-	core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
 
    CORE_ASSERT(num_running_nodes > 0);
    CORE_ASSERT(nodes.contains_unsafe(node));
@@ -364,7 +364,7 @@ Middleware::touch_topic(
 void
 Middleware::do_mgmt_thread()
 {
-	core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
 
    mgmt_node.set_enabled(true);
    core::os::SysLock::release();
@@ -387,7 +387,7 @@ Middleware::do_mgmt_thread()
    // Message dispatcher
    for (;;) {
       if (mgmt_node.spin(core::os::Time::ms(MGMT_TIMEOUT_MS))) {
-    	  core::os::Time deadline;
+         core::os::Time deadline;
 
          while (mgmt_sub.fetch(msgp, deadline)) {
             switch (msgp->type) {
@@ -576,7 +576,7 @@ Middleware::do_cmd_advertise(
    if ((topicp != NULL) && topicp->has_local_subscribers()) {
 #endif // CORE_USE_BRIDGE_MODE
       {
-    	  core::os::SysLock::Scope lock;
+         core::os::SysLock::Scope lock;
 
          if (mgmt_pub.get_topic() == NULL) {
             return;
@@ -643,7 +643,7 @@ Middleware::do_cmd_subscribe_request(
    if ((topicp != NULL) && topicp->has_local_publishers()) {
 #endif // CORE_USE_BRIDGE_MODE
       {
-    	  core::os::SysLock::Scope lock;
+         core::os::SysLock::Scope lock;
 
          if (mgmt_pub.get_topic() == NULL) {
             return;
@@ -773,7 +773,7 @@ Middleware::alloc_pubsub_step()
       pubsub_stepsp    = stepp;
       return stepp;
    } else {
-	   core::os::Time now = core::os::Time::now();
+      core::os::Time now  = core::os::Time::now();
       PubSubStep* oldestp = pubsub_stepsp;
 
       for (stepp = pubsub_stepsp; stepp != NULL; stepp = stepp->nextp) {
@@ -829,7 +829,7 @@ Middleware::Middleware(
 
 void
 Middleware::mgmt_threadf(
-		core::os::Thread::Argument
+   core::os::Thread::Argument
 )
 {
    instance.do_mgmt_thread();

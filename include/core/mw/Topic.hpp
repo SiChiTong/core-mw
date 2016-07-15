@@ -33,11 +33,11 @@ class Topic:
    friend class Middleware;
 
 private:
-   const char* const namep;
+   const char* const     namep;
    core::os::Time        publish_timeout;
    core::os::MemoryPool_ msg_pool;
-   size_t      num_local_publishers;
-   size_t      num_remote_publishers;
+   size_t num_local_publishers;
+   size_t num_remote_publishers;
    StaticList<LocalSubscriber>  local_subscribers;
    StaticList<RemoteSubscriber> remote_subscribers;
    size_t max_queue_length;
@@ -120,20 +120,20 @@ public:
 
    bool
    notify_locals_unsafe(
-      Message&    msg,
+      Message&              msg,
       const core::os::Time& timestamp
    );
 
    bool
    notify_remotes_unsafe(
-      Message&    msg,
+      Message&              msg,
       const core::os::Time& timestamp
    );
 
    bool
    forward_copy_unsafe(
-      const Message& msg,
-      const core::os::Time&    timestamp
+      const Message&        msg,
+      const core::os::Time& timestamp
    );
 
 
@@ -167,21 +167,21 @@ public:
 
    bool
    notify_locals(
-      Message&    msg,
+      Message&              msg,
       const core::os::Time& timestamp,
-      bool        mustReschedule = false
+      bool                  mustReschedule = false
    );
 
    bool
    notify_remotes(
-      Message&    msg,
+      Message&              msg,
       const core::os::Time& timestamp
    );
 
    bool
    forward_copy(
-      const Message& msg,
-      const core::os::Time&    timestamp
+      const Message&        msg,
+      const core::os::Time& timestamp
    );
 
    void
@@ -192,14 +192,14 @@ public:
 
    void
    advertise(
-      LocalPublisher& pub,
-      const core::os::Time&     publish_timeout
+      LocalPublisher&       pub,
+      const core::os::Time& publish_timeout
    );
 
    void
    advertise(
-      RemotePublisher& pub,
-      const core::os::Time&      publish_timeout
+      RemotePublisher&      pub,
+      const core::os::Time& publish_timeout
    );
 
    void

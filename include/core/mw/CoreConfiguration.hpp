@@ -100,7 +100,7 @@ struct CoreParameterBase {
 
 
    template <typename T, std::size_t S>
-   operator ::core::Array<T, S>() const;
+   operator:: core::Array<T, S>() const;
 
    operator const char*() const;
 };
@@ -149,7 +149,7 @@ CoreParameterBase::operator T() const
 }
 
 template <typename T, std::size_t S>
-CoreParameterBase::operator ::core::Array<T, S>() const {
+CoreParameterBase::operator:: core::Array<T, S>() const {
    CORE_ASSERT(S == getSize() && CoreTypeTraitsHelperB<T>::types == getCoreType()); // make sure we are doing something meaningful...
 
    ::core::Array<T, S>tmp;

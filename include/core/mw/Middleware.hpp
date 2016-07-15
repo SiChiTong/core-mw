@@ -41,13 +41,13 @@ class Middleware:
 {
 public:
    struct PubSubStep {
-      PubSubStep* nextp;
-      core::os::Time        timestamp;
-      Transport*  transportp;
-      uint16_t    payload_size;
-      uint16_t    queue_length;
-      char        topic[NamingTraits < Topic > ::MAX_LENGTH];
-      uint8_t     type;
+      PubSubStep*    nextp;
+      core::os::Time timestamp;
+      Transport*     transportp;
+      uint16_t       payload_size;
+      uint16_t       queue_length;
+      char           topic[NamingTraits < Topic > ::MAX_LENGTH];
+      uint8_t        type;
    };
 
 private:
@@ -66,9 +66,9 @@ private:
       MGMT_TIMEOUT_MS = 33
    };
 
-   Topic   mgmt_topic;
-   void*   mgmt_stackp;
-   size_t  mgmt_stacklen;
+   Topic  mgmt_topic;
+   void*  mgmt_stackp;
+   size_t mgmt_stacklen;
    core::os::Thread* mgmt_threadp;
    core::os::Thread::Priority mgmt_priority;
    Node mgmt_node;
@@ -132,11 +132,11 @@ public:
 
    void
    initialize(
-      void*            mgmt_stackp,
-      size_t           mgmt_stacklen,
+      void*                      mgmt_stackp,
+      size_t                     mgmt_stacklen,
       core::os::Thread::Priority mgmt_priority,
-      void*            boot_stackp = NULL,
-      size_t           boot_stacklen = 0,
+      void*                      boot_stackp = NULL,
+      size_t                     boot_stacklen = 0,
       core::os::Thread::Priority boot_priority = core::os::Thread::LOWEST
    );
 
@@ -182,18 +182,18 @@ public:
 
    bool
    advertise(
-      LocalPublisher& pub,
-      const char*     namep,
-      const core::os::Time&     publish_timeout,
-      size_t          type_size
+      LocalPublisher&       pub,
+      const char*           namep,
+      const core::os::Time& publish_timeout,
+      size_t                type_size
    );
 
    bool
    advertise(
-      RemotePublisher& pub,
-      const char*      namep,
-      const core::os::Time&      publish_timeout,
-      size_t           type_size
+      RemotePublisher&      pub,
+      const char*           namep,
+      const core::os::Time& publish_timeout,
+      size_t                type_size
    );
 
    bool
@@ -248,7 +248,7 @@ private:
 
 private:
    static void
-   mgmt_threadf(
+      mgmt_threadf(
       core::os::Thread::Argument
    );
 

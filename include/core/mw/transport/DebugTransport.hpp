@@ -73,11 +73,11 @@ public:
 
    void
    initialize(
-      void*            rx_stackp,
-      size_t           rx_stacklen,
+      void*                      rx_stackp,
+      size_t                     rx_stacklen,
       core::os::Thread::Priority rx_priority,
-      void*            tx_stackp,
-      size_t           tx_stacklen,
+      void*                      tx_stackp,
+      size_t                     tx_stacklen,
       core::os::Thread::Priority tx_priority
    );
 
@@ -206,10 +206,10 @@ private:
 
    bool
    send_msg(
-      const Message& msg,
-      size_t         msg_size,
-      const char*    topicp,
-      const core::os::Time&    deadline
+      const Message&        msg,
+      size_t                msg_size,
+      const char*           topicp,
+      const core::os::Time& deadline
    );
 
    bool

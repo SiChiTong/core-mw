@@ -17,10 +17,10 @@ NAMESPACE_CORE_MW_BEGIN
 
 bool
 Node::advertise(
-   LocalPublisher& pub,
-   const char*     namep,
-   const core::os::Time&     publish_timeout,
-   size_t          msg_size
+   LocalPublisher&       pub,
+   const char*           namep,
+   const core::os::Time& publish_timeout,
+   size_t                msg_size
 )
 {
    // already advertised
@@ -69,7 +69,7 @@ Node::spin(
    const core::os::Time& timeout
 )
 {
-	core::os::SpinEvent::Mask mask;
+   core::os::SpinEvent::Mask mask;
 
    mask = event.wait(timeout);
 
