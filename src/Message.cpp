@@ -4,8 +4,8 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/Message.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/Message.hpp>
 #include <cstring>
 
 NAMESPACE_CORE_MW_BEGIN
@@ -14,18 +14,18 @@ NAMESPACE_CORE_MW_BEGIN
 void
 Message::acquire()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    acquire_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 bool
 Message::release()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool floating = release_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return floating;
 }
@@ -33,10 +33,10 @@ Message::release()
 void
 Message::reset()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    reset_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 void

@@ -4,7 +4,7 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/CoreConfiguration.hpp>
+#include <core/mw/CoreConfiguration.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 

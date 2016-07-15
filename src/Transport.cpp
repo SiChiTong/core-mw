@@ -4,15 +4,15 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/Transport.hpp>
-#include <Core/MW/Message.hpp>
-#include <Core/MW/Middleware.hpp>
-#include <Core/MW/RemotePublisher.hpp>
-#include <Core/MW/RemoteSubscriber.hpp>
-#include <Core/MW/TimestampedMsgPtrQueue.hpp>
-#include <Core/MW/ScopedLock.hpp>
-#include <Core/MW/transport/RTCANPublisher.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/Transport.hpp>
+#include <core/mw/Message.hpp>
+#include <core/mw/Middleware.hpp>
+#include <core/mw/RemotePublisher.hpp>
+#include <core/mw/RemoteSubscriber.hpp>
+#include <core/mw/TimestampedMsgPtrQueue.hpp>
+#include <core/os/ScopedLock.hpp>
+#include <core/mw/transport/RTCANPublisher.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -23,10 +23,11 @@ Transport::touch_publisher(
    const uint8_t raw_params[]
 )
 {
-   ScopedLock<Mutex> lock(publishers_lock);
+   core::os::ScopedLock<core::os::Mutex> lock(publishers_lock);
 
    // Check if the remote publisher already exists
    RemotePublisher* pubp;
+
    pubp = publishers.find_first(BasePublisher::has_topic, topic.get_name());
 
    if (pubp != NULL) {
@@ -41,7 +42,7 @@ Transport::touch_publisher(
    }
 
    pubp->notify_advertised(topic);
-   topic.advertise(*pubp, Time::INFINITE);
+   topic.advertise(*pubp, core::os::Time::INFINITE);
    publishers.link(pubp->by_transport);
 
    return true;
@@ -54,10 +55,11 @@ Transport::touch_subscriber(
    uint8_t raw_params[]
 )
 {
-   ScopedLock<Mutex> lock(subscribers_lock);
+   core::os::ScopedLock<core::os::Mutex> lock(subscribers_lock);
 
    // Check if the remote subscriber already exists
    RemoteSubscriber* subp;
+
    subp = subscribers.find_first(BaseSubscriber::has_topic, topic.get_name());
 
    if (subp != NULL) {
@@ -119,10 +121,10 @@ Transport::subscribe_cb(
 
 bool
 Transport::advertise(
-   RemotePublisher& pub,
-   const char*      namep,
-   const Time&      publish_timeout,
-   size_t           type_size
+   RemotePublisher&      pub,
+   const char*           namep,
+   const core::os::Time& publish_timeout,
+   size_t                type_size
 )
 {
    publishers_lock.acquire();

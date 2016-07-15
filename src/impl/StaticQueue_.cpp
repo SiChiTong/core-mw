@@ -4,8 +4,8 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/impl/StaticQueue_.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/impl/StaticQueue_.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -100,9 +100,9 @@ StaticQueue_::skip_unsafe()
 const StaticQueue_::Link*
 StaticQueue_::get_head() const
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    const Link* headp = get_head_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return headp;
 }
@@ -110,9 +110,9 @@ StaticQueue_::get_head() const
 const StaticQueue_::Link*
 StaticQueue_::get_tail() const
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    const Link* tailp = get_tail_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return tailp;
 }
@@ -120,9 +120,9 @@ StaticQueue_::get_tail() const
 bool
 StaticQueue_::is_empty() const
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool isempty = is_empty_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return isempty;
 }
@@ -132,10 +132,10 @@ StaticQueue_::post(
    Link& link
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    post_unsafe(link);
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 bool
@@ -143,9 +143,9 @@ StaticQueue_::peek(
    const Link*& linkp
 ) const
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = peek_unsafe(linkp);
-   SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }
@@ -155,9 +155,9 @@ StaticQueue_::fetch(
    Link& link
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = fetch_unsafe(link);
-   SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }
@@ -165,9 +165,9 @@ StaticQueue_::fetch(
 bool
 StaticQueue_::skip()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = skip_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }

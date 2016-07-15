@@ -4,9 +4,9 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/LocalSubscriber.hpp>
-#include <Core/MW/Node.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/LocalSubscriber.hpp>
+#include <core/mw/Node.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -16,50 +16,51 @@ LocalSubscriber::fetch(
    Message*& msgp
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (msgp_queue.fetch_unsafe(msgp)) {
-      SysLock::release();
+      core::os::SysLock::release();
       return true;
    } else {
-      SysLock::release();
+      core::os::SysLock::release();
       return false;
    }
 }
 
 bool
 LocalSubscriber::fetch(
-   Message*& msgp,
-   Time&     timestamp
+   Message*&       msgp,
+   core::os::Time& timestamp
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (msgp_queue.fetch_unsafe(msgp)) {
-      SysLock::release();
-      timestamp = Time::now();
+      core::os::SysLock::release();
+      timestamp = core::os::Time::now();
       return true;
    } else {
-      SysLock::release();
+      core::os::SysLock::release();
       return false;
    }
 }
 
 bool
 LocalSubscriber::notify(
-   Message&    msg,
-   const Time& timestamp
+   Message&              msg,
+   const core::os::Time& timestamp,
+   bool                  mustReschedule
 )
 {
    (void)timestamp;
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (msgp_queue.post_unsafe(&msg)) {
-      nodep->notify_unsafe(event_index);
-      SysLock::release();
+      nodep->notify_unsafe(event_index, mustReschedule);
+      core::os::SysLock::release();
       return true;
    } else {
-      SysLock::release();
+      core::os::SysLock::release();
       return false;
    }
 }

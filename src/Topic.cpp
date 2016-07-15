@@ -4,20 +4,19 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/Topic.hpp>
-#include <Core/MW/Middleware.hpp>
-#include <Core/MW/NamingTraits.hpp>
-#include <Core/MW/Message.hpp>
-#include <Core/MW/Transport.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/Topic.hpp>
+#include <core/mw/Middleware.hpp>
+#include <core/mw/NamingTraits.hpp>
+#include <core/mw/Message.hpp>
+#include <core/mw/Transport.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
-
 bool
 Topic::notify_locals_unsafe(
-   Message&    msg,
-   const Time& timestamp
+   Message&              msg,
+   const core::os::Time& timestamp
 )
 {
    if (has_local_subscribers()) {
@@ -35,8 +34,8 @@ Topic::notify_locals_unsafe(
 
 bool
 Topic::notify_remotes_unsafe(
-   Message&    msg,
-   const Time& timestamp
+   Message&              msg,
+   const core::os::Time& timestamp
 )
 {
    if (has_remote_subscribers()) {
@@ -62,8 +61,8 @@ Topic::notify_remotes_unsafe(
 
 bool
 Topic::forward_copy_unsafe(
-   const Message& msg,
-   const Time&    timestamp
+   const Message&        msg,
+   const core::os::Time& timestamp
 )
 {
    bool all = true;
@@ -99,24 +98,25 @@ Topic::forward_copy_unsafe(
 Message*
 Topic::alloc()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    Message* msgp = alloc_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return msgp;
 }
 
 bool
 Topic::notify_locals(
-   Message&    msg,
-   const Time& timestamp
+   Message&              msg,
+   const core::os::Time& timestamp,
+   bool                  mustReschedule
 )
 {
    if (has_local_subscribers()) {
       for (StaticList<LocalSubscriber>::Iterator i = local_subscribers.begin(); i != local_subscribers.end(); ++i) {
          msg.acquire();
 
-         if (!i->notify(msg, timestamp)) {
+         if (!i->notify(msg, timestamp, mustReschedule)) {
             msg.release();
          }
       }
@@ -127,12 +127,12 @@ Topic::notify_locals(
 
 bool
 Topic::notify_remotes(
-   Message&    msg,
-   const Time& timestamp
+   Message&              msg,
+   const core::os::Time& timestamp
 )
 {
    {
-      SysLock::Scope lock;
+      core::os::SysLock::Scope lock;
 
       if (!has_remote_subscribers()) {
          return true;
@@ -142,7 +142,7 @@ Topic::notify_remotes(
    for (StaticList<RemoteSubscriber>::Iterator i = remote_subscribers.begin(); i != remote_subscribers.end(); ++i) {
 #if CORE_USE_BRIDGE_MODE
       {
-         SysLock::Scope lock;
+         core::os::SysLock::Scope lock;
          CORE_ASSERT(i->get_transport() != NULL);
 
          if (msg.get_source() == i->get_transport()) {
@@ -163,8 +163,8 @@ Topic::notify_remotes(
 
 bool
 Topic::forward_copy(
-   const Message& msg,
-   const Time&    timestamp
+   const Message&        msg,
+   const core::os::Time& timestamp
 )
 {
    bool all = true;
@@ -199,36 +199,36 @@ Topic::forward_copy(
 
 void
 Topic::advertise(
-   LocalPublisher& pub,
-   const Time&     publish_timeout
+   LocalPublisher&       pub,
+   const core::os::Time& publish_timeout
 )
 {
    (void)pub;
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (this->publish_timeout > publish_timeout) {
       this->publish_timeout = publish_timeout;
    }
 
    ++num_local_publishers;
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 void
 Topic::advertise(
-   RemotePublisher& pub,
-   const Time&      publish_timeout
+   RemotePublisher&      pub,
+   const core::os::Time& publish_timeout
 )
 {
    (void)pub;
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (this->publish_timeout > publish_timeout) {
       this->publish_timeout = publish_timeout;
    }
 
    ++num_remote_publishers;
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 void
@@ -237,14 +237,14 @@ Topic::subscribe(
    size_t           queue_length
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (max_queue_length < queue_length) {
       max_queue_length = queue_length;
    }
 
    local_subscribers.link_unsafe(sub.by_topic);
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 void
@@ -253,14 +253,14 @@ Topic::subscribe(
    size_t            queue_length
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (max_queue_length < queue_length) {
       max_queue_length = queue_length;
    }
 
    remote_subscribers.link_unsafe(sub.by_topic);
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 void
@@ -299,13 +299,13 @@ Topic::Topic(
 )
    :
    namep(namep),
-   publish_timeout(Time::INFINITE),
+   publish_timeout(core::os::Time::INFINITE),
    msg_pool(type_size),
    num_local_publishers(0),
    num_remote_publishers(0),
    max_queue_length(0),
 #if CORE_USE_BRIDGE_MODE
-   forwarding(forwarding),
+   forwarding(CORE_DEFAULT_FORWARDING_RULE),
 #endif
    by_middleware(*this)
 {

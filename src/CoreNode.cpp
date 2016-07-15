@@ -4,15 +4,15 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/CoreNode.hpp>
+#include <core/mw/CoreNode.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
 CoreNode::CoreNode(
    const char*                name,
-   Core::MW::Thread::Priority priority
+   core::os::Thread::Priority priority
 ) :
-   Core::MW::Node(name, false),
+   core::mw::Node(name, false),
    _workingAreaSize(0),
    _priority(priority),
    _runner(nullptr),
@@ -23,9 +23,9 @@ CoreNode::CoreNode(
 {}
 
 CoreNode::CoreNode() :
-   Core::MW::Node("", false),
+   core::mw::Node("", false),
    _workingAreaSize(0),
-   _priority(Core::MW::Thread::NORMAL),
+   _priority(core::os::Thread::NORMAL),
    _runner(nullptr),
    _mustRun(false),
    _mustLoop(false),
@@ -46,7 +46,7 @@ CoreNode::setup()
 
    if (_state() == State::NONE) {
       _mustRun = true;
-      _runner  = Core::MW::Thread::create_heap(NULL, THD_WORKING_AREA_SIZE(_workingAreaSize), Core::MW::Thread::PriorityEnum::NORMAL,
+      _runner  = core::os::Thread::create_heap(NULL, THD_WORKING_AREA_SIZE(_workingAreaSize), core::os::Thread::PriorityEnum::NORMAL,
                                                [](void* arg) {
          reinterpret_cast<CoreNode*>(arg)->_run(); // execute the thread code in the thread
       }, this, get_name());
@@ -54,7 +54,7 @@ CoreNode::setup()
       if (_runner != nullptr) {
          while (_currentState != State::SET_UP) {
             // wait for the thread to spawn...
-            Core::MW::Thread::yield();
+            core::os::Thread::yield();
          }
       } else {
          _currentState = State::NONE;
@@ -78,7 +78,7 @@ CoreNode::teardown()
 
    _state(State::TEARING_DOWN);
 
-   Core::MW::Thread::join(*_runner);
+   core::os::Thread::join(*_runner);
 
    return true;
 }
@@ -201,7 +201,7 @@ CoreNode::_run()
    _runner->set_name(get_name());
 
    while (_mustRun) {
-      if (Thread::should_terminate()) {
+      if (core::os::Thread::should_terminate()) {
          teardown();
       }
 
@@ -355,10 +355,10 @@ CoreNode::_doStart()
 inline void
 CoreNode::_doLoop()
 {
-   Core::MW::Thread::set_priority(_priority);
+   core::os::Thread::set_priority(_priority);
 
    while (_mustLoop) {
-      if (Thread::should_terminate()) {
+      if (core::os::Thread::should_terminate()) {
          teardown();
       } else {
          if (!onLoop()) {
@@ -368,7 +368,7 @@ CoreNode::_doLoop()
       }
    }
 
-   Core::MW::Thread::set_priority(Core::MW::Thread::PriorityEnum::NORMAL);
+   core::os::Thread::set_priority(core::os::Thread::PriorityEnum::NORMAL);
 
    _state(State::STOPPING);
 } // CoreNode::_doLoop

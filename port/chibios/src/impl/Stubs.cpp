@@ -10,11 +10,11 @@
 
 // disable name demangling
 namespace __gnu_cxx {
-   void
-   __verbose_terminate_handler()
-   {
-      osalSysHalt("__verbose_terminate_handler.");
-   }
+void
+__verbose_terminate_handler()
+{
+   osalSysHalt("__verbose_terminate_handler.");
+}
 }
 
 extern "C" {

@@ -4,13 +4,13 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/transport/DebugTransport.hpp>
-#include <Core/MW/transport/DebugPublisher.hpp>
-#include <Core/MW/transport/DebugSubscriber.hpp>
-#include <Core/MW/Middleware.hpp>
-#include <Core/MW/ScopedLock.hpp>
-#include <Core/MW/Checksummer.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/transport/DebugTransport.hpp>
+#include <core/mw/transport/DebugPublisher.hpp>
+#include <core/mw/transport/DebugSubscriber.hpp>
+#include <core/mw/Middleware.hpp>
+#include <core/os/ScopedLock.hpp>
+#include <core/mw/Checksummer.hpp>
 
 #include <cstring>
 #include <locale>
@@ -181,10 +181,10 @@ DebugTransport::recv_string(
 
 bool
 DebugTransport::send_msg(
-   const Message& msg,
-   size_t         msg_size,
-   const char*    topicp,
-   const Time&    deadline
+   const Message&        msg,
+   size_t                msg_size,
+   const char*           topicp,
+   const core::os::Time& deadline
 )
 {
 #if CORE_USE_BRIDGE_MODE
@@ -261,23 +261,23 @@ DebugTransport::send_msg(
 
 void
 DebugTransport::initialize(
-   void*            rx_stackp,
-   size_t           rx_stacklen,
-   Thread::Priority rx_priority,
-   void*            tx_stackp,
-   size_t           tx_stacklen,
-   Thread::Priority tx_priority
+   void*                      rx_stackp,
+   size_t                     rx_stacklen,
+   core::os::Thread::Priority rx_priority,
+   void*                      tx_stackp,
+   size_t                     tx_stacklen,
+   core::os::Thread::Priority tx_priority
 )
 {
    subp_sem.initialize();
    send_lock.initialize();
 
    // Create the transmission pump thread
-   tx_threadp = Thread::create_static(tx_stackp, tx_stacklen, tx_priority, tx_threadf, this, "DEBUG_TX");
+   tx_threadp = core::os::Thread::create_static(tx_stackp, tx_stacklen, tx_priority, tx_threadf, this, "DEBUG_TX");
    CORE_ASSERT(tx_threadp != NULL);
 
    // Create the reception pump thread
-   rx_threadp = Thread::create_static(rx_stackp, rx_stacklen, rx_priority, rx_threadf, this, "DEBUG_RX");
+   rx_threadp = core::os::Thread::create_static(rx_stackp, rx_stacklen, rx_priority, rx_threadf, this, "DEBUG_RX");
    CORE_ASSERT(rx_threadp != NULL);
 
    // Clear any previous crap caused by serial port initialization
@@ -289,14 +289,14 @@ DebugTransport::initialize(
    send_lock.release();
 
    // Register remote publisher and subscriber for the management thread
-   success = advertise(mgmt_rpub, MANAGEMENT_TOPIC_NAME, Time::INFINITE, sizeof(MgmtMsg));
+   success = advertise(mgmt_rpub, MANAGEMENT_TOPIC_NAME, core::os::Time::INFINITE, sizeof(MgmtMsg));
    CORE_ASSERT(success);
    success = subscribe(mgmt_rsub, MANAGEMENT_TOPIC_NAME, mgmt_msgbuf, MGMT_BUFFER_LENGTH);
    CORE_ASSERT(success);
 
 #if CORE_IS_BOOTLOADER_BRIDGE
    // Register remote publisher and subscriber for the bootloader
-   success = advertise(boot_rpub, BOOTLOADER_TOPIC_NAME, Time::INFINITE, sizeof(BootMsg));
+   success = advertise(boot_rpub, BOOTLOADER_TOPIC_NAME, core::os::Time::INFINITE, sizeof(BootMsg));
    CORE_ASSERT(success);
    success = subscribe(boot_rsub, BOOTLOADER_TOPIC_NAME, boot_msgbuf, BOOT_BUFFER_LENGTH);
    CORE_ASSERT(success);
@@ -308,11 +308,11 @@ DebugTransport::initialize(
 bool
 DebugTransport::spin_tx()
 {
-   Message* msgp;
-   Time     timestamp;
+   Message*       msgp;
+   core::os::Time timestamp;
    const BaseSubscriberQueue::Link* subp_linkp;
 
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    subp_sem.wait_unsafe();
    subp_queue.peek_unsafe(subp_linkp);
@@ -320,12 +320,12 @@ DebugTransport::spin_tx()
    DebugSubscriber& sub          = static_cast<DebugSubscriber&>(*subp_linkp->itemp);
    size_t           queue_length = sub.get_queue_count();
    CORE_ASSERT(queue_length > 0);
-   SysLock::release();
+   core::os::SysLock::release();
 
    bool requeued = false;
 
    while (queue_length-- > 0) {
-      SysLock::acquire();
+      core::os::SysLock::acquire();
       sub.fetch_unsafe(msgp, timestamp);
 
       if (queue_length == 0) {
@@ -338,7 +338,7 @@ DebugTransport::spin_tx()
          }
       }
 
-      SysLock::release();
+      core::os::SysLock::release();
 
       send_lock.acquire();
       const Topic& topic = *sub.get_topic();
@@ -373,7 +373,7 @@ DebugTransport::spin_rx()
    Thread::sleep(Time::ms(100));
 #endif
    {
-      Time deadline;
+      core::os::Time deadline;
 
       if (!recv_value(deadline.raw)) {
          return false;
@@ -460,7 +460,7 @@ DebugTransport::spin_rx()
 
    // Forward the message locally
 #if CORE_USE_BRIDGE_MODE
-   bool success = pubp->publish_locally(*msgp);
+   bool success = pubp->publish_locally(*msgp, true);
 
    if (pubp->get_topic()->is_forwarding()) {
       success = success && pubp->publish_remotely(*msgp);
@@ -475,10 +475,10 @@ DebugTransport::spin_rx()
 
 void
 DebugTransport::rx_threadf(
-   Thread::Argument arg
+   core::os::Thread::Argument arg
 )
 {
-   CORE_ASSERT(arg != static_cast<Thread::Argument>(NULL));
+   CORE_ASSERT(arg != static_cast<core::os::Thread::Argument>(NULL));
 
    // Reception pump
    for (;;) {
@@ -487,22 +487,22 @@ DebugTransport::rx_threadf(
       (void)ok;
    }
 
-   chThdExitS(Thread::OK);
+   chThdExitS(core::os::Thread::OK);
 }
 
 void
 DebugTransport::tx_threadf(
-   Thread::Argument arg
+   core::os::Thread::Argument arg
 )
 {
-   CORE_ASSERT(arg != static_cast<Thread::Argument>(NULL));
+   CORE_ASSERT(arg != static_cast<core::os::Thread::Argument>(NULL));
 
    // Transmission pump
    for (;;) {
       reinterpret_cast<DebugTransport*>(arg)->spin_tx();
    }
 
-   chThdExitS(Thread::OK);
+   chThdExitS(core::os::Thread::OK);
 }
 
 DebugTransport::DebugTransport(

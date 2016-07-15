@@ -4,11 +4,11 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/transport/RTCANTransport.hpp>
-#include <Core/MW/transport/RTCANPublisher.hpp>
-#include <Core/MW/transport/RTCANSubscriber.hpp>
-#include <Core/MW/Middleware.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/transport/RTCANTransport.hpp>
+#include <core/mw/transport/RTCANPublisher.hpp>
+#include <core/mw/transport/RTCANSubscriber.hpp>
+#include <core/mw/Middleware.hpp>
 
 #include <rtcan.h>
 
@@ -180,7 +180,7 @@ RTCANTransport::initialize(
    subscribe(*mgmt_rsub, MANAGEMENT_TOPIC_NAME, mgmt_msgbuf, MGMT_BUFFER_LENGTH, sizeof(MgmtMsg));
 
    mgmt_rpub = reinterpret_cast<RTCANPublisher*>(create_publisher(mgmt_topic, reinterpret_cast<const uint8_t*>(&mgmt_topic_rtcan_id)));
-   advertise(*mgmt_rpub, MANAGEMENT_TOPIC_NAME, Time::INFINITE, sizeof(MgmtMsg));
+   advertise(*mgmt_rpub, MANAGEMENT_TOPIC_NAME, core::os::Time::INFINITE, sizeof(MgmtMsg));
 
 #if CORE_IS_BOOTLOADER_BRIDGE
    Topic&     boot_topic          = Middleware::instance.get_boot_topic();
@@ -190,7 +190,7 @@ RTCANTransport::initialize(
    subscribe(*boot_rsub, BOOTLOADER_TOPIC_NAME, boot_msgbuf, BOOT_BUFFER_LENGTH, sizeof(BootMsg));
 
    boot_rpub = reinterpret_cast<RTCANPublisher*>(create_publisher(boot_topic, reinterpret_cast<const uint8_t*>(&boot_topic_rtcan_id)));
-   advertise(*boot_rpub, BOOTLOADER_TOPIC_NAME, Time::INFINITE, sizeof(BootMsg));
+   advertise(*boot_rpub, BOOTLOADER_TOPIC_NAME, core::os::Time::INFINITE, sizeof(BootMsg));
 #endif
 
    Middleware::instance.add(*this);

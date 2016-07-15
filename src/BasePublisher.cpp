@@ -4,10 +4,10 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/BasePublisher.hpp>
-#include <Core/MW/Topic.hpp>
-#include <Core/MW/Message.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/BasePublisher.hpp>
+#include <core/mw/Topic.hpp>
+#include <core/mw/Message.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -21,8 +21,8 @@ BasePublisher::publish_unsafe(
 
    msg.acquire_unsafe();
 
-   Time now = Time::now();
-   bool success;
+   core::os::Time now = core::os::Time::now();
+   bool           success;
    success = topicp->notify_locals_unsafe(msg, now);
    success = topicp->notify_remotes_unsafe(msg, now) && success;
 
@@ -41,7 +41,7 @@ BasePublisher::publish_locally_unsafe(
    CORE_ASSERT(topicp != NULL);
 
    msg.acquire_unsafe();
-   bool success = topicp->notify_locals_unsafe(msg, Time::now());
+   bool success = topicp->notify_locals_unsafe(msg, core::os::Time::now());
 
    if (!msg.release_unsafe()) {
       topicp->free_unsafe(msg);
@@ -58,7 +58,7 @@ BasePublisher::publish_remotely_unsafe(
    CORE_ASSERT(topicp != NULL);
 
    msg.acquire_unsafe();
-   bool success = topicp->notify_remotes_unsafe(msg, Time::now());
+   bool success = topicp->notify_remotes_unsafe(msg, core::os::Time::now());
 
    if (!msg.release_unsafe()) {
       topicp->free_unsafe(msg);
@@ -69,16 +69,17 @@ BasePublisher::publish_remotely_unsafe(
 
 bool
 BasePublisher::publish(
-   Message& msg
+   Message& msg,
+   bool     mustReschedule
 )
 {
    CORE_ASSERT(topicp != NULL);
 
    msg.acquire();
 
-   Time now = Time::now();
-   bool success;
-   success = topicp->notify_locals(msg, now);
+   core::os::Time now = core::os::Time::now();
+   bool           success;
+   success = topicp->notify_locals(msg, now, mustReschedule);
    success = topicp->notify_remotes(msg, now) && success;
 
    if (!msg.release()) {

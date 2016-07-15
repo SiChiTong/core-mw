@@ -4,17 +4,17 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/transport/RTCANSubscriber.hpp>
-#include <Core/MW/transport/RTCANTransport.hpp>
-#include <Core/MW/Topic.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/transport/RTCANSubscriber.hpp>
+#include <core/mw/transport/RTCANTransport.hpp>
+#include <core/mw/Topic.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
 bool
 RTCANSubscriber::fetch_unsafe(
-   Message*& msgp,
-   Time&     timestamp
+   Message*&       msgp,
+   core::os::Time& timestamp
 )
 {
    (void)msgp;
@@ -36,8 +36,8 @@ RTCANSubscriber::fetch_unsafe(
 
 bool
 RTCANSubscriber::notify_unsafe(
-   Message&    msg,
-   const Time& timestamp
+   Message&              msg,
+   const core::os::Time& timestamp
 )
 {
    RTCANTransport* transportp = static_cast<RTCANTransport*>(get_transport());

@@ -4,10 +4,10 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-#include <Core/MW/namespace.hpp>
-#include <Core/MW/Middleware.hpp>
-#include <Core/MW/CoreModule.hpp>
-#include <Core/HW/IWDG.hpp>
+#include <core/mw/namespace.hpp>
+#include <core/mw/Middleware.hpp>
+#include <core/mw/CoreModule.hpp>
+#include <core/hw/IWDG.hpp>
 
 #include "ch.h"
 #include "hal.h"
