@@ -9,6 +9,9 @@
 #include <core/mw/namespace.hpp>
 #include <core/mw/CoreType.hpp>
 #include <core/mw/Array.hpp>
+#include <core/mw/StaticList.hpp>
+#include <core/mw/NamingTraits.hpp>
+
 #include <initializer_list>
 #include <type_traits>
 
@@ -25,11 +28,11 @@ private: \
 #define CORE_CONFIGURATION_MAP_END() } \
    };
 #define CORE_CONFIGURATION_SIGNATURE(__s__) \
-   Core::MW::CoreConfiguration::Signature getSignature() const { \
+   core::mw::CoreConfiguration::Signature getSignature() const { \
       return __s__; \
    } \
 public: \
-   static const Core::MW::CoreConfiguration::Signature SIGNATURE = __s__;
+   static const core::mw::CoreConfiguration::Signature SIGNATURE = __s__;
 #define CORE_CONFIGURATION_END() \
 private: \
    iterator begin() { \
@@ -692,7 +695,12 @@ struct pointer_to_helper {
 class CoreConfigurableBase
 {
 public:
-   CoreConfigurableBase() : _configuration(nullptr) {}
+   CoreConfigurableBase(
+      const char* key
+   ) : _configuration(nullptr), _key(key), link(*this)
+   {
+      CORE_ASSERT(is_identifier(key, NamingTraits<Node>::MAX_LENGTH));
+   }
 
    void
    setConfiguration(
@@ -717,6 +725,10 @@ public:
 
 protected:
    const CoreConfiguration* _configuration;
+   const char* _key;
+
+public:
+   mutable core::mw::StaticList<CoreConfigurableBase>::Link link;
 };
 
 template <typename T>
@@ -724,6 +736,12 @@ class CoreConfigurable:
    public CoreConfigurableBase
 {
 public:
+   using ConfigurationType = T;
+
+   CoreConfigurable(
+      const char* key
+   ) : CoreConfigurableBase::CoreConfigurableBase(key) {}
+
    void
    setConfiguration(
       const CoreConfiguration& configuration
