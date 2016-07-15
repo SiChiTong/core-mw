@@ -12,7 +12,7 @@
 #include <core/hw/IWDG.hpp>
 #include <core/hw/UID.hpp>
 
-#include <Configuration.hpp>
+#include <ModuleConfiguration.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 

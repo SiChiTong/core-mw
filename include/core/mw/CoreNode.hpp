@@ -12,7 +12,6 @@
 #include <core/mw/Condition.hpp>
 #include <core/mw/Mutex.hpp>
 #include <core/mw/Node.hpp>
-#include <Core/MW/CoreConfiguration.hpp>
 
 #include <core/mw/ICoreNode.hpp>
 
