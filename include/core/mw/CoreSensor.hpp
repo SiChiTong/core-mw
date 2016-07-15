@@ -20,6 +20,9 @@ public:
    init() = 0;
 
    virtual bool
+   configure() = 0;
+
+   virtual bool
    start() = 0;
 
    virtual bool
