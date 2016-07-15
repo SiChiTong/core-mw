@@ -141,9 +141,9 @@ public:
       Iterator&
       operator++()
       {
-         ::core::os::SysLock::acquire();
+         core::os::SysLock::acquire();
          curp = curp->nextp;
-         ::core::os::SysLock::release();
+         core::os::SysLock::release();
          return *this;
       }
 
@@ -152,10 +152,10 @@ public:
          int
       )
       {
-         ::core::os::SysLock::acquire();
+         core::os::SysLock::acquire();
          Iterator old(*this);
          curp = curp->nextp;
-         ::core::os::SysLock::release();
+         core::os::SysLock::release();
          return old;
       }
 

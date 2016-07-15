@@ -16,7 +16,7 @@ NAMESPACE_CORE_MW_BEGIN
 bool
 Topic::notify_locals_unsafe(
    Message&    msg,
-   const ::core::os::Time& timestamp
+   const core::os::Time& timestamp
 )
 {
    if (has_local_subscribers()) {
@@ -35,7 +35,7 @@ Topic::notify_locals_unsafe(
 bool
 Topic::notify_remotes_unsafe(
    Message&    msg,
-   const ::core::os::Time& timestamp
+   const core::os::Time& timestamp
 )
 {
    if (has_remote_subscribers()) {
@@ -62,7 +62,7 @@ Topic::notify_remotes_unsafe(
 bool
 Topic::forward_copy_unsafe(
    const Message& msg,
-   const ::core::os::Time&    timestamp
+   const core::os::Time&    timestamp
 )
 {
    bool all = true;
@@ -98,9 +98,9 @@ Topic::forward_copy_unsafe(
 Message*
 Topic::alloc()
 {
-	::core::os::SysLock::acquire();
+	core::os::SysLock::acquire();
    Message* msgp = alloc_unsafe();
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 
    return msgp;
 }
@@ -132,7 +132,7 @@ Topic::notify_remotes(
 )
 {
    {
-	   ::core::os::SysLock::Scope lock;
+	   core::os::SysLock::Scope lock;
 
       if (!has_remote_subscribers()) {
          return true;
@@ -204,14 +204,14 @@ Topic::advertise(
 )
 {
    (void)pub;
-   ::core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (this->publish_timeout > publish_timeout) {
       this->publish_timeout = publish_timeout;
    }
 
    ++num_local_publishers;
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 }
 
 void
@@ -221,14 +221,14 @@ Topic::advertise(
 )
 {
    (void)pub;
-   ::core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (this->publish_timeout > publish_timeout) {
       this->publish_timeout = publish_timeout;
    }
 
    ++num_remote_publishers;
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 }
 
 void
@@ -253,14 +253,14 @@ Topic::subscribe(
    size_t            queue_length
 )
 {
-	::core::os::SysLock::acquire();
+	core::os::SysLock::acquire();
 
    if (max_queue_length < queue_length) {
       max_queue_length = queue_length;
    }
 
    remote_subscribers.link_unsafe(sub.by_topic);
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 }
 
 void
@@ -299,7 +299,7 @@ Topic::Topic(
 )
    :
    namep(namep),
-   publish_timeout(::core::os::Time::INFINITE),
+   publish_timeout(core::os::Time::INFINITE),
    msg_pool(type_size),
    num_local_publishers(0),
    num_remote_publishers(0),

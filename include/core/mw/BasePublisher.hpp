@@ -132,9 +132,9 @@ BasePublisher::alloc(
    Message*& msgp
 )
 {
-   ::core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = alloc_unsafe(msgp);
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }
@@ -148,7 +148,7 @@ BasePublisher::publish_locally(
 {
    CORE_ASSERT(topicp != NULL);
 
-   return topicp->notify_locals(msg, ::core::os::Time::now(), mustReschedule);
+   return topicp->notify_locals(msg, core::os::Time::now(), mustReschedule);
 }
 
 inline
@@ -159,7 +159,7 @@ BasePublisher::publish_remotely(
 {
    CORE_ASSERT(topicp != NULL);
 
-   return topicp->notify_remotes(msg, ::core::os::Time::now());
+   return topicp->notify_remotes(msg, core::os::Time::now());
 }
 
 inline

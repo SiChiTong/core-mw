@@ -26,7 +26,7 @@ public:
 
    CoreNode(
       const char*                name,
-      ::core::os::Thread::Priority priority = ::core::os::Thread::PriorityEnum::NORMAL
+      core::os::Thread::Priority priority = core::os::Thread::PriorityEnum::NORMAL
    );
 
    bool
@@ -97,10 +97,10 @@ private:
    _run();
 
 
-   ::core::os::Thread* _runner;
+   core::os::Thread* _runner;
 
-   ::core::os::Mutex     _mutex;
-   ::core::os::Condition _condition;
+   core::os::Mutex     _mutex;
+   core::os::Condition _condition;
 
    bool _mustRun;
    bool _mustLoop;

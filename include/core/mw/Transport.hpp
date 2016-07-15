@@ -31,8 +31,8 @@ protected:
    const char* namep;
    StaticList<RemotePublisher>  publishers;
    StaticList<RemoteSubscriber> subscribers;
-   ::core::os::Mutex publishers_lock;
-   ::core::os::Mutex subscribers_lock;
+   core::os::Mutex publishers_lock;
+   core::os::Mutex subscribers_lock;
 
 private:
    mutable StaticList<Transport>::Link by_middleware;
@@ -87,7 +87,7 @@ protected:
    advertise(
       RemotePublisher& pub,
       const char*      namep,
-      const ::core::os::Time&      publish_timeout,
+      const core::os::Time&      publish_timeout,
       size_t           type_size
    );
 
@@ -106,7 +106,7 @@ protected:
    advertise(
       RemotePublisher& pub,
       const char*      namep,
-      const ::core::os::Time&      publish_timeout
+      const core::os::Time&      publish_timeout
    );
 
 
@@ -184,7 +184,7 @@ bool
 Transport::advertise(
    RemotePublisher& pub,
    const char*      namep,
-   const ::core::os::Time&      publish_timeout
+   const core::os::Time&      publish_timeout
 )
 {
    static_cast_check<MessageType, Message>();

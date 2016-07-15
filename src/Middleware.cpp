@@ -23,10 +23,10 @@ void
 Middleware::initialize(
    void*            mgmt_stackp,
    size_t           mgmt_stacklen,
-   ::core::os::Thread::Priority mgmt_priority,
+   core::os::Thread::Priority mgmt_priority,
    void*            boot_stackp,
    size_t           boot_stacklen,
-   ::core::os::Thread::Priority boot_priority
+   core::os::Thread::Priority boot_priority
 )
 {
    CORE_ASSERT(mgmt_stackp != NULL);
@@ -47,26 +47,26 @@ Middleware::initialize(
 void
 Middleware::start()
 {
-   mgmt_threadp = ::core::os::Thread::create_static(mgmt_stackp, mgmt_stacklen, mgmt_priority, mgmt_threadf, NULL, "CORE_MGMT");
+   mgmt_threadp = core::os::Thread::create_static(mgmt_stackp, mgmt_stacklen, mgmt_priority, mgmt_threadf, NULL, "CORE_MGMT");
    CORE_ASSERT(mgmt_threadp != NULL);
 
    // Wait until the info topic is fully initialized
-   ::core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
 
    while (!mgmt_topic.has_local_publishers() || !mgmt_topic.has_local_subscribers()) {
-	   ::core::os::SysLock::release();
-	   ::core::os::Thread::sleep(::core::os::Time::ms(500)); // TODO: configure
-      ::core::os::SysLock::acquire();
+	   core::os::SysLock::release();
+	   core::os::Thread::sleep(core::os::Time::ms(500)); // TODO: configure
+      core::os::SysLock::acquire();
    }
 
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 } // Middleware::start
 
 void
 Middleware::stop()
 {
    {
-	   ::core::os::SysLock::Scope lock;
+	   core::os::SysLock::Scope lock;
 
       if (!stopped) {
          stopped = true;
@@ -81,9 +81,9 @@ Middleware::stop()
          i->notify_stop();
       }
 
-      ::core::os::Thread::sleep(::core::os::Time::ms(500)); // TODO: Configure delay
+      core::os::Thread::sleep(core::os::Time::ms(500)); // TODO: Configure delay
       {
-    	  ::core::os::SysLock::Scope lock;
+    	  core::os::SysLock::Scope lock;
 
          if (num_running_nodes == 0) {
             break;
@@ -130,11 +130,11 @@ Middleware::add(
    Node& node
 )
 {
-	::core::os::SysLock::acquire();
+	core::os::SysLock::acquire();
 
    nodes.link_unsafe(node.by_middleware);
    ++num_running_nodes;
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 }
 
 void
@@ -159,7 +159,7 @@ bool
 Middleware::advertise(
    LocalPublisher& pub,
    const char*     namep,
-   const ::core::os::Time&     publish_timeout,
+   const core::os::Time&     publish_timeout,
    size_t          type_size
 )
 {
@@ -179,7 +179,7 @@ Middleware::advertise(
       if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
 #endif
       {
-    	  ::core::os::SysLock::Scope lock;
+    	  core::os::SysLock::Scope lock;
 
          if (mgmt_pub.get_topic() == NULL) {
             return true;
@@ -207,7 +207,7 @@ bool
 Middleware::advertise(
    RemotePublisher& pub,
    const char*      namep,
-   const ::core::os::Time&      publish_timeout,
+   const core::os::Time&      publish_timeout,
    size_t           type_size
 )
 {
@@ -253,7 +253,7 @@ Middleware::subscribe(
 
       for (StaticList<Transport>::Iterator i = transports.begin(); i != transports.end(); ++i) {
          {
-        	 ::core::os::SysLock::Scope lock;
+        	 core::os::SysLock::Scope lock;
 
             if (mgmt_pub.get_topic() == NULL) {
                return true;
@@ -306,13 +306,13 @@ Middleware::confirm_stop(
    const Node& node
 )
 {
-	::core::os::SysLock::acquire();
+	core::os::SysLock::acquire();
 
    CORE_ASSERT(num_running_nodes > 0);
    CORE_ASSERT(nodes.contains_unsafe(node));
    --num_running_nodes;
    nodes.unlink_unsafe(node.by_middleware);
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 }
 
 Topic*
@@ -364,11 +364,11 @@ Middleware::touch_topic(
 void
 Middleware::do_mgmt_thread()
 {
-	::core::os::SysLock::acquire();
+	core::os::SysLock::acquire();
 
    mgmt_node.set_enabled(true);
-   ::core::os::SysLock::release();
-   mgmt_node.advertise(mgmt_pub, mgmt_topic.get_name(), ::core::os::Time::INFINITE);
+   core::os::SysLock::release();
+   mgmt_node.advertise(mgmt_pub, mgmt_topic.get_name(), core::os::Time::INFINITE);
    mgmt_node.subscribe(mgmt_sub, mgmt_topic.get_name(), mgmt_msg_buf);
 
    // Tell it is alive
@@ -378,16 +378,16 @@ Middleware::do_mgmt_thread()
       Message::reset_payload(*msgp);
       msgp->type = MgmtMsg::ALIVE;
       strncpy(msgp->module.name, module_namep, NamingTraits<Middleware>::MAX_LENGTH);
-      ::core::os::SysLock::acquire();
+      core::os::SysLock::acquire();
       msgp->module.flags.stopped = is_stopped() ? 1 : 0;
-      ::core::os::SysLock::release();
+      core::os::SysLock::release();
       mgmt_pub.publish_remotely(*msgp);
    }
 
    // Message dispatcher
    for (;;) {
-      if (mgmt_node.spin(::core::os::Time::ms(MGMT_TIMEOUT_MS))) {
-    	  ::core::os::Time deadline;
+      if (mgmt_node.spin(core::os::Time::ms(MGMT_TIMEOUT_MS))) {
+    	  core::os::Time deadline;
 
          while (mgmt_sub.fetch(msgp, deadline)) {
             switch (msgp->type) {
@@ -478,8 +478,8 @@ Middleware::do_mgmt_thread()
 
 #if CORE_ITERATE_PUBSUB
       // Iterate publishers and subscribers
-      else if (::core::os::Time::now() - iter_lasttime >= ::core::os::Time::ms(ITER_TIMEOUT_MS)) {
-         iter_lasttime = ::core::os::Time::now();
+      else if (core::os::Time::now() - iter_lasttime >= core::os::Time::ms(ITER_TIMEOUT_MS)) {
+         iter_lasttime = core::os::Time::now();
 
          if (!iter_nodes.is_valid()) {
             // Restart nodes iteration
@@ -499,9 +499,9 @@ Middleware::do_mgmt_thread()
                Message::reset_payload(*msgp);
                msgp->type = MgmtMsg::ALIVE;
                strncpy(msgp->module.name, module_namep, NamingTraits<Middleware>::MAX_LENGTH);
-               ::core::os::SysLock::acquire();
+               core::os::SysLock::acquire();
                msgp->module.flags.stopped = is_stopped() ? 1 : 0;
-               ::core::os::SysLock::release();
+               core::os::SysLock::release();
                mgmt_pub.publish_remotely(*msgp);
             }
          } else if (iter_publishers.is_valid()) {
@@ -528,12 +528,12 @@ Middleware::do_mgmt_thread()
             if (mgmt_pub.alloc(msgp)) {
                Message::reset_payload(*msgp);
                msgp->type = MgmtMsg::SUBSCRIBE_REQUEST;
-               ::core::os::SysLock::acquire();
+               core::os::SysLock::acquire();
                const Topic& topic = *iter_subscribers->get_topic();
                msgp->pubsub.payload_size = topic.get_payload_size();
                strncpy(msgp->pubsub.topic, topic.get_name(), NamingTraits<Topic>::MAX_LENGTH);
                msgp->pubsub.queue_length = topic.get_max_queue_length();
-               ::core::os::SysLock::release();
+               core::os::SysLock::release();
                msgp->acquire();
 
                if (mgmt_topic.forward_copy(*msgp, mgmt_topic.compute_deadline())) {
@@ -576,7 +576,7 @@ Middleware::do_cmd_advertise(
    if ((topicp != NULL) && topicp->has_local_subscribers()) {
 #endif // CORE_USE_BRIDGE_MODE
       {
-    	  ::core::os::SysLock::Scope lock;
+    	  core::os::SysLock::Scope lock;
 
          if (mgmt_pub.get_topic() == NULL) {
             return;
@@ -590,9 +590,9 @@ Middleware::do_cmd_advertise(
          msgp->type = MgmtMsg::SUBSCRIBE_REQUEST;
          strncpy(msgp->pubsub.topic, topicp->get_name(), NamingTraits<Topic>::MAX_LENGTH);
          msgp->pubsub.payload_size = static_cast<uint16_t>(topicp->get_payload_size());
-         ::core::os::SysLock::acquire();
+         core::os::SysLock::acquire();
          msgp->pubsub.queue_length = static_cast<uint16_t>(topicp->get_max_queue_length());
-         ::core::os::SysLock::release();
+         core::os::SysLock::release();
          msgp->acquire();
 #if CORE_USE_BRIDGE_MODE
          mgmt_topic.forward_copy(*msgp, topicp->compute_deadline());
@@ -643,7 +643,7 @@ Middleware::do_cmd_subscribe_request(
    if ((topicp != NULL) && topicp->has_local_publishers()) {
 #endif // CORE_USE_BRIDGE_MODE
       {
-    	  ::core::os::SysLock::Scope lock;
+    	  core::os::SysLock::Scope lock;
 
          if (mgmt_pub.get_topic() == NULL) {
             return;
@@ -657,9 +657,9 @@ Middleware::do_cmd_subscribe_request(
          msgp->type = MgmtMsg::SUBSCRIBE_RESPONSE;
          strncpy(msgp->pubsub.topic, topicp->get_name(), NamingTraits<Topic>::MAX_LENGTH);
          msgp->pubsub.payload_size = static_cast<uint16_t>(topicp->get_payload_size());
-         ::core::os::SysLock::acquire();
+         core::os::SysLock::acquire();
          msgp->pubsub.queue_length = static_cast<uint16_t>(topicp->get_max_queue_length());
-         ::core::os::SysLock::release();
+         core::os::SysLock::release();
          msgp->acquire();
 #if CORE_USE_BRIDGE_MODE
          msg.get_source()->subscribe_cb(*topicp, msg.pubsub.queue_length, msgp->pubsub.raw_params);
@@ -807,7 +807,7 @@ Middleware::Middleware(
    mgmt_stackp(NULL),
    mgmt_stacklen(0),
    mgmt_threadp(NULL),
-   mgmt_priority(::core::os::Thread::LOWEST),
+   mgmt_priority(core::os::Thread::LOWEST),
    mgmt_node("CORE_MGMT", false),
    mgmt_pub(),
    mgmt_sub(mgmt_queue_buf, MGMT_BUFFER_LENGTH, NULL),
@@ -829,11 +829,11 @@ Middleware::Middleware(
 
 void
 Middleware::mgmt_threadf(
-		::core::os::Thread::Argument
+		core::os::Thread::Argument
 )
 {
    instance.do_mgmt_thread();
-   chThdExitS(::core::os::Thread::OK);
+   chThdExitS(core::os::Thread::OK);
 }
 
 NAMESPACE_CORE_MW_END

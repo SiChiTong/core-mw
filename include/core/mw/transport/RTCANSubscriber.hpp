@@ -34,25 +34,25 @@ public:
    bool
    fetch_unsafe(
       Message*& msgp,
-      ::core::os::Time&     timestamp
+      core::os::Time&     timestamp
    );
 
    bool
    notify_unsafe(
       Message&    msg,
-      const ::core::os::Time& timestamp
+      const core::os::Time& timestamp
    );
 
    bool
    fetch(
       Message*& msgp,
-      ::core::os::Time&     timestamp
+      core::os::Time&     timestamp
    );
 
    bool
    notify(
       Message&    msg,
-      const ::core::os::Time& timestamp,
+      const core::os::Time& timestamp,
       bool        mustReschedule = false
    );
 
@@ -74,13 +74,13 @@ inline
 bool
 RTCANSubscriber::notify(
    Message&    msg,
-   const ::core::os::Time& timestamp,
+   const core::os::Time& timestamp,
    bool        mustReschedule
 )
 {
-   ::core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = notify_unsafe(msg, timestamp);
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }
@@ -89,12 +89,12 @@ inline
 bool
 RTCANSubscriber::fetch(
    Message*& msgp,
-   ::core::os::Time&     timestamp
+   core::os::Time&     timestamp
 )
 {
-   ::core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = fetch_unsafe(msgp, timestamp);
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }

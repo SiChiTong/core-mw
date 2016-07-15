@@ -19,7 +19,7 @@ bool
 Node::advertise(
    LocalPublisher& pub,
    const char*     namep,
-   const ::core::os::Time&     publish_timeout,
+   const core::os::Time&     publish_timeout,
    size_t          msg_size
 )
 {
@@ -53,7 +53,7 @@ Node::subscribe(
    int index = subscribers.count();
    subscribers.link(sub.by_node);
    CORE_ASSERT(index >= 0);
-   CORE_ASSERT(index <= static_cast<int>(::core::os::SpinEvent::MAX_INDEX));
+   CORE_ASSERT(index <= static_cast<int>(core::os::SpinEvent::MAX_INDEX));
    sub.event_index = static_cast<uint_least8_t>(index);
 
    if (!Middleware::instance.subscribe(sub, namep, msgpool_buf, sub.get_queue_length(), msg_size)) {
@@ -66,10 +66,10 @@ Node::subscribe(
 
 bool
 Node::spin(
-   const ::core::os::Time& timeout
+   const core::os::Time& timeout
 )
 {
-	::core::os::SpinEvent::Mask mask;
+	core::os::SpinEvent::Mask mask;
 
    mask = event.wait(timeout);
 
@@ -77,8 +77,8 @@ Node::spin(
       return false;
    }
 
-   ::core::os::Time dummy_timestamp;
-   ::core::os::SpinEvent::Mask bit = 1;
+   core::os::Time dummy_timestamp;
+   core::os::SpinEvent::Mask bit = 1;
 
    for (StaticList<LocalSubscriber>::Iterator i = subscribers.begin(); i != subscribers.end() && mask != 0; bit <<= 1, ++i) {
       if ((mask & bit) != 0) {
@@ -105,7 +105,7 @@ Node::Node(
 )
    :
    namep(namep),
-   event(enabled ? &::core::os::Thread::self() : NULL),
+   event(enabled ? &core::os::Thread::self() : NULL),
    by_middleware(*this)
 {
    CORE_ASSERT(is_identifier(namep, NamingTraits<Node>::MAX_LENGTH));

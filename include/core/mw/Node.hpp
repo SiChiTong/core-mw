@@ -37,8 +37,8 @@ private:
    const char* const           namep;
    StaticList<LocalPublisher>  publishers;
    StaticList<LocalSubscriber> subscribers;
-   ::core::os::SpinEvent event;
-   ::core::os::Time      timeout;
+   core::os::SpinEvent event;
+   core::os::Time      timeout;
 
    mutable StaticList<Node>::Link by_middleware;
 
@@ -68,7 +68,7 @@ public:
    advertise(
       Publisher<MT>& pub,
       const char*    namep,
-      const ::core::os::Time& publish_timeout = ::core::os::Time::INFINITE
+      const core::os::Time& publish_timeout = core::os::Time::INFINITE
    );
 
 
@@ -107,7 +107,7 @@ public:
 
    bool
    spin(
-      const ::core::os::Time& timeout = ::core::os::Time::INFINITE
+      const core::os::Time& timeout = core::os::Time::INFINITE
    );
 
 
@@ -116,7 +116,7 @@ private:
    advertise(
       LocalPublisher& pub,
       const char*     namep,
-      const ::core::os::Time&     publish_timeout,
+      const core::os::Time&     publish_timeout,
       size_t          msg_size
    );
 
@@ -187,7 +187,7 @@ Node::set_enabled(
    bool enabled
 )
 {
-   event.set_thread(enabled ? &::core::os::Thread::self() : NULL);
+   event.set_thread(enabled ? &core::os::Thread::self() : NULL);
 }
 
 template <typename MessageType>
@@ -196,7 +196,7 @@ bool
 Node::advertise(
    Publisher<MessageType>& pub,
    const char*             namep,
-   const ::core::os::Time&             publish_timeout
+   const core::os::Time&             publish_timeout
 )
 {
    return advertise(pub, namep, publish_timeout, sizeof(MessageType));
@@ -239,7 +239,7 @@ void
 Node::notify_stop_unsafe()
 {
    // Just signal a dummy unlikely event
-   event.signal_unsafe(::core::os::SpinEvent::MAX_INDEX);
+   event.signal_unsafe(core::os::SpinEvent::MAX_INDEX);
 }
 
 inline
@@ -256,7 +256,7 @@ void
 Node::notify_stop()
 {
    // Just signal a dummy unlikely event
-   event.signal(::core::os::SpinEvent::MAX_INDEX);
+   event.signal(core::os::SpinEvent::MAX_INDEX);
 }
 
 inline

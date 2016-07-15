@@ -26,27 +26,27 @@ public:
    virtual std::size_t
    put(
       const uint8_t& x,
-      core::mw::core::os::Time timeout
+      core::mwcore::os::Time timeout
    ) = 0;
 
    virtual std::size_t
    get(
       uint8_t&       x,
-      core::mw::core::os::Time timeout
+      core::mwcore::os::Time timeout
    ) = 0;
 
    virtual std::size_t
    write(
       const uint8_t* buffer,
       std::size_t    size,
-      core::mw::core::os::Time timeout
+      core::mwcore::os::Time timeout
    ) = 0;
 
    virtual std::size_t
    read(
       uint8_t*       buffer,
       std::size_t    size,
-      core::mw::core::os::Time timeout
+      core::mwcore::os::Time timeout
    ) = 0;
 
    virtual int
@@ -72,16 +72,16 @@ class IOChannel_:
 {
 public:
    using Channel = _CHANNEL;
-   static constexpr core::mw::core::os::Time
+   static constexpr core::mwcore::os::Time
    DEFAULT_TIMEOUT()
    {
-      return _DEFAULT_TIMEOUT == IOChannel::Defaultcore::os::Timeout::INFINITE ? core::mw::core::os::Time::INFINITE : core::mw::core::os::Time::IMMEDIATE;
+      return _DEFAULT_TIMEOUT == IOChannel::Defaultcore::os::Timeout::INFINITE ? core::mwcore::os::Time::INFINITE : core::mwcore::os::Time::IMMEDIATE;
    }
 
    inline std::size_t
    put(
       const uint8_t& x,
-      core::mw::core::os::Time timeout = DEFAULT_TIMEOUT()
+      core::mwcore::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
       return (chnPutcore::os::Timeout(Channel::channel, x, timeout.raw) == Q_OK) ? 1 : 0;
@@ -90,7 +90,7 @@ public:
    inline std::size_t
    get(
       uint8_t&       x,
-      core::mw::core::os::Time timeout = DEFAULT_TIMEOUT()
+      core::mwcore::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
       msg_t tmp = chnGetcore::os::Timeout(Channel::channel, timeout.raw);
@@ -107,7 +107,7 @@ public:
    write(
       const uint8_t* buffer,
       std::size_t    size,
-      core::mw::core::os::Time timeout = DEFAULT_TIMEOUT()
+      core::mwcore::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
       return chnWritecore::os::Timeout(Channel::channel, buffer, size, timeout.raw);
@@ -117,7 +117,7 @@ public:
    read(
       uint8_t*       buffer,
       std::size_t    size,
-      core::mw::core::os::Time timeout = DEFAULT_TIMEOUT()
+      core::mwcore::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
       return chnReadcore::os::Timeout(Channel::channel, buffer, size, timeout.raw);
@@ -195,7 +195,7 @@ public:
    read(
       char*          buffer,
       std::size_t    size,
-      core::mw::core::os::Time timeout = core::mw::core::os::Time::INFINITE
+      core::mwcore::os::Time timeout = core::mwcore::os::Time::INFINITE
    )
    {
       return 0;

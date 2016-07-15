@@ -85,7 +85,7 @@ struct CoreTypeTraitsHelperF<CoreType::TIMESTAMP>{
       uint32_t sec;
       uint32_t nsec;
    } Type;
-//		typedef core::mw::core::os::Time Type;
+//		typedef core::mwcore::os::Time Type;
    static const std::size_t sizeOfType = sizeof(Type);
 };
 

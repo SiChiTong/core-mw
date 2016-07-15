@@ -30,16 +30,16 @@ class DebugTransport:
    public Transport
 {
 private:
-   ::core::os::Thread* rx_threadp;
-   ::core::os::Thread* tx_threadp;
+   core::os::Thread* rx_threadp;
+   core::os::Thread* tx_threadp;
 
    BaseChannel* channelp;
    char*        namebufp;
 
-   ::core::os::Semaphore subp_sem;
+   core::os::Semaphore subp_sem;
    BaseSubscriberQueue subp_queue;
 
-   ::core::os::Mutex send_lock;
+   core::os::Mutex send_lock;
 
    enum {
       MGMT_BUFFER_LENGTH = 4
@@ -75,10 +75,10 @@ public:
    initialize(
       void*            rx_stackp,
       size_t           rx_stacklen,
-      ::core::os::Thread::Priority rx_priority,
+      core::os::Thread::Priority rx_priority,
       void*            tx_stackp,
       size_t           tx_stacklen,
-      ::core::os::Thread::Priority tx_priority
+      core::os::Thread::Priority tx_priority
    );
 
    void
@@ -229,12 +229,12 @@ public:
 private:
    static void
    rx_threadf(
-      ::core::os::Thread::Argument arg
+      core::os::Thread::Argument arg
    );
 
    static void
    tx_threadf(
-      ::core::os::Thread::Argument arg
+      core::os::Thread::Argument arg
    );
 };
 

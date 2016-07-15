@@ -18,7 +18,7 @@ class ReMutex:
 {
 private:
    size_t counter;
-   ::core::os::Mutex  mutex;
+   core::os::Mutex  mutex;
 
 public:
    void
@@ -78,18 +78,18 @@ inline
 void
 ReMutex::acquire()
 {
-   ::core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
    acquire_unsafe();
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 }
 
 inline
 void
 ReMutex::release()
 {
-   ::core::os::SysLock::acquire();
+   core::os::SysLock::acquire();
    release_unsafe();
-   ::core::os::SysLock::release();
+   core::os::SysLock::release();
 }
 
 inline

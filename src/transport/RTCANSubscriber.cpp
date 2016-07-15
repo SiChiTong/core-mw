@@ -14,7 +14,7 @@ NAMESPACE_CORE_MW_BEGIN
 bool
 RTCANSubscriber::fetch_unsafe(
    Message*& msgp,
-   ::core::os::Time&     timestamp
+   core::os::Time&     timestamp
 )
 {
    (void)msgp;
@@ -37,7 +37,7 @@ RTCANSubscriber::fetch_unsafe(
 bool
 RTCANSubscriber::notify_unsafe(
    Message&    msg,
-   const ::core::os::Time& timestamp
+   const core::os::Time& timestamp
 )
 {
    RTCANTransport* transportp = static_cast<RTCANTransport*>(get_transport());

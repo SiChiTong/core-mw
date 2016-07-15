@@ -39,13 +39,13 @@ public:
    virtual bool
    notify_unsafe(
       Message&    msg,
-      const ::core::os::Time& timestamp
+      const core::os::Time& timestamp
    ) = 0;
 
    virtual bool
    fetch_unsafe(
       Message*& msgp,
-      ::core::os::Time&     timestamp
+      core::os::Time&     timestamp
    ) = 0;
 
    bool
@@ -56,14 +56,14 @@ public:
    virtual bool
    notify(
       Message&    msg,
-      const ::core::os::Time& timestamp,
+      const core::os::Time& timestamp,
       bool        mustReschedule = false
    ) = 0;
 
    virtual bool
    fetch(
       Message*& msgp,
-      ::core::os::Time&     timestamp
+      core::os::Time&     timestamp
    ) = 0;
 
    bool

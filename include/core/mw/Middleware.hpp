@@ -42,7 +42,7 @@ class Middleware:
 public:
    struct PubSubStep {
       PubSubStep* nextp;
-      ::core::os::Time        timestamp;
+      core::os::Time        timestamp;
       Transport*  transportp;
       uint16_t    payload_size;
       uint16_t    queue_length;
@@ -69,8 +69,8 @@ private:
    Topic   mgmt_topic;
    void*   mgmt_stackp;
    size_t  mgmt_stacklen;
-   ::core::os::Thread* mgmt_threadp;
-   ::core::os::Thread::Priority mgmt_priority;
+   core::os::Thread* mgmt_threadp;
+   core::os::Thread::Priority mgmt_priority;
    Node mgmt_node;
    Publisher<MgmtMsg>        mgmt_pub;
    SubscriberExtBuf<MgmtMsg> mgmt_sub;
@@ -93,7 +93,7 @@ private:
    StaticList<Node>::ConstIterator iter_nodes;
    StaticList<LocalPublisher>::ConstIterator  iter_publishers;
    StaticList<LocalSubscriber>::ConstIterator iter_subscribers;
-   ::core::os::Time iter_lasttime;
+   core::os::Time iter_lasttime;
 #endif
 
    bool   stopped;
@@ -134,10 +134,10 @@ public:
    initialize(
       void*            mgmt_stackp,
       size_t           mgmt_stacklen,
-      ::core::os::Thread::Priority mgmt_priority,
+      core::os::Thread::Priority mgmt_priority,
       void*            boot_stackp = NULL,
       size_t           boot_stacklen = 0,
-      ::core::os::Thread::Priority boot_priority = ::core::os::Thread::LOWEST
+      core::os::Thread::Priority boot_priority = core::os::Thread::LOWEST
    );
 
    void
@@ -184,7 +184,7 @@ public:
    advertise(
       LocalPublisher& pub,
       const char*     namep,
-      const ::core::os::Time&     publish_timeout,
+      const core::os::Time&     publish_timeout,
       size_t          type_size
    );
 
@@ -192,7 +192,7 @@ public:
    advertise(
       RemotePublisher& pub,
       const char*      namep,
-      const ::core::os::Time&      publish_timeout,
+      const core::os::Time&      publish_timeout,
       size_t           type_size
    );
 
@@ -249,7 +249,7 @@ private:
 private:
    static void
    mgmt_threadf(
-      ::core::os::Thread::Argument
+      core::os::Thread::Argument
    );
 
    void

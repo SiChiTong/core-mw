@@ -23,7 +23,7 @@ Transport::touch_publisher(
    const uint8_t raw_params[]
 )
 {
-   ::core::os::ScopedLock<::core::os::Mutex> lock(publishers_lock);
+   core::os::ScopedLock<core::os::Mutex> lock(publishers_lock);
 
    // Check if the remote publisher already exists
    RemotePublisher* pubp;
@@ -41,7 +41,7 @@ Transport::touch_publisher(
    }
 
    pubp->notify_advertised(topic);
-   topic.advertise(*pubp, ::core::os::Time::INFINITE);
+   topic.advertise(*pubp, core::os::Time::INFINITE);
    publishers.link(pubp->by_transport);
 
    return true;
@@ -54,7 +54,7 @@ Transport::touch_subscriber(
    uint8_t raw_params[]
 )
 {
-   ::core::os::ScopedLock<::core::os::Mutex> lock(subscribers_lock);
+   core::os::ScopedLock<core::os::Mutex> lock(subscribers_lock);
 
    // Check if the remote subscriber already exists
    RemoteSubscriber* subp;
@@ -121,7 +121,7 @@ bool
 Transport::advertise(
    RemotePublisher& pub,
    const char*      namep,
-   const ::core::os::Time&      publish_timeout,
+   const core::os::Time&      publish_timeout,
    size_t           type_size
 )
 {
