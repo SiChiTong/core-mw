@@ -7,7 +7,7 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/BaseSubscriber.hpp>
 #include <core/mw/StaticList.hpp>
 #include <core/mw/MessagePtrQueue.hpp>
@@ -58,13 +58,13 @@ public:
    bool
    fetch_unsafe(
       Message*& msgp,
-      Time&     timestamp
+      ::core::os::Time&     timestamp
    );
 
    bool
    notify_unsafe(
       Message&    msg,
-      const Time& timestamp
+      const ::core::os::Time& timestamp
    );
 
    bool
@@ -75,13 +75,13 @@ public:
    bool
    fetch(
       Message*& msgp,
-      Time&     timestamp
+      ::core::os::Time&     timestamp
    );
 
    bool
    notify(
       Message&    msg,
-      const Time& timestamp,
+      const ::core::os::Time& timestamp,
       bool        mustReschedule = false
    );
 
@@ -131,11 +131,11 @@ inline
 bool
 LocalSubscriber::fetch_unsafe(
    Message*& msgp,
-   Time&     timestamp
+   ::core::os::Time&     timestamp
 )
 {
    if (msgp_queue.fetch_unsafe(msgp)) {
-      timestamp = Time::now();
+      timestamp = ::core::os::Time::now();
       return true;
    }
 
@@ -146,7 +146,7 @@ inline
 bool
 LocalSubscriber::notify_unsafe(
    Message&    msg,
-   const Time& timestamp
+   const ::core::os::Time& timestamp
 )
 {
    (void)timestamp;

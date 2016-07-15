@@ -7,17 +7,16 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/MessagePtrQueue.hpp>
 #include <core/mw/StaticList.hpp>
-#include <core/mw/MemoryPool.hpp>
+#include <core/os/MemoryPool.hpp>
+#include <core/os/Time.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
 class Topic;
 class Message;
-class Time;
-
 
 class BaseSubscriber:
    private Uncopyable
@@ -40,13 +39,13 @@ public:
    virtual bool
    notify_unsafe(
       Message&    msg,
-      const Time& timestamp
+      const ::core::os::Time& timestamp
    ) = 0;
 
    virtual bool
    fetch_unsafe(
       Message*& msgp,
-      Time&     timestamp
+      ::core::os::Time&     timestamp
    ) = 0;
 
    bool
@@ -57,14 +56,14 @@ public:
    virtual bool
    notify(
       Message&    msg,
-      const Time& timestamp,
+      const ::core::os::Time& timestamp,
       bool        mustReschedule = false
    ) = 0;
 
    virtual bool
    fetch(
       Message*& msgp,
-      Time&     timestamp
+      ::core::os::Time&     timestamp
    ) = 0;
 
    bool

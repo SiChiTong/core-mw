@@ -6,15 +6,15 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
 #include <ch.h>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 
 class SysLock_:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    SysLock_();
@@ -42,4 +42,4 @@ SysLock_::release()
    chSysUnlock();
 }
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

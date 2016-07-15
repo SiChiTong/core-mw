@@ -7,7 +7,7 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/Message.hpp>
 #include <core/mw/MgmtMsg.hpp>
 
@@ -18,7 +18,7 @@ class Topic;
 
 
 class BasePublisher:
-   private Uncopyable
+   private ::core::Uncopyable
 {
 private:
    Topic* topicp;
@@ -132,9 +132,9 @@ BasePublisher::alloc(
    Message*& msgp
 )
 {
-   SysLock::acquire();
+   ::core::os::SysLock::acquire();
    bool success = alloc_unsafe(msgp);
-   SysLock::release();
+   ::core::os::SysLock::release();
 
    return success;
 }
@@ -148,7 +148,7 @@ BasePublisher::publish_locally(
 {
    CORE_ASSERT(topicp != NULL);
 
-   return topicp->notify_locals(msg, Time::now(), mustReschedule);
+   return topicp->notify_locals(msg, ::core::os::Time::now(), mustReschedule);
 }
 
 inline
@@ -159,7 +159,7 @@ BasePublisher::publish_remotely(
 {
    CORE_ASSERT(topicp != NULL);
 
-   return topicp->notify_remotes(msg, Time::now());
+   return topicp->notify_remotes(msg, ::core::os::Time::now());
 }
 
 inline

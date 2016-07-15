@@ -6,9 +6,9 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
+#include <core/namespace.hpp>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_BEGIN
 
 
 class Uncopyable
@@ -40,4 +40,4 @@ protected:
 };
 
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_END

@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
 #include <ch.h>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 class MemoryPool_;
 class Time;
@@ -138,12 +138,12 @@ public:
 };
 
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END
 
-#include <core/mw/impl/MemoryPool_.hpp>
-#include <core/mw/Time.hpp>
+#include <core/os/impl/MemoryPool_.hpp>
+#include <core/os/Time.hpp>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 
 inline
@@ -352,4 +352,4 @@ Thread_::should_terminate()
    return chThdShouldTerminateX();
 }
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

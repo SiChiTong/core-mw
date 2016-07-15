@@ -7,16 +7,16 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/StaticList.hpp>
 #include <core/mw/TimestampedMsgPtrQueue.hpp>
-#include <core/mw/Mutex.hpp>
+#include <core/os/Mutex.hpp>
 #include <core/mw/NamingTraits.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
 class Message;
-class Time;
+
 class Topic;
 class RemotePublisher;
 class RemoteSubscriber;
@@ -31,8 +31,8 @@ protected:
    const char* namep;
    StaticList<RemotePublisher>  publishers;
    StaticList<RemoteSubscriber> subscribers;
-   Mutex publishers_lock;
-   Mutex subscribers_lock;
+   ::core::os::Mutex publishers_lock;
+   ::core::os::Mutex subscribers_lock;
 
 private:
    mutable StaticList<Transport>::Link by_middleware;
@@ -87,7 +87,7 @@ protected:
    advertise(
       RemotePublisher& pub,
       const char*      namep,
-      const Time&      publish_timeout,
+      const ::core::os::Time&      publish_timeout,
       size_t           type_size
    );
 
@@ -106,7 +106,7 @@ protected:
    advertise(
       RemotePublisher& pub,
       const char*      namep,
-      const Time&      publish_timeout
+      const ::core::os::Time&      publish_timeout
    );
 
 
@@ -184,7 +184,7 @@ bool
 Transport::advertise(
    RemotePublisher& pub,
    const char*      namep,
-   const Time&      publish_timeout
+   const ::core::os::Time&      publish_timeout
 )
 {
    static_cast_check<MessageType, Message>();
@@ -202,8 +202,7 @@ Transport::subscribe(
 )
 {
    static_cast_check<MessageType, Message>();
-   return subscribe(sub, namep, msgpool_buf, msgpool_buflen,
-                    sizeof(MessageType));
+   return subscribe(sub, namep, msgpool_buf, msgpool_buflen, sizeof(MessageType));
 }
 
 inline
@@ -213,9 +212,7 @@ Transport::has_name(
    const char*      namep
 )
 {
-   return namep != NULL
-          && 0 == strncmp(transport.get_name(), namep,
-                          NamingTraits<Transport>::MAX_LENGTH);
+   return namep != NULL && 0 == strncmp(transport.get_name(), namep, NamingTraits<Transport>::MAX_LENGTH);
 }
 
 NAMESPACE_CORE_MW_END

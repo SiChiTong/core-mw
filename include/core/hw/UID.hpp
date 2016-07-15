@@ -8,13 +8,13 @@
 
 #include <core/hw/namespace.hpp>
 #include <core/hw/common.hpp>
-#include <core/mw/Array.hpp>
+#include <core/Array.hpp>
 
 #include "hal.h"
 
 NAMESPACE_CORE_HW_BEGIN
 
-using UID = core::mw::Array<uint8_t, 12>;
+using UID = core::Array<uint8_t, 12>;
 
 class UID_
 {

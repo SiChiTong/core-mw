@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
-#include <core/mw/impl/SysLock_.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
+#include <core/os/impl/SysLock_.hpp>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 
 class SysLock:
@@ -58,4 +58,4 @@ SysLock::release()
    SysLock_::release();
 }
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

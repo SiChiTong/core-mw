@@ -6,15 +6,15 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
 #include <ch.h>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 
 class MemoryPool_:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    typedef ::memgetfunc_t Allocator;
@@ -182,4 +182,4 @@ MemoryPool_::MemoryPool_(
    extend(arrayp, length);
 }
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

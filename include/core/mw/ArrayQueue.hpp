@@ -7,7 +7,7 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -151,9 +151,9 @@ ArrayQueue<Item>::post(
    Item item
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = post_unsafe(item);
-   SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }
@@ -165,9 +165,9 @@ ArrayQueue<Item>::fetch(
    Item& item
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = fetch_unsafe(item);
-   SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }
@@ -177,9 +177,9 @@ inline
 bool
 ArrayQueue<Item>::skip()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = skip_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }

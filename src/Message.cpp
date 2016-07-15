@@ -14,18 +14,17 @@ NAMESPACE_CORE_MW_BEGIN
 void
 Message::acquire()
 {
-   SysLock::acquire();
-
+   core::os::SysLock::acquire();
    acquire_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 bool
 Message::release()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool floating = release_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return floating;
 }
@@ -33,10 +32,10 @@ Message::release()
 void
 Message::reset()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    reset_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 void

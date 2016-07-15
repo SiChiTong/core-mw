@@ -7,8 +7,8 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/Array.hpp>
-#include <core/mw/Time.hpp>
+#include <core/Array.hpp>
+#include <core/os/Time.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -85,7 +85,7 @@ struct CoreTypeTraitsHelperF<CoreType::TIMESTAMP>{
       uint32_t sec;
       uint32_t nsec;
    } Type;
-//		typedef core::mw::Time Type;
+//		typedef core::mw::core::os::Time Type;
    static const std::size_t sizeOfType = sizeof(Type);
 };
 
@@ -176,7 +176,7 @@ struct CoreTypeTraits {
    static const std::size_t size        = S;
 
    using BaseType = typename CoreTypeTraitsHelperF<T>::Type;
-   using Type     = Array<BaseType, S>;
+   using Type     = ::core::Array<BaseType, S>;
 };
 
 template <CoreType T>
@@ -212,7 +212,7 @@ size(
 template <typename T, std::size_t S>
 inline std::size_t
 size(
-   const Array<T, S> (&v)
+   const ::core::Array<T, S> (&v)
 )
 {
    return S;
@@ -239,7 +239,7 @@ coreType(
 template <typename T, std::size_t S>
 inline CoreType
 coreType(
-   const Array<T, S> (&v)
+   const ::core::Array<T, S> (&v)
 )
 {
    return CoreTypeTraitsHelperB<T>::types;

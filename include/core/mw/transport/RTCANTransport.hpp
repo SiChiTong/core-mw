@@ -7,16 +7,16 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/Transport.hpp>
 #include <core/mw/BaseSubscriberQueue.hpp>
 #include <core/mw/TimestampedMsgPtrQueue.hpp>
-#include <core/mw/Mutex.hpp>
+#include <core/os/Mutex.hpp>
 #include <core/mw/MgmtMsg.hpp>
 #include <core/mw/BootMsg.hpp>
-#include <core/mw/Semaphore.hpp>
-#include <core/mw/Thread.hpp>
-#include <core/mw/MemoryPool.hpp>
+#include <core/os/Semaphore.hpp>
+#include <core/os/Thread.hpp>
+#include <core/os/MemoryPool.hpp>
 
 #include "rtcan.h"
 #include "RTCANPublisher.hpp"
@@ -34,7 +34,7 @@ private:
    RTCANDriver& rtcan;
    // FIXME to move in pub/sub?
    rtcan_msg_t header_buffer[10];
-   MemoryPool<rtcan_msg_t> header_pool;
+   ::core::os::MemoryPool<rtcan_msg_t> header_pool;
 
    BaseSubscriberQueue subp_queue;
 

@@ -7,11 +7,11 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/NamingTraits.hpp>
-#include <core/mw/impl/MemoryPool_.hpp>
+#include <core/os/impl/MemoryPool_.hpp>
 #include <core/mw/StaticList.hpp>
-#include <core/mw/Time.hpp>
+#include <core/os/Time.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -34,8 +34,8 @@ class Topic:
 
 private:
    const char* const namep;
-   Time        publish_timeout;
-   MemoryPool_ msg_pool;
+   ::core::os::Time        publish_timeout;
+   ::core::os::MemoryPool_ msg_pool;
    size_t      num_local_publishers;
    size_t      num_remote_publishers;
    StaticList<LocalSubscriber>  local_subscribers;
@@ -51,7 +51,7 @@ public:
    const char*
    get_name() const;
 
-   const Time&
+   const ::core::os::Time&
    get_publish_timeout() const;
 
    size_t
@@ -90,12 +90,12 @@ public:
    bool
    is_awaiting_subscriptions() const;
 
-   const Time
+   const ::core::os::Time
    compute_deadline_unsafe(
-      const Time& timestamp
+      const ::core::os::Time& timestamp
    ) const;
 
-   const Time
+   const ::core::os::Time
    compute_deadline_unsafe() const;
 
    Message*
@@ -121,28 +121,28 @@ public:
    bool
    notify_locals_unsafe(
       Message&    msg,
-      const Time& timestamp
+      const ::core::os::Time& timestamp
    );
 
    bool
    notify_remotes_unsafe(
       Message&    msg,
-      const Time& timestamp
+      const ::core::os::Time& timestamp
    );
 
    bool
    forward_copy_unsafe(
       const Message& msg,
-      const Time&    timestamp
+      const ::core::os::Time&    timestamp
    );
 
 
-   const Time
+   const ::core::os::Time
    compute_deadline(
-      const Time& timestamp
+      const ::core::os::Time& timestamp
    ) const;
 
-   const Time
+   const ::core::os::Time
    compute_deadline() const;
 
    Message*
@@ -168,20 +168,20 @@ public:
    bool
    notify_locals(
       Message&    msg,
-      const Time& timestamp,
+      const ::core::os::Time& timestamp,
       bool        mustReschedule = false
    );
 
    bool
    notify_remotes(
       Message&    msg,
-      const Time& timestamp
+      const ::core::os::Time& timestamp
    );
 
    bool
    forward_copy(
       const Message& msg,
-      const Time&    timestamp
+      const ::core::os::Time&    timestamp
    );
 
    void
@@ -193,13 +193,13 @@ public:
    void
    advertise(
       LocalPublisher& pub,
-      const Time&     publish_timeout
+      const ::core::os::Time&     publish_timeout
    );
 
    void
    advertise(
       RemotePublisher& pub,
-      const Time&      publish_timeout
+      const ::core::os::Time&      publish_timeout
    );
 
    void
@@ -290,7 +290,7 @@ Topic::get_name() const
 }
 
 inline
-const Time&
+const ::core::os::Time&
 Topic::get_publish_timeout() const
 {
    return publish_timeout;
@@ -389,19 +389,19 @@ Topic::is_awaiting_subscriptions() const
 }
 
 inline
-const Time
+const ::core::os::Time
 Topic::compute_deadline_unsafe(
-   const Time& timestamp
+   const ::core::os::Time& timestamp
 ) const
 {
    return timestamp + publish_timeout;
 }
 
 inline
-const Time
+const ::core::os::Time
 Topic::compute_deadline_unsafe() const
 {
-   return compute_deadline_unsafe(Time::now());
+   return compute_deadline_unsafe(::core::os::Time::now());
 }
 
 inline
@@ -453,23 +453,23 @@ Topic::free_unsafe(
 }
 
 inline
-const Time
+const ::core::os::Time
 Topic::compute_deadline(
-   const Time& timestamp
+   const ::core::os::Time& timestamp
 ) const
 {
-   SysLock::acquire();
-   const Time& deadline = compute_deadline_unsafe(timestamp);
-   SysLock::release();
+   ::core::os::SysLock::acquire();
+   const ::core::os::Time& deadline = compute_deadline_unsafe(timestamp);
+   ::core::os::SysLock::release();
 
    return deadline;
 }
 
 inline
-const Time
+const ::core::os::Time
 Topic::compute_deadline() const
 {
-   return compute_deadline(Time::now());
+   return compute_deadline(::core::os::Time::now());
 }
 
 template <typename MessageType>
@@ -489,9 +489,9 @@ Topic::release(
    Message& msg
 )
 {
-   SysLock::acquire();
+   ::core::os::SysLock::acquire();
    bool freed = release_unsafe(msg);
-   SysLock::release();
+   ::core::os::SysLock::release();
 
    return freed;
 }

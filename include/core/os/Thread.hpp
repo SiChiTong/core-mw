@@ -6,12 +6,12 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
-#include <core/mw/impl/Thread_.hpp>
-#include <core/mw/MemoryPool.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
+#include <core/os/impl/Thread_.hpp>
+#include <core/os/MemoryPool.hpp>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 class Time;
 
@@ -299,4 +299,4 @@ Thread::should_terminate()
    return Thread_::should_terminate();
 }
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

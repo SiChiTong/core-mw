@@ -7,7 +7,7 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/LocalPublisher.hpp>
 
 NAMESPACE_CORE_MW_BEGIN

@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
-#include <core/mw/impl/Semaphore_.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
+#include <core/os/impl/Semaphore_.hpp>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 
 class Semaphore:
@@ -165,4 +165,4 @@ Semaphore::Semaphore(
 {}
 
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

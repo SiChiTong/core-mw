@@ -8,9 +8,9 @@
 
 #include <core/mw/namespace.hpp>
 
-#include <core/mw/Thread.hpp>
-#include <core/mw/Condition.hpp>
-#include <core/mw/Mutex.hpp>
+#include <core/os/Thread.hpp>
+#include <core/os/Condition.hpp>
+#include <core/os/Mutex.hpp>
 #include <core/mw/Node.hpp>
 
 #include <core/mw/ICoreNode.hpp>
@@ -26,7 +26,7 @@ public:
 
    CoreNode(
       const char*                name,
-      core::mw::Thread::Priority priority = core::mw::Thread::PriorityEnum::NORMAL
+      ::core::os::Thread::Priority priority = ::core::os::Thread::PriorityEnum::NORMAL
    );
 
    bool
@@ -82,7 +82,7 @@ protected:
    CoreNode();
 
    std::size_t _workingAreaSize;
-   core::mw::Thread::Priority _priority;
+   core::os::Thread::Priority _priority;
 
 private:
    State
@@ -97,10 +97,10 @@ private:
    _run();
 
 
-   core::mw::Thread* _runner;
+   ::core::os::Thread* _runner;
 
-   core::mw::Mutex     _mutex;
-   core::mw::Condition _condition;
+   ::core::os::Mutex     _mutex;
+   ::core::os::Condition _condition;
 
    bool _mustRun;
    bool _mustLoop;

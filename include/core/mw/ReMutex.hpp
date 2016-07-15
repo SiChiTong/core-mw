@@ -7,18 +7,18 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
-#include <core/mw/Mutex.hpp>
+#include <core/common.hpp>
+#include <core/os/Mutex.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
 
 class ReMutex:
-   private Uncopyable
+   private ::core::Uncopyable
 {
 private:
    size_t counter;
-   Mutex  mutex;
+   ::core::os::Mutex  mutex;
 
 public:
    void
@@ -78,20 +78,18 @@ inline
 void
 ReMutex::acquire()
 {
-   SysLock::acquire();
-
+   ::core::os::SysLock::acquire();
    acquire_unsafe();
-   SysLock::release();
+   ::core::os::SysLock::release();
 }
 
 inline
 void
 ReMutex::release()
 {
-   SysLock::acquire();
-
+   ::core::os::SysLock::acquire();
    release_unsafe();
-   SysLock::release();
+   ::core::os::SysLock::release();
 }
 
 inline

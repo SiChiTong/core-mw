@@ -113,9 +113,9 @@ StaticList_::find_first_unsafe(
 const StaticList_::Link*
 StaticList_::get_head() const
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    const Link* headp = get_head_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return headp;
 }
@@ -123,9 +123,9 @@ StaticList_::get_head() const
 bool
 StaticList_::is_empty() const
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = is_empty_unsafe();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }
@@ -134,15 +134,15 @@ size_t
 StaticList_::count() const
 {
    size_t count = 0;
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
-      SysLock::release();
+      core::os::SysLock::release();
       ++count;
-      SysLock::acquire();
+      core::os::SysLock::acquire();
    }
 
-   SysLock::release();
+   core::os::SysLock::release();
    return count;
 }
 
@@ -151,10 +151,10 @@ StaticList_::link(
    Link& link
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    link_unsafe(link);
-   SysLock::release();
+   core::os::SysLock::release();
 }
 
 bool
@@ -162,9 +162,9 @@ StaticList_::unlink(
    Link& link
 )
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool success = unlink_unsafe(link);
-   SysLock::release();
+   core::os::SysLock::release();
 
    return success;
 }
@@ -179,19 +179,19 @@ StaticList_::index_of(
    }
 
    int i = 0;
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    for (const Link* linkp = headp; linkp != NULL; ++i, linkp = linkp->nextp) {
-      SysLock::release();
+      core::os::SysLock::release();
 
       if (linkp->itemp == itemp) {
          return i;
       }
 
-      SysLock::acquire();
+      core::os::SysLock::acquire();
    }
 
-   SysLock::release();
+   core::os::SysLock::release();
    return -1;
 } // StaticList_::index_of
 
@@ -200,19 +200,19 @@ StaticList_::contains(
    const void* itemp
 ) const
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
       if (linkp->itemp == itemp) {
-         SysLock::release();
+         core::os::SysLock::release();
          return true;
       }
 
-      SysLock::release();
-      SysLock::acquire();
+      core::os::SysLock::release();
+      core::os::SysLock::acquire();
    }
 
-   SysLock::release();
+   core::os::SysLock::release();
    return false;
 }
 
@@ -221,19 +221,19 @@ StaticList_::find_first(
    Predicate pred_func
 ) const
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
-      SysLock::release();
+      core::os::SysLock::release();
 
       if (pred_func(linkp->itemp)) {
          return linkp->itemp;
       }
 
-      SysLock::acquire();
+      core::os::SysLock::acquire();
    }
 
-   SysLock::release();
+   core::os::SysLock::release();
    return NULL;
 }
 
@@ -245,19 +245,19 @@ StaticList_::find_first(
 {
    CORE_ASSERT(featuresp != NULL);
 
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
-      SysLock::release();
+      core::os::SysLock::release();
 
       if (match_func(linkp->itemp, featuresp)) {
          return linkp->itemp;
       }
 
-      SysLock::acquire();
+      core::os::SysLock::acquire();
    }
 
-   SysLock::release();
+   core::os::SysLock::release();
    return NULL;
 } // StaticList_::find_first
 

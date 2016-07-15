@@ -7,15 +7,14 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/SubscriberExtBuf.hpp>
+#include <core/os/Time.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
-class Time;
 class Message;
 class Node;
-
 
 template <typename MessageType, unsigned QUEUE_LENGTH>
 class Subscriber:

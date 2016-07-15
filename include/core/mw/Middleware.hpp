@@ -7,11 +7,11 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/StaticList.hpp>
 #include <core/mw/Topic.hpp>
-#include <core/mw/Thread.hpp>
-#include <core/mw/MemoryPool.hpp>
+#include <core/os/Thread.hpp>
+#include <core/os/MemoryPool.hpp>
 #include <core/mw/MgmtMsg.hpp>
 #include <core/mw/Publisher.hpp>
 #include <core/mw/Subscriber.hpp>
@@ -29,7 +29,6 @@ NAMESPACE_CORE_MW_BEGIN
 
 class Node;
 class Transport;
-class Time;
 class Topic;
 class LocalPublisher;
 class LocalSubscriber;
@@ -43,7 +42,7 @@ class Middleware:
 public:
    struct PubSubStep {
       PubSubStep* nextp;
-      Time        timestamp;
+      ::core::os::Time        timestamp;
       Transport*  transportp;
       uint16_t    payload_size;
       uint16_t    queue_length;
@@ -70,8 +69,8 @@ private:
    Topic   mgmt_topic;
    void*   mgmt_stackp;
    size_t  mgmt_stacklen;
-   Thread* mgmt_threadp;
-   Thread::Priority mgmt_priority;
+   ::core::os::Thread* mgmt_threadp;
+   ::core::os::Thread::Priority mgmt_priority;
    Node mgmt_node;
    Publisher<MgmtMsg>        mgmt_pub;
    SubscriberExtBuf<MgmtMsg> mgmt_sub;
@@ -83,7 +82,7 @@ private:
 #endif
 #if CORE_USE_BRIDGE_MODE
    PubSubStep* pubsub_stepsp;
-   MemoryPool<PubSubStep> pubsub_pool;
+   core::os::MemoryPool<PubSubStep> pubsub_pool;
 #endif // CORE_USE_BRIDGE_MODE
 
 #if CORE_ITERATE_PUBSUB
@@ -94,7 +93,7 @@ private:
    StaticList<Node>::ConstIterator iter_nodes;
    StaticList<LocalPublisher>::ConstIterator  iter_publishers;
    StaticList<LocalSubscriber>::ConstIterator iter_subscribers;
-   Time iter_lasttime;
+   ::core::os::Time iter_lasttime;
 #endif
 
    bool   stopped;
@@ -135,10 +134,10 @@ public:
    initialize(
       void*            mgmt_stackp,
       size_t           mgmt_stacklen,
-      Thread::Priority mgmt_priority,
+      ::core::os::Thread::Priority mgmt_priority,
       void*            boot_stackp = NULL,
       size_t           boot_stacklen = 0,
-      Thread::Priority boot_priority = Thread::LOWEST
+      ::core::os::Thread::Priority boot_priority = ::core::os::Thread::LOWEST
    );
 
    void
@@ -185,7 +184,7 @@ public:
    advertise(
       LocalPublisher& pub,
       const char*     namep,
-      const Time&     publish_timeout,
+      const ::core::os::Time&     publish_timeout,
       size_t          type_size
    );
 
@@ -193,7 +192,7 @@ public:
    advertise(
       RemotePublisher& pub,
       const char*      namep,
-      const Time&      publish_timeout,
+      const ::core::os::Time&      publish_timeout,
       size_t           type_size
    );
 
@@ -250,7 +249,7 @@ private:
 private:
    static void
    mgmt_threadf(
-      Thread::Argument
+      ::core::os::Thread::Argument
    );
 
    void
@@ -334,9 +333,9 @@ inline
 bool
 ok()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
    bool alive = !Middleware::instance.is_stopped();
-   SysLock::release();
+   core::os::SysLock::release();
 
    return alive;
 }

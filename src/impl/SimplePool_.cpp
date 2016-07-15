@@ -36,15 +36,15 @@ SimplePool_::free_unsafe(
 void*
 SimplePool_::alloc()
 {
-   SysLock::acquire();
+   core::os::SysLock::acquire();
 
    if (headp != NULL) {
       void* blockp = headp;
       headp = headp->nextp;
-      SysLock::release();
+      core::os::SysLock::release();
       return blockp;
    } else {
-      SysLock::release();
+      core::os::SysLock::release();
       return NULL;
    }
 }
@@ -55,10 +55,10 @@ SimplePool_::free(
 )
 {
    if (objp != NULL) {
-      SysLock::acquire();
+      core::os::SysLock::acquire();
       reinterpret_cast<Header*>(objp)->nextp = headp;
       headp = reinterpret_cast<Header*>(objp);
-      SysLock::release();
+      core::os::SysLock::release();
    }
 }
 

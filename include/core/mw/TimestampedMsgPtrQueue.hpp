@@ -7,9 +7,9 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/ArrayQueue.hpp>
-#include <core/mw/Time.hpp>
+#include <core/os/Time.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -21,7 +21,7 @@ class TimestampedMsgPtrQueue
 public:
    struct Entry {
       Message* msgp;
-      Time     timestamp;
+      ::core::os::Time     timestamp;
 
       Entry&
       operator=(
@@ -32,7 +32,7 @@ public:
       Entry();
       Entry(
          Message*    msgp,
-         const Time& timestamp
+         const ::core::os::Time& timestamp
       );
    };
 
@@ -92,7 +92,7 @@ TimestampedMsgPtrQueue::Entry::operator=(
 inline
 TimestampedMsgPtrQueue::Entry::Entry(
    Message*    msgp,
-   const Time& timestamp
+   const ::core::os::Time& timestamp
 )
    :
    msgp(msgp),

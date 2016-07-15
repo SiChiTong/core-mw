@@ -8,7 +8,7 @@
 
 #include <core/mw/namespace.hpp>
 #include <core/mw/CoreType.hpp>
-#include <core/mw/Array.hpp>
+#include <core/Array.hpp>
 #include <core/mw/StaticList.hpp>
 #include <core/mw/NamingTraits.hpp>
 
@@ -23,7 +23,7 @@ public: \
    core::mw::CoreParameter<core::mw::CoreType::__type__, __size__>__name__;
 #define CORE_CONFIGURATION_MAP_BEGIN(__n__) \
 private: \
-   const core::mw::Array<KeyValue, __n__>_map = {{
+   const core::Array<KeyValue, __n__>_map = {{
 #define CORE_CONFIGURATION_MAP_ENTRY(__name__, __field__) { # __field__, core::mw::pointer_to_helper<__name__, decltype(__name__::__field__), & __name__::__field__>::pointer},
 #define CORE_CONFIGURATION_MAP_END() } \
    };
@@ -100,7 +100,7 @@ struct CoreParameterBase {
 
 
    template <typename T, std::size_t S>
-   operator Array<T, S>() const;
+   operator ::core::Array<T, S>() const;
 
    operator const char*() const;
 };
@@ -149,10 +149,10 @@ CoreParameterBase::operator T() const
 }
 
 template <typename T, std::size_t S>
-CoreParameterBase::operator Array<T, S>() const {
+CoreParameterBase::operator ::core::Array<T, S>() const {
    CORE_ASSERT(S == getSize() && CoreTypeTraitsHelperB<T>::types == getCoreType()); // make sure we are doing something meaningful...
 
-   Array<T, S>tmp;
+   ::core::Array<T, S>tmp;
 
    get(tmp.begin());
 

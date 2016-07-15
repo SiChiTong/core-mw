@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
-#include <core/mw/impl/Mutex_.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
+#include <core/os/impl/Mutex_.hpp>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 
 class Mutex:
@@ -96,4 +96,4 @@ Mutex::Mutex(
 {}
 
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

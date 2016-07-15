@@ -46,7 +46,7 @@ CoreNodeManager::syncronize(
       done  = true;
       error = false;
 
-      core::mw::Thread::yield();
+      core::os::Thread::yield();
 
       FOREACH_NODE(node) {
          ICoreNode::State state2 = node->state();

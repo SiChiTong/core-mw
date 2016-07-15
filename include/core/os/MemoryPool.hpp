@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
-#include <core/mw/impl/MemoryPool_.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
+#include <core/os/impl/MemoryPool_.hpp>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 
 template <typename Item>
@@ -185,4 +185,4 @@ MemoryPool<Item>::MemoryPool(
    CORE_ASSERT(sizeof(Item) >= sizeof(void*));
 }
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

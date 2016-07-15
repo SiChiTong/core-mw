@@ -6,16 +6,16 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
-#include <core/mw/Time.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
+#include <core/os/Time.hpp>
 #include <ch.h>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 
 class Semaphore_:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    typedef cnt_t Count;
@@ -174,4 +174,4 @@ Semaphore_::Semaphore_(
    }
 }
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

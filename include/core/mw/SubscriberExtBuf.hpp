@@ -7,12 +7,12 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/LocalSubscriber.hpp>
+#include <core/os/Time.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
-class Time;
 class Message;
 
 
@@ -43,7 +43,7 @@ public:
    bool
    fetch(
       MessageType*& msgp,
-      Time&         timestamp
+      core::os::Time&         timestamp
    );
 
    bool
@@ -78,7 +78,7 @@ inline
 bool
 SubscriberExtBuf<MT>::fetch(
    MT*&  msgp,
-   Time& timestamp
+   core::os::Time& timestamp
 )
 {
    static_cast_check<MT, Message>();

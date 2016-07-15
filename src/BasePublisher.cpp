@@ -21,7 +21,7 @@ BasePublisher::publish_unsafe(
 
    msg.acquire_unsafe();
 
-   Time now = Time::now();
+   ::core::os::Time now = ::core::os::Time::now();
    bool success;
    success = topicp->notify_locals_unsafe(msg, now);
    success = topicp->notify_remotes_unsafe(msg, now) && success;
@@ -41,7 +41,7 @@ BasePublisher::publish_locally_unsafe(
    CORE_ASSERT(topicp != NULL);
 
    msg.acquire_unsafe();
-   bool success = topicp->notify_locals_unsafe(msg, Time::now());
+   bool success = topicp->notify_locals_unsafe(msg, ::core::os::Time::now());
 
    if (!msg.release_unsafe()) {
       topicp->free_unsafe(msg);
@@ -58,7 +58,7 @@ BasePublisher::publish_remotely_unsafe(
    CORE_ASSERT(topicp != NULL);
 
    msg.acquire_unsafe();
-   bool success = topicp->notify_remotes_unsafe(msg, Time::now());
+   bool success = topicp->notify_remotes_unsafe(msg, ::core::os::Time::now());
 
    if (!msg.release_unsafe()) {
       topicp->free_unsafe(msg);
@@ -77,7 +77,7 @@ BasePublisher::publish(
 
    msg.acquire();
 
-   Time now = Time::now();
+   ::core::os::Time now = ::core::os::Time::now();
    bool success;
    success = topicp->notify_locals(msg, now, mustReschedule);
    success = topicp->notify_remotes(msg, now) && success;

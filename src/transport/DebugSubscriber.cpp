@@ -27,7 +27,7 @@ DebugSubscriber::get_queue_count() const
 bool
 DebugSubscriber::notify_unsafe(
    Message&    msg,
-   const Time& timestamp
+   const ::core::os::Time& timestamp
 )
 {
    TimestampedMsgPtrQueue::Entry entry(&msg, timestamp);
@@ -47,7 +47,7 @@ DebugSubscriber::notify_unsafe(
 bool
 DebugSubscriber::fetch_unsafe(
    Message*& msgp,
-   Time&     timestamp
+   ::core::os::Time&     timestamp
 )
 {
    TimestampedMsgPtrQueue::Entry entry;

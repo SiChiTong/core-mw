@@ -7,7 +7,7 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/RemoteSubscriber.hpp>
 #include <core/mw/TimestampedMsgPtrQueue.hpp>
 #include <core/mw/StaticList.hpp>
@@ -41,25 +41,25 @@ public:
    bool
    fetch_unsafe(
       Message*& msgp,
-      Time&     timestamp
+      ::core::os::Time&     timestamp
    );
 
    bool
    notify_unsafe(
       Message&    msg,
-      const Time& timestamp
+      const ::core::os::Time& timestamp
    );
 
    bool
    fetch(
       Message*& msgp,
-      Time&     timestamp
+      ::core::os::Time&     timestamp
    );
 
    bool
    notify(
       Message&    msg,
-      const Time& timestamp,
+      const ::core::os::Time& timestamp,
       bool        mustReschedule = false
    );
 
@@ -78,13 +78,13 @@ inline
 bool
 DebugSubscriber::notify(
    Message&    msg,
-   const Time& timestamp,
+   const ::core::os::Time& timestamp,
    bool        mustReschedule
 )
 {
-   SysLock::acquire();
+   ::core::os::SysLock::acquire();
    bool success = notify_unsafe(msg, timestamp);
-   SysLock::release();
+   ::core::os::SysLock::release();
 
    return success;
 }
@@ -93,12 +93,12 @@ inline
 bool
 DebugSubscriber::fetch(
    Message*& msgp,
-   Time&     timestamp
+   ::core::os::Time&     timestamp
 )
 {
-   SysLock::acquire();
+   ::core::os::SysLock::acquire();
    bool success = fetch_unsafe(msgp, timestamp);
-   SysLock::release();
+   ::core::os::SysLock::release();
 
    return success;
 }

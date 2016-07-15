@@ -16,13 +16,13 @@ LocalSubscriber::fetch(
    Message*& msgp
 )
 {
-   SysLock::acquire();
+	::core::os::SysLock::acquire();
 
    if (msgp_queue.fetch_unsafe(msgp)) {
-      SysLock::release();
+	   ::core::os::SysLock::release();
       return true;
    } else {
-      SysLock::release();
+	   ::core::os::SysLock::release();
       return false;
    }
 }
@@ -30,17 +30,17 @@ LocalSubscriber::fetch(
 bool
 LocalSubscriber::fetch(
    Message*& msgp,
-   Time&     timestamp
+   ::core::os::Time&     timestamp
 )
 {
-   SysLock::acquire();
+	::core::os::SysLock::acquire();
 
    if (msgp_queue.fetch_unsafe(msgp)) {
-      SysLock::release();
-      timestamp = Time::now();
+	   ::core::os::SysLock::release();
+      timestamp = ::core::os::Time::now();
       return true;
    } else {
-      SysLock::release();
+	   ::core::os::SysLock::release();
       return false;
    }
 }
@@ -48,19 +48,19 @@ LocalSubscriber::fetch(
 bool
 LocalSubscriber::notify(
    Message&    msg,
-   const Time& timestamp,
+   const ::core::os::Time& timestamp,
    bool        mustReschedule
 )
 {
    (void)timestamp;
-   SysLock::acquire();
+   ::core::os::SysLock::acquire();
 
    if (msgp_queue.post_unsafe(&msg)) {
       nodep->notify_unsafe(event_index, mustReschedule);
-      SysLock::release();
+      ::core::os::SysLock::release();
       return true;
    } else {
-      SysLock::release();
+	   ::core::os::SysLock::release();
       return false;
    }
 }

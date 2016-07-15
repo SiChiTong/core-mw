@@ -9,10 +9,10 @@
 #include <cstddef>
 #include <cstring>
 
-#include <core/mw/Uncopyable.hpp>
-#include <core/mw/Utils.hpp>
+#include <core/Uncopyable.hpp>
 
-#include <core/mw/SysLock.hpp>
+#include <core/mw/Utils.hpp>
+#include <core/os/SysLock.hpp>
 
 #ifdef USE_CORE_ASSERT
 #define CORE_ASSERT(expr) {chDbgCheck(expr); }

@@ -6,13 +6,13 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
-#include <core/mw/Time.hpp>
-#include <core/mw/Thread.hpp>
+#include <core/os/namespace.hpp>
+#include <core/common.hpp>
+#include <core/os/Time.hpp>
+#include <core/os/Thread.hpp>
 #include <ch.h>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 
 class SpinEvent_
@@ -135,4 +135,4 @@ SpinEvent_::SpinEvent_(
 {}
 
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END

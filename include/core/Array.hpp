@@ -6,11 +6,11 @@
 
 #pragma once
 
-#include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/namespace.hpp>
+#include <core/common.hpp>
 #include <memory>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_BEGIN
 
 template <typename T, std::size_t S>
 struct ArrayTraits {
@@ -203,4 +203,4 @@ struct Array {
    }
 };
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_END

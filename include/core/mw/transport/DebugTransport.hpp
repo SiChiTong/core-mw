@@ -7,21 +7,21 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/common.hpp>
+#include <core/common.hpp>
 #include <core/mw/Transport.hpp>
 #include <core/mw/BaseSubscriberQueue.hpp>
 #include <core/mw/TimestampedMsgPtrQueue.hpp>
-#include <core/mw/Mutex.hpp>
+#include <core/os/Mutex.hpp>
 #include <core/mw/MgmtMsg.hpp>
 #include <core/mw/BootMsg.hpp>
-#include <core/mw/Semaphore.hpp>
+#include <core/os/Semaphore.hpp>
 
 //#include <ch.h>
 #include <hal_channels.h>
 
 #include "DebugPublisher.hpp"
 #include "DebugSubscriber.hpp"
-#include <core/mw/Thread.hpp>
+#include <core/os/Thread.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -30,16 +30,16 @@ class DebugTransport:
    public Transport
 {
 private:
-   Thread* rx_threadp;
-   Thread* tx_threadp;
+   ::core::os::Thread* rx_threadp;
+   ::core::os::Thread* tx_threadp;
 
    BaseChannel* channelp;
    char*        namebufp;
 
-   Semaphore subp_sem;
+   ::core::os::Semaphore subp_sem;
    BaseSubscriberQueue subp_queue;
 
-   Mutex send_lock;
+   ::core::os::Mutex send_lock;
 
    enum {
       MGMT_BUFFER_LENGTH = 4
@@ -75,10 +75,10 @@ public:
    initialize(
       void*            rx_stackp,
       size_t           rx_stacklen,
-      Thread::Priority rx_priority,
+      ::core::os::Thread::Priority rx_priority,
       void*            tx_stackp,
       size_t           tx_stacklen,
-      Thread::Priority tx_priority
+      ::core::os::Thread::Priority tx_priority
    );
 
    void
@@ -209,7 +209,7 @@ private:
       const Message& msg,
       size_t         msg_size,
       const char*    topicp,
-      const Time&    deadline
+      const core::os::Time&    deadline
    );
 
    bool
@@ -229,12 +229,12 @@ public:
 private:
    static void
    rx_threadf(
-      Thread::Argument arg
+      ::core::os::Thread::Argument arg
    );
 
    static void
    tx_threadf(
-      Thread::Argument arg
+      ::core::os::Thread::Argument arg
    );
 };
 
