@@ -15,7 +15,7 @@ NAMESPACE_CORE_MW_BEGIN
 // TODO: ConstIterator
 template <typename T>
 class StaticQueue:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    struct Link {

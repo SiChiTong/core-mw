@@ -12,7 +12,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class SysLock_:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    SysLock_();

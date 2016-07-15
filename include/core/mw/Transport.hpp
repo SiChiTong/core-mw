@@ -23,7 +23,7 @@ class RemoteSubscriber;
 
 
 class Transport:
-   private Uncopyable
+   private core::Uncopyable
 {
    friend class Middleware;
 

@@ -14,7 +14,7 @@ NAMESPACE_CORE_OS_BEGIN
 
 
 class Condition:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    Condition_ impl;

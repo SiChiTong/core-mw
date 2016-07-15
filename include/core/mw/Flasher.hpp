@@ -18,7 +18,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class Flasher:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    typedef Flasher_::Data   Data;

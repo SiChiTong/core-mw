@@ -14,7 +14,7 @@ NAMESPACE_CORE_OS_BEGIN
 
 
 class Mutex:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    Mutex_ impl;

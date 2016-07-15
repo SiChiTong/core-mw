@@ -37,7 +37,7 @@ class RemoteSubscriber;
 
 
 class Middleware:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    struct PubSubStep {

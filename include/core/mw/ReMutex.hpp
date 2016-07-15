@@ -14,7 +14,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class ReMutex:
-   private ::core::Uncopyable
+   private core::Uncopyable
 {
 private:
    size_t counter;

@@ -18,7 +18,7 @@ class Topic;
 
 
 class BasePublisher:
-   private ::core::Uncopyable
+   private core::Uncopyable
 {
 private:
    Topic* topicp;

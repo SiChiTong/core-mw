@@ -29,7 +29,7 @@ class Subscriber;
 
 
 class Node:
-   private Uncopyable
+   private core::Uncopyable
 {
    friend class Middleware;
 

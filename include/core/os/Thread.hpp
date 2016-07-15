@@ -16,7 +16,7 @@ NAMESPACE_CORE_OS_BEGIN
 class Time;
 
 class Thread:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    using Priority = Thread_::Priority;

@@ -14,7 +14,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 template <typename Item>
 class ArrayQueue:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    Item*  arrayp;

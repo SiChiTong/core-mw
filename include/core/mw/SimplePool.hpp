@@ -15,7 +15,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 template <typename Item>
 class SimplePool:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    SimplePool_ impl;

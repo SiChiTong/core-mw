@@ -13,7 +13,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class Checksummer:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    template <uintmax_t value>

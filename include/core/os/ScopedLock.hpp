@@ -14,7 +14,7 @@ NAMESPACE_CORE_OS_BEGIN
 
 template <typename Lockable>
 class ScopedLock:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    Lockable& lock;

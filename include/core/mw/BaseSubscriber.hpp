@@ -19,7 +19,7 @@ class Topic;
 class Message;
 
 class BaseSubscriber:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    Topic* topicp;

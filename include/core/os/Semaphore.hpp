@@ -14,7 +14,7 @@ NAMESPACE_CORE_OS_BEGIN
 
 
 class Semaphore:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    typedef Semaphore_::Count Count;

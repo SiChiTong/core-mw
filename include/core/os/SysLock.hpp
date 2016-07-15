@@ -14,11 +14,11 @@ NAMESPACE_CORE_OS_BEGIN
 
 
 class SysLock:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    class Scope:
-      private Uncopyable
+      private core::Uncopyable
    {
 public:
       Scope()

@@ -16,7 +16,7 @@ NAMESPACE_CORE_OS_BEGIN
 
 
 class SpinEvent:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    typedef SpinEvent_::Mask Mask;

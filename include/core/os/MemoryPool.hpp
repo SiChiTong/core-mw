@@ -15,7 +15,7 @@ NAMESPACE_CORE_OS_BEGIN
 
 template <typename Item>
 class MemoryPool:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    MemoryPool_ impl;

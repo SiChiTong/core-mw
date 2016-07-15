@@ -13,7 +13,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class StaticList_:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    struct Link {

@@ -28,7 +28,7 @@ class RemoteSubscriber;
 
 
 class Topic:
-   private Uncopyable
+   private core::Uncopyable
 {
    friend class Middleware;
 
@@ -240,7 +240,7 @@ public:
 
 
 class MessageGuard:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    Message& msg;
@@ -256,7 +256,7 @@ public:
 
 
 class MessageGuardUnsafe:
-   private Uncopyable
+   private core::Uncopyable
 {
 private:
    Message& msg;

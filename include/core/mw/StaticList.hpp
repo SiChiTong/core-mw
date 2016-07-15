@@ -20,7 +20,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 template <typename Item>
 class StaticList:
-   private Uncopyable
+   private core::Uncopyable
 {
 public:
    struct Link {
