@@ -46,10 +46,10 @@ public:
    using SPI = _SPI;
    inline static void
    start(
-      SPIConfig config
+      const SPIConfig& config
    )
    {
-      ::spiStart(SPI::driver, config);
+      ::spiStart(SPI::driver, &config);
    }
 
    inline static void
