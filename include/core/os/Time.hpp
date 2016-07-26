@@ -17,21 +17,16 @@ class Time
    // TODO: Fix infinite algebra
 
 public:
-   typedef int32_t Type;
+   typedef uint64_t Type;
 
-   enum {
-      MIN_US = (1 << (8 * sizeof(Type) - 1)) + 1,
-      MAX_US = ~(1 << (8 * sizeof(Type) - 1)) - 1,
-
-      MIN_MS = MIN_US / 1000,
-      MAX_MS = MAX_US / 1000,
-
-      MIN_S = MIN_US / 1000000,
-      MAX_S = MAX_US / 1000000,
-
-      MIN_M = MAX_US / 60000000,
-      MAX_M = MAX_US / 60000000,
-   };
+   static const uint64_t MIN_US = 0;
+   static const uint64_t MAX_US = UINT64_MAX;
+   static const uint64_t MIN_MS = MIN_US / 1000;
+   static const uint64_t MAX_MS = MAX_US / 1000;
+   static const uint64_t MIN_S = MIN_US / 1000000;
+   static const uint64_t MAX_S = MAX_US / 1000000;
+   static const uint64_t MIN_M = MAX_US / 60000000;
+   static const uint64_t MAX_M = MAX_US / 60000000;
 
 public:
    Type raw;
