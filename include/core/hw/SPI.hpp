@@ -53,6 +53,14 @@ public:
    }
 
    inline static void
+   stop(
+      const SPIConfig& config
+   )
+   {
+      ::spiStart(SPI::driver, &config);
+   }
+
+   inline static void
    acquireBus()
    {
       ::spiAcquireBus(SPI::driver);
@@ -111,10 +119,10 @@ public:
    deselect() = 0;
 
    virtual void
-   acquireBus() = 0;
+   acquireBus(bool start = true) = 0;
 
    virtual void
-   releaseBus() = 0;
+   releaseBus(bool stop = true) = 0;
 
    virtual void
    ignore(
@@ -162,14 +170,21 @@ public:
    }
 
    inline void
-   acquireBus()
+   acquireBus(bool start = true)
    {
       ::spiAcquireBus(SPI::driver);
+      if(start) {
+    	  ::spiStart(SPI::driver, SPI::driver->config);
+      }
+
    }
 
    inline void
-   releaseBus()
+   releaseBus(bool stop = true)
    {
+	   if(stop) {
+		   ::spiStop(SPI::driver);
+	   }
       ::spiReleaseBus(SPI::driver);
    }
 

@@ -120,11 +120,13 @@ public:
    acquireBus()
    {
       ::i2cAcquireBus(I2C::driver);
+      ::i2cStart(I2C::driver, I2C::driver->config);
    }
 
    inline void
    releaseBus()
    {
+      ::i2cStop(I2C::driver);
       ::i2cReleaseBus(I2C::driver);
    }
 
