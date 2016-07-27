@@ -34,7 +34,7 @@ public:
 
    virtual void
    setCallback(
-      std::function<void()>callback
+      std::function<void(uint32_t)>callback
    ) = 0;
 
    virtual void
@@ -49,7 +49,7 @@ public:
    using EXT = _EXT;
 
 public:
-   static std::function<void()> callback_impl;
+   static std::function<void(uint32_t)> callback_impl;
 
 public:
    inline void
@@ -66,7 +66,7 @@ public:
 
    inline void
    setCallback(
-      std::function<void()>callback
+      std::function<void(uint32_t)>callback
    )
    {
       callback_impl = callback;
@@ -97,12 +97,12 @@ private:
       expchannel_t channel
    )
    {
-      callback_impl();
+      callback_impl(channel);
    }
 };
 
 template <class _EXT, std::size_t _CH, uint32_t _MODE>
-std::function<void()>EXTChannel_<_EXT, _CH, _MODE>::callback_impl;
+std::function<void(uint32_t)>EXTChannel_<_EXT, _CH, _MODE>::callback_impl;
 
 // --- Aliases -----------------------------------------------------------------
 
