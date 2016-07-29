@@ -210,4 +210,4 @@ public:
 };
 #endif // if 0
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END
