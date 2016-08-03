@@ -7,12 +7,13 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
+#include <core/os/Time.hpp>
 #include <core/common.hpp>
 #include <chprintf.h>
 #include <hal_channels.h>
 #include <stdarg.h>
 
-NAMESPACE_CORE_MW_BEGIN
+NAMESPACE_CORE_OS_BEGIN
 
 class IOChannel
 {
@@ -209,4 +210,4 @@ public:
 };
 #endif // if 0
 
-NAMESPACE_CORE_MW_END
+NAMESPACE_CORE_OS_END
