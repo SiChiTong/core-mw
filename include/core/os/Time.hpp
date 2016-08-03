@@ -23,15 +23,18 @@ public:
    static const uint64_t MAX_US = UINT64_MAX;
    static const uint64_t MIN_MS = MIN_US / 1000;
    static const uint64_t MAX_MS = MAX_US / 1000;
-   static const uint64_t MIN_S = MIN_US / 1000000;
-   static const uint64_t MAX_S = MAX_US / 1000000;
-   static const uint64_t MIN_M = MAX_US / 60000000;
-   static const uint64_t MAX_M = MAX_US / 60000000;
+   static const uint64_t MIN_S  = MIN_US / 1000000;
+   static const uint64_t MAX_S  = MAX_US / 1000000;
+   static const uint64_t MIN_M  = MAX_US / 60000000;
+   static const uint64_t MAX_M  = MAX_US / 60000000;
 
 public:
    Type raw;
 
 public:
+   uint32_t
+   to_st_raw() const;
+
    Type
    to_us_raw() const;
 
@@ -170,6 +173,13 @@ operator-(
    const Time& rhs
 );
 
+
+inline
+uint32_t
+Time::to_st_raw() const
+{
+   return US2ST(raw);
+}
 
 inline
 Time::Type
