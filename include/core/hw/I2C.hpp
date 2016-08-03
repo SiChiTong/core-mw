@@ -7,7 +7,6 @@
 #pragma once
 
 
-
 #include <core/hw/namespace.hpp>
 #include <core/hw/common.hpp>
 
@@ -46,7 +45,7 @@ class I2CMaster
 {
 public:
    using Address = i2caddr_t;
-   using Flags = i2cflags_t;
+   using Flags   = i2cflags_t;
 
    virtual void
    start(
@@ -64,31 +63,31 @@ public:
 
    virtual bool
    exchange(
-	Address address,
-      size_t      n_tx,
-      const void* txbuf,
-	  size_t      n_rx,
-      void*       rxbuf,
-	  core::os::Time timeout = core::os::Time::INFINITE,
-	  msg_t* msg = nullptr
+      Address        address,
+      size_t         n_tx,
+      const void*    txbuf,
+      size_t         n_rx,
+      void*          rxbuf,
+      core::os::Time timeout = core::os::Time::INFINITE,
+      msg_t*         msg = nullptr
    ) = 0;
 
    virtual bool
    send(
-	Address address,
-      size_t      n_tx,
-      const void* txbuf,
-	  core::os::Time timeout = core::os::Time::INFINITE,
-	  msg_t* msg = nullptr
+      Address        address,
+      size_t         n_tx,
+      const void*    txbuf,
+      core::os::Time timeout = core::os::Time::INFINITE,
+      msg_t*         msg = nullptr
    ) = 0;
 
    virtual bool
    receive(
-	Address address,
-      size_t      n_rx,
-      void* rxbuf,
-	  core::os::Time timeout = core::os::Time::INFINITE,
-	  msg_t* msg = nullptr
+      Address        address,
+      size_t         n_rx,
+      void*          rxbuf,
+      core::os::Time timeout = core::os::Time::INFINITE,
+      msg_t*         msg = nullptr
    ) = 0;
 
    virtual Flags
@@ -97,7 +96,8 @@ public:
 
 
 template <class _I2C>
-class I2CMaster_ : public I2CMaster
+class I2CMaster_:
+   public I2CMaster
 {
 public:
    using I2C = _I2C;
@@ -132,69 +132,70 @@ public:
 
    inline bool
    exchange(
-	Address address,
-      size_t      n_tx,
-      const void* txbuf,
-	  size_t      n_rx,
-      void*       rxbuf,
-	  core::os::Time timeout = core::os::Time::INFINITE,
-	  msg_t* msg = nullptr
+      Address        address,
+      size_t         n_tx,
+      const void*    txbuf,
+      size_t         n_rx,
+      void*          rxbuf,
+      core::os::Time timeout = core::os::Time::INFINITE,
+      msg_t*         msg = nullptr
    )
    {
-	   address &= 0x7F;
+      address &= 0x7F;
 
-	   msg_t status = ::i2cMasterTransmitTimeout (I2C::driver, address, reinterpret_cast<const uint8_t*>(txbuf), n_tx, reinterpret_cast<uint8_t*>(rxbuf), n_rx, timeout.raw);
+      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, address, reinterpret_cast<const uint8_t*>(txbuf), n_tx, reinterpret_cast<uint8_t*>(rxbuf), n_rx, timeout.to_st_raw());
 
-	   if(msg != nullptr) {
-		   *msg = status;
-	   }
+      if (msg != nullptr) {
+         *msg = status;
+      }
 
-	   return status == MSG_OK;
+      return status == MSG_OK;
    }
 
    inline bool
    send(
-	Address address,
-      size_t      n_tx,
-      const void* txbuf,
-	  core::os::Time timeout = core::os::Time::INFINITE,
-	  msg_t* msg = nullptr
+      Address        address,
+      size_t         n_tx,
+      const void*    txbuf,
+      core::os::Time timeout = core::os::Time::INFINITE,
+      msg_t*         msg = nullptr
    )
    {
-	   address &= 0x7F;
+      address &= 0x7F;
 
-	   msg_t status = ::i2cMasterTransmitTimeout (I2C::driver, address, reinterpret_cast<const uint8_t*>(txbuf), n_tx, nullptr, 0, timeout.raw);
+      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, address, reinterpret_cast<const uint8_t*>(txbuf), n_tx, nullptr, 0, timeout.to_st_raw());
 
-	   if(msg != nullptr) {
-		   *msg = status;
-	   }
+      if (msg != nullptr) {
+         *msg = status;
+      }
 
-	   return status == MSG_OK;
+      return status == MSG_OK;
    }
 
    inline bool
    receive(
-	Address address,
-      size_t      n_rx,
-      void* rxbuf,
-	  core::os::Time timeout = core::os::Time::INFINITE,
-	  msg_t* msg = nullptr
+      Address        address,
+      size_t         n_rx,
+      void*          rxbuf,
+      core::os::Time timeout = core::os::Time::INFINITE,
+      msg_t*         msg = nullptr
    )
    {
-	   address &= 0x7F;
+      address &= 0x7F;
 
-	   msg_t status = ::i2cMasterReceiveTimeout (I2C::driver, address, reinterpret_cast<uint8_t*>(rxbuf), n_rx, timeout.raw);
+      msg_t status = ::i2cMasterReceiveTimeout(I2C::driver, address, reinterpret_cast<uint8_t*>(rxbuf), n_rx, timeout.to_st_raw());
 
-	   if(msg != nullptr) {
-		   *msg = status;
-	   }
+      if (msg != nullptr) {
+         *msg = status;
+      }
 
-	   return status == MSG_OK;
+      return status == MSG_OK;
    }
 
    inline Flags
-   getErrors() {
-	   return ::i2cGetErrors(I2C::driver);
+   getErrors()
+   {
+      return ::i2cGetErrors(I2C::driver);
    }
 };
 
@@ -234,84 +235,83 @@ class I2CDevice_:
 {
 public:
    using I2C = _I2C;
-   static const I2CMaster<I2C>::Address ADDRESS  = _ADDRESS;
+   static const I2CMaster<I2C>::Address ADDRESS = _ADDRESS;
 
    inline void
    acquireBus()
    {
-	      ::i2cAcquireBus(I2C::driver);
-
+      ::i2cAcquireBus(I2C::driver);
    }
 
    inline void
    releaseBus()
    {
-	   ::i2cReleaseBus(I2C::driver);
+      ::i2cReleaseBus(I2C::driver);
    }
 
    inline bool
    exchange(
-      size_t      n_tx,
-      const void* txbuf,
-	  size_t      n_rx,
-      void*       rxbuf,
-	  core::os::Time timeout = core::os::Time::INFINITE,
-	  msg_t* msg = nullptr
+      size_t         n_tx,
+      const void*    txbuf,
+      size_t         n_rx,
+      void*          rxbuf,
+      core::os::Time timeout = core::os::Time::INFINITE,
+      msg_t*         msg = nullptr
    )
    {
-	   address &= 0x7F;
+      address &= 0x7F;
 
-	   msg_t status = ::i2cMasterTransmitTimeout (I2C::driver, ADDRESS, txbuf, n_tx, rxbuf, n_rx, timeout.raw);
+      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, ADDRESS, txbuf, n_tx, rxbuf, n_rx, timeout.to_st_raw());
 
-	   if(msg != nullptr) {
-		   *msg = status;
-	   }
+      if (msg != nullptr) {
+         *msg = status;
+      }
 
-	   return status == MSG_OK;
+      return status == MSG_OK;
    }
 
    inline bool
    send(
-      size_t      n_tx,
-      const void* txbuf,
-	  core::os::Time timeout = core::os::Time::INFINITE,
-	  msg_t* msg = nullptr
+      size_t         n_tx,
+      const void*    txbuf,
+      core::os::Time timeout = core::os::Time::INFINITE,
+      msg_t*         msg = nullptr
    )
    {
-	   address &= 0x7F;
+      address &= 0x7F;
 
-	   msg_t status = ::i2cMasterTransmitTimeout (I2C::driver, ADDRESS, txbuf, n_tx, nullptr, 0, timeout.raw);
+      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, ADDRESS, txbuf, n_tx, nullptr, 0, timeout.to_st_raw());
 
-	   if(msg != nullptr) {
-		   *msg = status;
-	   }
+      if (msg != nullptr) {
+         *msg = status;
+      }
 
-	   return status == MSG_OK;
+      return status == MSG_OK;
    }
 
    inline bool
    receive(
-      size_t      n_rx,
-      const void* rxbuf,
-	  core::os::Time timeout = core::os::Time::INFINITE,
-	  msg_t* msg = nullptr
+      size_t         n_rx,
+      const void*    rxbuf,
+      core::os::Time timeout = core::os::Time::INFINITE,
+      msg_t*         msg = nullptr
    )
    {
-	   address &= 0x7F;
+      address &= 0x7F;
 
-	   msg_t status = ::i2cMasterReceiveTimeout (I2C::driver, ADDRESS, rxbuf, n_rx, timeout.raw);
+      msg_t status = ::i2cMasterReceiveTimeout(I2C::driver, ADDRESS, rxbuf, n_rx, timeout.to_st_raw());
 
-	   if(msg != nullptr) {
-		   *msg = status;
-	   }
+      if (msg != nullptr) {
+         *msg = status;
+      }
 
-	   return status == MSG_OK;
+      return status == MSG_OK;
    }
 
 private:
    CS _cs;
 };
-#endif
+#endif // if 0
 // --- Aliases -----------------------------------------------------------------
 
 using I2C_1 = I2CDriverTraits<1>;

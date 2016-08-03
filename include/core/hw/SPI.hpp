@@ -119,10 +119,14 @@ public:
    deselect() = 0;
 
    virtual void
-   acquireBus(bool start = true) = 0;
+   acquireBus(
+      bool start = true
+   ) = 0;
 
    virtual void
-   releaseBus(bool stop = true) = 0;
+   releaseBus(
+      bool stop = true
+   ) = 0;
 
    virtual void
    ignore(
@@ -170,21 +174,26 @@ public:
    }
 
    inline void
-   acquireBus(bool start = true)
+   acquireBus(
+      bool start = true
+   )
    {
       ::spiAcquireBus(SPI::driver);
-      if(start) {
-    	  ::spiStart(SPI::driver, SPI::driver->config);
-      }
 
+      if (start) {
+         ::spiStart(SPI::driver, SPI::driver->config);
+      }
    }
 
    inline void
-   releaseBus(bool stop = true)
+   releaseBus(
+      bool stop = true
+   )
    {
-	   if(stop) {
-		   ::spiStop(SPI::driver);
-	   }
+      if (stop) {
+         ::spiStop(SPI::driver);
+      }
+
       ::spiReleaseBus(SPI::driver);
    }
 

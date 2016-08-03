@@ -25,27 +25,27 @@ public:
 
    virtual std::size_t
    put(
-      const uint8_t&         x,
+      const uint8_t& x,
       core::os::Time timeout
    ) = 0;
 
    virtual std::size_t
    get(
-      uint8_t&               x,
+      uint8_t&       x,
       core::os::Time timeout
    ) = 0;
 
    virtual std::size_t
    write(
-      const uint8_t*         buffer,
-      std::size_t            size,
+      const uint8_t* buffer,
+      std::size_t    size,
       core::os::Time timeout
    ) = 0;
 
    virtual std::size_t
    read(
-      uint8_t*               buffer,
-      std::size_t            size,
+      uint8_t*       buffer,
+      std::size_t    size,
       core::os::Time timeout
    ) = 0;
 
@@ -80,20 +80,20 @@ public:
 
    inline std::size_t
    put(
-      const uint8_t&         x,
+      const uint8_t& x,
       core::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
-      return (chnPutTimeout(Channel::channel, x, timeout.raw) == Q_OK) ? 1 : 0;
+      return (chnPutTimeout(Channel::channel, x, timeout.to_st_raw()) == Q_OK) ? 1 : 0;
    }
 
    inline std::size_t
    get(
-      uint8_t&               x,
+      uint8_t&       x,
       core::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
-      msg_t tmp = chnGetTimeout(Channel::channel, timeout.raw);
+      msg_t tmp = chnGetTimeout(Channel::channel, timeout.to_st_raw());
 
       if ((tmp & 0xFFFFFF00) == 0) {
          x = (uint8_t)(tmp & 0x000000FF);
@@ -105,22 +105,22 @@ public:
 
    inline std::size_t
    write(
-      const uint8_t*         buffer,
-      std::size_t            size,
+      const uint8_t* buffer,
+      std::size_t    size,
       core::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
-      return chnWriteTimeout(Channel::channel, buffer, size, timeout.raw);
+      return chnWriteTimeout(Channel::channel, buffer, size, timeout.to_st_raw());
    }
 
    inline std::size_t
    read(
-      uint8_t*               buffer,
-      std::size_t            size,
+      uint8_t*       buffer,
+      std::size_t    size,
       core::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
-      return chnReadTimeout(Channel::channel, buffer, size, timeout.raw);
+      return chnReadTimeout(Channel::channel, buffer, size, timeout.to_st_raw());
    }
 
    inline int
@@ -193,8 +193,8 @@ public:
 
    inline int
    read(
-      char*                  buffer,
-      std::size_t            size,
+      char*          buffer,
+      std::size_t    size,
       core::os::Time timeout = core::os::Time::INFINITE
    )
    {
