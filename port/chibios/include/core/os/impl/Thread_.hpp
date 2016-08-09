@@ -193,7 +193,7 @@ Thread_::create_static(
    const char* namep
 )
 {
-   Thread_* threadp = reinterpret_cast<Thread_*>(chThdCreateStatic(stackp, stacklen, static_cast<tprio_t>(priority), threadf, argp));
+   Thread_* threadp = reinterpret_cast<Thread_*>(chThdCreateStatic(stackp, compute_stack_size(stacklen), static_cast<tprio_t>(priority), threadf, argp));
 
 #if CH_USE_REGISTRY
    if (threadp != NULL) {
@@ -217,7 +217,7 @@ Thread_::create_heap(
    const char* namep
 )
 {
-   Thread_* threadp = reinterpret_cast<Thread_*>(chThdCreateFromHeap(reinterpret_cast<memory_heap_t*>(heapp), stacklen, priority, threadf, argp));
+   Thread_* threadp = reinterpret_cast<Thread_*>(chThdCreateFromHeap(reinterpret_cast<memory_heap_t*>(heapp), compute_stack_size(stacklen), priority, threadf, argp));
 
 #if CH_USE_REGISTRY
    if (threadp != NULL) {
