@@ -133,6 +133,11 @@ public:
       Thread& thread
    );
 
+   static void
+   terminate(
+      Thread& thread
+   );
+
    static bool
    should_terminate();
 };
@@ -291,6 +296,15 @@ Thread::join(
 )
 {
    return Thread_::join(thread.impl);
+}
+
+inline
+void
+Thread::terminate(
+   Thread& thread
+)
+{
+   Thread_::terminate(thread.impl);
 }
 
 inline bool

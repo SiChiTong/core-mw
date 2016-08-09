@@ -133,6 +133,11 @@ public:
       Thread_& thread
    );
 
+   static void
+   terminate(
+      Thread_& thread
+   );
+
    static bool
    should_terminate();
 };
@@ -343,6 +348,15 @@ Thread_::join(
 )
 {
    return chThdWait(&thread.impl) == MSG_OK;
+}
+
+inline
+void
+Thread_::terminate(
+   Thread_& thread
+)
+{
+   return chThdTerminate(&thread.impl);
 }
 
 inline
