@@ -15,6 +15,9 @@ NAMESPACE_CORE_OS_BEGIN
 
 class Time;
 
+/*! \brief OS Thread abstraction class
+ *
+ */
 class Thread:
    private core::Uncopyable
 {
