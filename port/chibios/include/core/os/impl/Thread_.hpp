@@ -289,9 +289,9 @@ Thread_::sleep(
    const Time& delay
 )
 {
-   if (delay.raw > 0) {
-      if (delay.raw < 1000000) {
-         chThdSleepMicroseconds(delay.raw);
+   if (delay.to_us_raw() > 0) {
+      if (delay.to_us_raw() < 1000000) {
+         chThdSleepMicroseconds(delay.to_us_raw());
       } else {
          chThdSleepSeconds(delay.to_s_raw());
       }
@@ -307,7 +307,7 @@ Thread_::sleep_until(
 )
 {
    if (time.raw > 0) {
-      chThdSleepUntil(US2ST(time.to_us_raw()));
+      chThdSleepUntil(time.to_st_raw());
    } else {
       chThdYield();
    }
