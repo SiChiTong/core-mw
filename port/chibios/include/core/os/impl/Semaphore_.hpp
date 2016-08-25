@@ -114,7 +114,7 @@ Semaphore_::wait_unsafe(
    const Time& timeout
 )
 {
-   return chSemWaitTimeoutS(&impl, US2ST(timeout.to_us_raw())) == MSG_OK;
+   return chSemWaitTimeoutS(&impl, timeout.to_st_raw()) == MSG_OK;
 }
 
 inline
@@ -146,7 +146,7 @@ Semaphore_::wait(
    const Time& timeout
 )
 {
-   return chSemWaitTimeout(&impl, US2ST(timeout.to_us_raw())) == MSG_OK;
+   return chSemWaitTimeout(&impl, timeout.to_st_raw()) == MSG_OK;
 }
 
 inline
