@@ -44,9 +44,6 @@ public:
    Type
    to_s_raw() const;
 
-   Type
-   to_m_raw() const;
-
    float
    to_us() const;
 
@@ -55,9 +52,6 @@ public:
 
    float
    to_s() const;
-
-   float
-   to_m() const;
 
    Time&
    operator=(
@@ -103,11 +97,6 @@ public:
    static Time
    s(
       const Type seconds
-   );
-
-   static Time
-   m(
-      const Type minutes
    );
 
    static Time
@@ -195,13 +184,6 @@ Time::to_s_raw() const
 }
 
 inline
-Time::Type
-Time::to_m_raw() const
-{
-   return raw / 60000000;
-}
-
-inline
 float
 Time::to_us() const
 {
@@ -220,13 +202,6 @@ float
 Time::to_s() const
 {
    return raw / 1000000.0;
-}
-
-inline
-float
-Time::to_m() const
-{
-   return raw / 60000000.0;
 }
 
 inline
@@ -313,15 +288,6 @@ Time::s(
 )
 {
    return Time(seconds * 1000000);
-}
-
-inline
-Time
-Time::m(
-   const Type minutes
-)
-{
-   return Time(minutes * 60000000);
 }
 
 inline
