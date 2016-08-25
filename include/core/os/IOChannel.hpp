@@ -85,7 +85,7 @@ public:
       core::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
-      return (chnPutTimeout(Channel::channel, x, timeout.to_st_raw()) == Q_OK) ? 1 : 0;
+      return (chnPutTimeout(Channel::channel, x, timeout.ticks()) == Q_OK) ? 1 : 0;
    }
 
    inline std::size_t
@@ -94,7 +94,7 @@ public:
       core::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
-      msg_t tmp = chnGetTimeout(Channel::channel, timeout.to_st_raw());
+      msg_t tmp = chnGetTimeout(Channel::channel, timeout.ticks());
 
       if ((tmp & 0xFFFFFF00) == 0) {
          x = (uint8_t)(tmp & 0x000000FF);
@@ -111,7 +111,7 @@ public:
       core::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
-      return chnWriteTimeout(Channel::channel, buffer, size, timeout.to_st_raw());
+      return chnWriteTimeout(Channel::channel, buffer, size, timeout.ticks());
    }
 
    inline std::size_t
@@ -121,7 +121,7 @@ public:
       core::os::Time timeout = DEFAULT_TIMEOUT()
    )
    {
-      return chnReadTimeout(Channel::channel, buffer, size, timeout.to_st_raw());
+      return chnReadTimeout(Channel::channel, buffer, size, timeout.ticks());
    }
 
    inline int

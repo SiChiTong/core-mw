@@ -33,7 +33,7 @@ public:
 
 public:
    uint32_t
-   to_st_raw() const;
+   ticks() const;
 
    Type
    to_us_raw() const;
@@ -172,14 +172,6 @@ operator-(
    const Time& lhs,
    const Time& rhs
 );
-
-
-inline
-uint32_t
-Time::to_st_raw() const
-{
-   return US2ST(raw);
-}
 
 inline
 Time::Type

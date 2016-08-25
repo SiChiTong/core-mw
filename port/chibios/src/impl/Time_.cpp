@@ -20,4 +20,10 @@ Time::now()
              (t == INFINITE.raw) ? (t - 1) : t);
 }
 
+uint32_t
+Time::ticks() const
+{
+   return ((systime_t)(((((uint64_t)(raw)) * ((uint64_t)CH_CFG_ST_FREQUENCY)) + 999999ULL) / 1000000ULL));
+}
+
 NAMESPACE_CORE_OS_END

@@ -307,7 +307,7 @@ Thread_::sleep_until(
 )
 {
    if (time.raw > 0) {
-      chThdSleepUntil(time.to_st_raw());
+      chThdSleepUntil(time.ticks());
    } else {
       chThdYield();
    }

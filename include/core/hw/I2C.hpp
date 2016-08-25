@@ -143,7 +143,7 @@ public:
    {
       address &= 0x7F;
 
-      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, address, reinterpret_cast<const uint8_t*>(txbuf), n_tx, reinterpret_cast<uint8_t*>(rxbuf), n_rx, timeout.to_st_raw());
+      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, address, reinterpret_cast<const uint8_t*>(txbuf), n_tx, reinterpret_cast<uint8_t*>(rxbuf), n_rx, timeout.ticks());
 
       if (msg != nullptr) {
          *msg = status;
@@ -163,7 +163,7 @@ public:
    {
       address &= 0x7F;
 
-      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, address, reinterpret_cast<const uint8_t*>(txbuf), n_tx, nullptr, 0, timeout.to_st_raw());
+      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, address, reinterpret_cast<const uint8_t*>(txbuf), n_tx, nullptr, 0, timeout.ticks());
 
       if (msg != nullptr) {
          *msg = status;
@@ -183,7 +183,7 @@ public:
    {
       address &= 0x7F;
 
-      msg_t status = ::i2cMasterReceiveTimeout(I2C::driver, address, reinterpret_cast<uint8_t*>(rxbuf), n_rx, timeout.to_st_raw());
+      msg_t status = ::i2cMasterReceiveTimeout(I2C::driver, address, reinterpret_cast<uint8_t*>(rxbuf), n_rx, timeout.ticks());
 
       if (msg != nullptr) {
          *msg = status;
@@ -261,7 +261,7 @@ public:
    {
       address &= 0x7F;
 
-      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, ADDRESS, txbuf, n_tx, rxbuf, n_rx, timeout.to_st_raw());
+      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, ADDRESS, txbuf, n_tx, rxbuf, n_rx, timeout.ticks());
 
       if (msg != nullptr) {
          *msg = status;
@@ -280,7 +280,7 @@ public:
    {
       address &= 0x7F;
 
-      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, ADDRESS, txbuf, n_tx, nullptr, 0, timeout.to_st_raw());
+      msg_t status = ::i2cMasterTransmitTimeout(I2C::driver, ADDRESS, txbuf, n_tx, nullptr, 0, timeout.ticks());
 
       if (msg != nullptr) {
          *msg = status;
@@ -299,7 +299,7 @@ public:
    {
       address &= 0x7F;
 
-      msg_t status = ::i2cMasterReceiveTimeout(I2C::driver, ADDRESS, rxbuf, n_rx, timeout.to_st_raw());
+      msg_t status = ::i2cMasterReceiveTimeout(I2C::driver, ADDRESS, rxbuf, n_rx, timeout.ticks());
 
       if (msg != nullptr) {
          *msg = status;

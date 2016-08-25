@@ -118,7 +118,7 @@ SpinEvent_::wait(
    } else if (timeout == Time::INFINITE) {
       ticks = TIME_INFINITE;
    } else {
-      ticks = timeout.to_st_raw();
+      ticks = timeout.ticks();
    }
 
    return chEvtWaitAnyTimeout(ALL_EVENTS, ticks);
