@@ -23,7 +23,14 @@ Time::now()
 uint32_t
 Time::ticks() const
 {
-   return ((systime_t)(((((uint64_t)(raw)) * ((uint64_t)CH_CFG_ST_FREQUENCY)) + 999999ULL) / 1000000ULL));
+   if (raw == INFINITE) {
+      return TIME_INFINITE;
+   } else if (raw <= IMMEDIATE) {
+      return TIME_IMMEDIATE;
+   } else {
+      Type ticks = raw / (1000000 / CH_CFG_ST_FREQUENCY);
+      return ticks; // TODO: decide what to do with TIME_INFINITE
+   }
 }
 
 NAMESPACE_CORE_OS_END

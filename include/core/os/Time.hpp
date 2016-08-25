@@ -161,6 +161,7 @@ operator-(
    const Time& rhs
 );
 
+
 inline
 Time::Type
 Time::to_us_raw() const

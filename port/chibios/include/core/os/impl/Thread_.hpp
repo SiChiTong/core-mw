@@ -289,12 +289,10 @@ Thread_::sleep(
    const Time& delay
 )
 {
-   if (delay.to_us_raw() > 0) {
-      if (delay.to_us_raw() < 1000000) {
-         chThdSleepMicroseconds(delay.to_us_raw());
-      } else {
-         chThdSleepSeconds(delay.to_s_raw());
-      }
+   systime_t ticks = delay.ticks();
+
+   if (ticks > 0) {
+      chThdSleep(ticks);
    } else {
       chThdYield();
    }
