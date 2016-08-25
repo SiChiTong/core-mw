@@ -33,4 +33,19 @@ Time::ticks() const
    }
 }
 
+Time
+Time::hz(
+   const float hertz
+)
+{
+   if (hertz <= 0) {
+      return Time::INFINITE;
+   }
+
+   // TODO: decide about assert(hertz <= CH_CFG_ST_FREQUENCY)
+   CORE_ASSERT((1000000.0f / hertz) <= ((float)MAX_US)); // Make sure we can represent it
+
+   return Time(static_cast<Type>(1000000.0f / hertz));
+}
+
 NAMESPACE_CORE_OS_END

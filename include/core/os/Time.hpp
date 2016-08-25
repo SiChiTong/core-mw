@@ -35,13 +35,13 @@ public:
    ticks() const;
 
    Type
-   to_us_raw() const;
+   us() const;
 
    Type
-   to_ms_raw() const;
+   ms() const;
 
    Type
-   to_s_raw() const;
+   s() const;
 
    float
    to_us() const;
@@ -164,21 +164,21 @@ operator-(
 
 inline
 Time::Type
-Time::to_us_raw() const
+Time::us() const
 {
    return raw;
 }
 
 inline
 Time::Type
-Time::to_ms_raw() const
+Time::ms() const
 {
    return raw / 1000;
 }
 
 inline
 Time::Type
-Time::to_s_raw() const
+Time::s() const
 {
    return raw / 1000000;
 }
@@ -288,21 +288,6 @@ Time::s(
 )
 {
    return Time(seconds * 1000000);
-}
-
-inline
-Time
-Time::hz(
-   const float hertz
-)
-{
-   if (hertz < 1.0 / MAX_US) {
-      return Time(MAX_US);
-   } else if (hertz > 1000000.0) {
-      return Time(1);
-   } else {
-      return Time(static_cast<Type>(1000000.0 / hertz));
-   }
 }
 
 inline
