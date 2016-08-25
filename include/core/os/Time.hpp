@@ -8,6 +8,7 @@
 
 #include <core/os/namespace.hpp>
 #include <core/common.hpp>
+#include <limits>
 
 NAMESPACE_CORE_OS_BEGIN
 
@@ -17,16 +18,14 @@ class Time
    // TODO: Fix infinite algebra
 
 public:
-   typedef uint64_t Type;
+   using Type = uint32_t;
 
-   static const uint64_t MIN_US = 0;
-   static const uint64_t MAX_US = UINT64_MAX;
-   static const uint64_t MIN_MS = MIN_US / 1000;
-   static const uint64_t MAX_MS = MAX_US / 1000;
-   static const uint64_t MIN_S  = MIN_US / 1000000;
-   static const uint64_t MAX_S  = MAX_US / 1000000;
-   static const uint64_t MIN_M  = MAX_US / 60000000;
-   static const uint64_t MAX_M  = MAX_US / 60000000;
+   static const Type MIN_US = std::numeric_limits<Type>::min();
+   static const Type MAX_US = std::numeric_limits<Type>::max() - 1;
+   static const Type MIN_MS = MIN_US / 1000;
+   static const Type MAX_MS = MAX_US / 1000;
+   static const Type MIN_S  = MIN_US / 1000000;
+   static const Type MAX_S  = MAX_US / 1000000;
 
 public:
    Type raw;
