@@ -28,9 +28,6 @@ public:
    static const Type MAX_S  = MAX_US / 1000000;
 
 public:
-   Type raw;
-
-public:
    uint32_t
    ticks() const;
 
@@ -51,6 +48,9 @@ public:
 
    float
    to_s() const;
+
+   float
+   hz() const;
 
    Time&
    operator=(
@@ -111,6 +111,9 @@ public:
    static const Time IMMEDIATE;
    static const Time INFINITE;
    static const Time INFINITEN;
+
+public:
+   Type raw;
 };
 
 bool
@@ -194,14 +197,21 @@ inline
 float
 Time::to_ms() const
 {
-   return raw / 1000.0;
+   return raw / 1000.0f;
 }
 
 inline
 float
 Time::to_s() const
 {
-   return raw / 1000000.0;
+   return raw / 1000000.0f;
+}
+
+inline
+float
+Time::hz() const
+{
+   return 1000000.0f / raw;
 }
 
 inline
