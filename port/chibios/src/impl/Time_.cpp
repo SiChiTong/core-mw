@@ -28,10 +28,20 @@ Time::ticks() const
    } else if (raw <= IMMEDIATE) {
       return TIME_IMMEDIATE;
    } else {
-      Type ticks = raw / (1000000 / CH_CFG_ST_FREQUENCY);
+      Type ticks;
+
+      if (raw > 1000000) {
+         // TODO: consider enlarging the limits not to lose precision...
+         ticks = S2ST(raw / 1000000);
+      } else if (raw > 1000) {
+         ticks = MS2ST(raw / 1000);
+      } else {
+         ticks = US2ST(raw);
+      }
+
       return ticks; // TODO: decide what to do with TIME_INFINITE
    }
-}
+} // Time::ticks
 
 Time
 Time::hz(
