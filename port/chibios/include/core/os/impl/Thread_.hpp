@@ -15,9 +15,34 @@ NAMESPACE_CORE_OS_BEGIN
 class MemoryPool_;
 class Time;
 
-
 class Thread_
 {
+   template <std::size_t SIZE>
+   class Stack
+   {
+public:
+      inline constexpr std::size_t
+      size()
+      {
+         return SIZE;
+      }
+
+      inline void*
+      stack()
+      {
+         return _storage;
+      }
+
+      inline
+      operator void*()
+      {
+         return _storage;
+      }
+
+private:
+      THD_WORKING_AREA(_storage, SIZE);
+   };
+
 private:
    ::thread_t impl;
 

@@ -23,6 +23,8 @@ public:
    using Function = Thread_::Function;
    using Return   = Thread_::Return;
    using Argument = Thread_::Argument;
+   template <std::size_t SIZE>
+   using Stack = Thread_::Stack<SIZE>;
 
    enum PriorityEnum : Priority {
       READY     = Thread_::READY,
