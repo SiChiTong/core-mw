@@ -7,6 +7,7 @@
 #include <core/os/namespace.hpp>
 #include <core/os/Time.hpp>
 #include <ch.h>
+#include <limits>
 
 NAMESPACE_CORE_OS_BEGIN
 
@@ -28,15 +29,28 @@ Time::ticks() const
    } else if (raw <= IMMEDIATE) {
       return TIME_IMMEDIATE;
    } else {
-      Type ticks;
+      Type ticks = 0;
+      Type rem   = raw;
 
-      if (raw > 1000000) {
-         // TODO: consider enlarging the limits not to lose precision...
-         ticks = S2ST(raw / 1000000);
-      } else if (raw > 1000) {
-         ticks = MS2ST(raw / 1000);
-      } else {
-         ticks = US2ST(raw);
+      Type tmp;
+
+      if (rem >= 1000000) {
+         tmp    = S2ST(rem / 1000000);
+         ticks += tmp;
+         tmp    = ST2S(tmp) * 1000000;
+         rem   -= tmp;
+      }
+
+      if (rem >= 1000) {
+         tmp    = MS2ST(rem / 1000);
+         ticks += tmp;
+         tmp    = ST2MS(tmp) * 1000;
+         rem   -= tmp;
+      }
+
+      if (rem >= 1) {
+         tmp    = US2ST(rem);
+         ticks += tmp;
       }
 
       return ticks; // TODO: decide what to do with TIME_INFINITE
