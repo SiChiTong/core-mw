@@ -96,12 +96,14 @@ struct CoreParameterBase {
 
 
    template <typename T>
+   explicit
    operator T() const;
 
 
    template <typename T, std::size_t S>
-   operator:: core::Array<T, S>() const;
+   explicit operator:: core::Array<T, S>() const;
 
+   explicit
    operator const char*() const;
 };
 

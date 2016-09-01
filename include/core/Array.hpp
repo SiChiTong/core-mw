@@ -184,11 +184,15 @@ struct Array {
       return std::__addressof(Traits::ref(_data, 0));
    }
 
-   operator pointer() {
+   explicit
+   operator pointer()
+   {
       return data();
    }
 
-   operator const_pointer() {
+   explicit
+   operator const_pointer()
+   {
       return data();
    }
 
