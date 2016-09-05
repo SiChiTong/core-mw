@@ -43,7 +43,7 @@ public:
 
 
 template <typename MessageType>
-//inline // DAVIDE
+inline
 bool
 Publisher<MessageType>::alloc(
    MessageType*& msgp
