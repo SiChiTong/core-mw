@@ -16,6 +16,13 @@ NAMESPACE_CORE_MW_BEGIN
 class Message;
 class Node;
 
+/*! \brief A publisher
+ *
+ * \tparam MessageType type of the message to be published
+ * \tparam QUEUE_LENGTH length of the message queue
+ *
+ * \note MessageType must refer to a class inherited from core::mw::Message
+ */
 template <typename MessageType, unsigned QUEUE_LENGTH>
 class Subscriber:
    public SubscriberExtBuf<MessageType>

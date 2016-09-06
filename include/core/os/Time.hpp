@@ -12,104 +12,169 @@
 
 NAMESPACE_CORE_OS_BEGIN
 
-
+/*! \brief Time intervals
+ *
+ */
 class Time
 {
-   // TODO: Fix infinite algebra
-
 public:
    using Type = uint32_t;
 
    static const Type MIN_US = std::numeric_limits<Type>::min();
-   static const Type MAX_US = std::numeric_limits<Type>::max() - 1;
+   static const Type MAX_US;
    static const Type MIN_MS = MIN_US / 1000;
    static const Type MAX_MS = MAX_US / 1000;
    static const Type MIN_S  = MIN_US / 1000000;
    static const Type MAX_S  = MAX_US / 1000000;
 
 public:
+   /*! \brief Get the time in system ticks
+    *
+    */
    uint32_t
    ticks() const;
 
+
+   /*! \brief Get the time in us
+    *
+    */
    Type
    us() const;
 
+
+   /*! \brief Get the time in whole ms
+    *
+    */
    Type
    ms() const;
 
+
+   /*! \brief Get the time in whole s
+    *
+    */
    Type
    s() const;
 
+
+   /*! \brief Get the time in us
+    *
+    */
    float
    to_us() const;
 
+
+   /*! \brief Get the time in ms
+    *
+    */
    float
    to_ms() const;
 
+
+   /*! \brief Get the time in s
+    *
+    */
    float
    to_s() const;
 
+
+   /*! \brief Get the frequency corresponding to the interval
+    *
+    */
    float
    hz() const;
 
+
+   /*! \brief Assignement
+    *
+    */
    Time&
    operator=(
-      const Time& rhs
+      const Time& rhs //!< [in] interval to be assigned
    );
 
+
+   /*! \brief Increment the time
+    *
+    */
    Time&
    operator+=(
-      const Time& rhs
+      const Time& rhs //!< [in] interval to be added
    );
 
+
+   /*! \brief Decrement the time
+    *
+    */
    Time&
    operator-=(
-      const Time& rhs
+      const Time& rhs //!< [in] interval to be subtracted
    );
 
 
 public:
    Time();
+
    template <typename T>
    Time(
       T microseconds
    );
+
    explicit
    Time(
       float seconds
    );
+
    Time(
       const Time& rhs
    );
 
 public:
+   /*! \brief Returns a time interval
+    *
+    */
    static Time
    us(
-      const Type microseconds
+      const Type microseconds //!< [in] inteval in us
    );
 
+
+   /*! \brief Returns a time interval
+    *
+    */
    static Time
    ms(
-      const Type milliseconds
+      const Type milliseconds //!< [in] inteval in ms
    );
 
+
+   /*! \brief Returns a time interval
+    *
+    */
    static Time
    s(
-      const Type seconds
+      const Type seconds //!< [in] inteval in s
    );
 
+
+   /*! \brief Returns a time interval
+    *
+    */
    static Time
    hz(
-      const float hertz
+      const float hertz //!< [in] frequency in hz
    );
 
+
+   /*! \brief Returns the actual time
+    *
+    */
    static Time
    now();
 
 
 public:
-   static const Time IMMEDIATE;
-   static const Time INFINITE;
+   static const Time IMMEDIATE; //!< A null time interval
+   static const Time INFINITE; //!< An infinite time interval
    static const Time INFINITEN;
 
 public:

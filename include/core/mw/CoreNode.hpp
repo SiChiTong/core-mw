@@ -17,6 +17,9 @@
 
 NAMESPACE_CORE_MW_BEGIN
 
+/*! \brief Base class for all managed nodes
+ *
+ */
 class CoreNode:
    public ICoreNode,
    protected core::mw::Node

@@ -27,7 +27,9 @@ class SubscriberExtBuf;
 template <typename MessageType, unsigned QUEUE_LENGTH>
 class Subscriber;
 
-
+/*! \brief A node
+ *
+ */
 class Node:
    private core::Uncopyable
 {

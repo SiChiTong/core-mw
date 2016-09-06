@@ -14,25 +14,43 @@ NAMESPACE_CORE_MW_BEGIN
 
 class Message;
 
-
+/*! \brief A publisher
+ *
+ * \tparam MessageType Type of the message to be published
+ *
+ * \note MessageType must refer to a class inherited from core::mw::Message
+ */
 template <typename MessageType>
 class Publisher:
    public LocalPublisher
 {
 public:
+   /*! \brief Allocate a message
+    *
+    */
    bool
    alloc(
-      MessageType*& msgp
+      MessageType*& msgp //!< [in,out] pointer to the allocated message
    );
 
+
+   /*! \brief Publish a message
+    *
+    * \pre The message must have been previously allocated with alloc()
+    */
    bool
    publish(
-      MessageType& msg
+      MessageType& msg //!< [in] message to be published
    );
 
+
+   /*! \brief Publish a message
+    *
+    * \pre The message must have been previously allocated with alloc()
+    */
    bool
    publish(
-      MessageType* msg
+      MessageType* msg //!< [in] message to be published
    );
 
 
@@ -43,7 +61,7 @@ public:
 
 
 template <typename MessageType>
-//inline // DAVIDE
+inline
 bool
 Publisher<MessageType>::alloc(
    MessageType*& msgp

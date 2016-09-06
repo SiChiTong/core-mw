@@ -10,7 +10,9 @@
 
 NAMESPACE_CORE_BEGIN
 
-
+/*! \brief Base class for all uncopyable classes
+ *
+ */
 class Uncopyable
 {
 private:
