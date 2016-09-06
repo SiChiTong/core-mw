@@ -24,6 +24,9 @@ class Transport;
 
 
 // TODO: Add refcount as a decorator, user should only declare the contents type
+/*! \brief Base class for all the messages
+ *
+ */
 class Message
 {
 public:

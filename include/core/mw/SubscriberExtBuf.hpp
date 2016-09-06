@@ -15,40 +15,73 @@ NAMESPACE_CORE_MW_BEGIN
 
 class Message;
 
-
+/*! \brief TODO
+ *
+ * \tparam MessageType type of the message to be published
+ */
 template <typename MessageType>
 class SubscriberExtBuf:
    public LocalSubscriber
 {
 public:
+   /*! \brief Type of the callback
+    *
+    * Pointer to a callback function
+    * \param msg received message
+    * \param node node that owns the subscriber
+    *
+    * \return success
+    */
    typedef bool (* Callback)(
       const MessageType& msg,
       Node*              node
    );
 
 public:
+   /*! \brief Get the callback to be invoked on message reception
+    *
+    */
    Callback
    get_callback() const;
 
+
+   /*! \brief Set the callback to be invoked on message reception
+    *
+    */
    void
    set_callback(
-      Callback callback
+      Callback callback //!< [in] pointer to callback function
    );
 
+   /*! \brief Fetch a message from the queue
+    *
+    * \return success
+    * \retval true A message has been fetched
+    * \retval false There were no message pending in the queue
+    */
    bool
    fetch(
-      MessageType*& msgp
+      MessageType*& msgp //!< will reference the fetched message
    );
 
+   /*! \brief Fetch a message from the queue
+    *
+    * \return success
+    * \retval true A message has been fetched
+    * \retval false There were no message pending in the queue
+    */
    bool
    fetch(
-      MessageType*&   msgp,
-      core::os::Time& timestamp
+      MessageType*&   msgp, //!< will reference the fetched message
+      core::os::Time& timestamp //!< message timestamp
    );
 
+   /*! \brief Releases the message
+    *
+    */
    bool
    release(
-      MessageType& msg
+      MessageType& msg //!< message to be released
    );
 
 
