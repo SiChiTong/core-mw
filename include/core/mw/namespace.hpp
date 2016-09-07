@@ -6,6 +6,10 @@
 
 #pragma once
 
+/*! \namespace core::mw
+ * \brief Core Middleware
+ */
+
 #define NAMESPACE_CORE_MW core::mw
 #define NAMESPACE_CORE_MW_BEGIN \
    namespace core { \
