@@ -253,7 +253,38 @@ coreType(
 {
    return CoreTypeTraitsHelperB<T>::types;
 }
+
+#define SIZE_OF_CASE(__x__) case CoreType::__x__: \
+     return CoreTypeTraitsHelperF<CoreType::__x__>::sizeOfType; break
+inline std::size_t
+coreTypeSize(
+   CoreType type
+)
+{
+   // For run-time...
+   switch (type) {
+      SIZE_OF_CASE(VOID);
+      SIZE_OF_CASE(CHAR);
+      SIZE_OF_CASE(INT8);
+      SIZE_OF_CASE(UINT8);
+      SIZE_OF_CASE(INT16);
+      SIZE_OF_CASE(UINT16);
+      SIZE_OF_CASE(INT32);
+      SIZE_OF_CASE(UINT32);
+      SIZE_OF_CASE(INT64);
+      SIZE_OF_CASE(UINT64);
+      SIZE_OF_CASE(FLOAT32);
+      SIZE_OF_CASE(FLOAT64);
+      SIZE_OF_CASE(TIMESTAMP);
+     default:
+        CORE_ASSERT(!"Undefined CoreType");
+        return 0; // unreachable
+   } // switch
+} // coreTypeSize
+
+#undef SIZE_OF_CASE
 }
+
 
 NAMESPACE_CORE_MW_END
 
@@ -264,16 +295,13 @@ NAMESPACE_CORE_MW_END
       return static_cast<core::mw::CoreTypeTraits<core::mw::CoreType::__t__, 1>::Type>(x); \
 }
 
-CORETYPE_UDL_INT(
-   s8,
-   INT8
-)
-CORETYPE_UDL_INT(u8, UINT8)
-CORETYPE_UDL_INT(s16, INT16)
-CORETYPE_UDL_INT(u16, UINT16)
-CORETYPE_UDL_INT(s32, INT32)
-CORETYPE_UDL_INT(u32, UINT32)
-CORETYPE_UDL_INT(s64, INT64)
-CORETYPE_UDL_INT(u64, UINT64)
-CORETYPE_UDL_FLOAT(f32, FLOAT32)
-CORETYPE_UDL_FLOAT(f64, FLOAT64)
+CORETYPE_UDL_INT(s8, INT8);
+CORETYPE_UDL_INT(u8, UINT8);
+CORETYPE_UDL_INT(s16, INT16);
+CORETYPE_UDL_INT(u16, UINT16);
+CORETYPE_UDL_INT(s32, INT32);
+CORETYPE_UDL_INT(u32, UINT32);
+CORETYPE_UDL_INT(s64, INT64);
+CORETYPE_UDL_INT(u64, UINT64);
+CORETYPE_UDL_FLOAT(f32, FLOAT32);
+CORETYPE_UDL_FLOAT(f64, FLOAT64);

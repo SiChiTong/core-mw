@@ -16,683 +16,519 @@
 #include <type_traits>
 
 /* Macros that allow us to keep the python code generator clean */
-#define CORE_CONFIGURATION_BEGIN(__name__) class __name__: \
-   public core::mw::CoreConfiguration {
+#define CORE_CONFIGURATION_BEGIN(__name__) \
+   class __name__: \
+      public core::mw::CoreConfigurationBase { \
+public: \
+      using Type = __name__;
+#define CORE_CONFIGURATION_BEGIN_FULL(__name__, __l__, __s__) \
+   class __name__: \
+      public core::mw::CoreConfigurationBase { \
+public: \
+      using Type = __name__; \
+public: \
+      static const core::mw::CoreConfigurationBase::Signature SIGNATURE = __s__; \
+      core::mw::CoreConfigurationBase::Signature getConfigurationSignature() const { \
+         return __s__; \
+      } \
+      static const std::size_t LENGTH = __l__;
 #define CORE_CONFIGURATION_FIELD(__name__, __type__, __size__) \
 public: \
-   core::mw::CoreParameter<core::mw::CoreType::__type__, __size__>__name__;
-#define CORE_CONFIGURATION_MAP_BEGIN(__n__) \
-private: \
-   const core::Array<KeyValue, __n__>_map = {{
-#define CORE_CONFIGURATION_MAP_ENTRY(__name__, __field__) { # __field__, core::mw::pointer_to_helper<__name__, decltype(__name__::__field__), & __name__::__field__>::pointer},
-#define CORE_CONFIGURATION_MAP_END() } \
-   };
+   core::mw::CoreTypeTraits<core::mw::CoreType::__type__, __size__>::Type __name__;
 #define CORE_CONFIGURATION_SIGNATURE(__s__) \
-   core::mw::CoreConfiguration::Signature getSignature() const { \
-      return __s__; \
-   } \
 public: \
-   static const core::mw::CoreConfiguration::Signature SIGNATURE = __s__;
+   static const core::mw::CoreConfigurationBase::Signature SIGNATURE = __s__; \
+   core::mw::CoreConfigurationBase::Signature getConfigurationSignature() const { \
+      return __s__; \
+   }
+#define CORE_CONFIGURATION_LENGTH(__l__) \
+   static const std::size_t LENGTH = __l__;
 #define CORE_CONFIGURATION_END() \
-private: \
-   iterator begin() { \
-      return _map.begin(); \
-   } \
-private: \
-   iterator end() { \
-      return _map.end(); \
+   };
+
+#define CORE_CONFIGURATION_MAP_BEGIN(__name__) \
+   template <> \
+   const core::Array<core::mw::CoreConfigurationMap::FieldMetadata, core::mw::CoreConfigurationMap_<__name__>::LENGTH>core::mw::CoreConfigurationMap_<__name__>::_map = {{
+#define CORE_CONFIGURATION_MAP_ENTRY(__name__, __field__, __type__, __size__) \
+   { # __field__, offsetof(__name__, __field__), core::mw::CoreType::__type__, __size__},
+#define CORE_CONFIGURATION_MAP_END() \
    } \
    };
 
 NAMESPACE_CORE_MW_BEGIN
 
-struct CoreParameterBase {
-   virtual CoreType
-   getCoreType() const = 0;
-
-   virtual std::size_t
-   getSize() const = 0;
-
-   virtual void
-   set(
-      const void* data
-   ) = 0;
-
-   virtual void
-   set(
-      std::size_t i,
-      const void* data
-   ) = 0;
-
-   virtual void
-   get(
-      void* data
-   ) const = 0;
-
-
-   template <typename T>
-   CoreParameterBase&
-   operator=(
-      const T& x
-   );
-
-
-   template <typename T>
-   CoreParameterBase&
-   operator=(
-      const std::initializer_list<T>& x
-   );
-
-   CoreParameterBase&
-   operator=(
-      const CoreParameterBase& x
-   );
-
-
-   CoreParameterBase&
-   operator=(
-      const char* x
-   );
-
-
-   template <typename T>
-   explicit
-   operator T() const;
-
-
-   template <typename T, std::size_t S>
-   explicit operator:: core::Array<T, S>() const;
-
-   explicit
-   operator const char*() const;
-};
-
-template <typename T>
-CoreParameterBase&
-CoreParameterBase::operator=(
-   const T& x
-)
-{
-   CORE_ASSERT(CoreTypeUtils::size(x) == getSize() && CoreTypeUtils::coreType(x) == getCoreType()); // make sure we are doing something meaningful...
-
-   set(&x);
-
-   return *this;
-}
-
-template <typename T>
-CoreParameterBase&
-CoreParameterBase::operator=(
-   const std::initializer_list<T>& x
-)
-{
-   CORE_ASSERT(x.size() == getSize() && CoreTypeTraitsHelperB<T>::types == getCoreType()); // make sure we are doing something meaningful...
-
-   std::size_t i = 0;
-
-   for (T v : x) {
-      set(i, &v);
-      i++;
-   }
-
-   return *this;
-}
-
-template <typename T>
-CoreParameterBase::operator T() const
-{
-   T x;
-
-   CORE_ASSERT(CoreTypeUtils::size(x) == getSize() && CoreTypeUtils::coreType(x) == getCoreType()); // make sure we are doing something meaningful...
-
-   get(&x);
-
-   return x;
-}
-
-template <typename T, std::size_t S>
-CoreParameterBase::operator:: core::Array<T, S>() const {
-   CORE_ASSERT(S == getSize() && CoreTypeTraitsHelperB<T>::types == getCoreType()); // make sure we are doing something meaningful...
-
-   ::core::Array<T, S>tmp;
-
-   get(tmp.begin());
-
-   return tmp;
-}
-
-template <CoreType T, std::size_t S>
-struct CoreParameter:
-   CoreParameterBase {
-   using Traits   = CoreTypeTraits<T, S>;
-   using BaseType = typename Traits::BaseType;
-   using Type     = typename Traits::Type;
-
-   constexpr std::size_t
-   getSize() const
-   {
-      return Traits::size;
-   }
-
-   constexpr
-   CoreType
-   getCoreType() const
-   {
-      return Traits::types;
-   }
-
-   CoreParameter()
-   {}
-
-   CoreParameter(
-      const std::initializer_list<BaseType>& x
-   )
-   {
-      CORE_ASSERT(x.size() == S);
-      std::size_t i = 0;
-
-      for (BaseType v : x) {
-         storage[i++] = v;
-      }
-   }
-
-   void
-   set(
-      const void* data
-   )
-   {
-      const BaseType* tmp = static_cast<const BaseType*>(data); // array = pointer to...
-      std::size_t i       = Traits::size;
-
-      while (i--) {
-         BaseType t = tmp[i];
-         storage[i] = t;
-      }
-   }
-
-   void
-   set(
-      std::size_t i,
-      const void* data
-   )
-   {
-      const BaseType* tmp = static_cast<const BaseType*>(data); // array = pointer to...
-
-      storage[i] = *tmp;
-   }
-
-   void
-   get(
-      void* data
-   ) const
-   {
-      BaseType* tmp = static_cast<BaseType*>(data);
-      std::size_t i = Traits::size;
-
-      while (i--) {
-         tmp[i] = storage[i];
-      }
-   }
-
-   BaseType&
-   operator[](
-      size_t i
-   )
-   {
-      return const_cast<BaseType&>(storage[i]);
-   }
-
-   const BaseType&
-   operator[](
-      size_t i
-   ) const
-   {
-      return const_cast<BaseType&>(storage[i]);
-   }
-
-   void
-   copyStorageTo(
-      Type& x
-   )
-   {
-      std::size_t i = Traits::size;
-
-      while (i--) {
-         x[i] = storage[i];
-      }
-   }
-
-   const Type*
-   raw()
-   {
-      return storage;
-   }
-
-   operator Type() const {
-      return storage;
-   }
-
-   CoreParameter<T, S>&
-   operator=(
-      Type& x
-   )
-   {
-      std::size_t i = Traits::size;
-
-      while (i--) {
-         storage[i] = x[i];
-      }
-
-      return *this;
-   }
-
-   CoreParameter<T, S>&
-   operator=(
-      const CoreParameter<T, S>& x
-   )
-   {
-      std::size_t i = Traits::size;
-
-      while (i--) {
-         storage[i] = x.storage[i];
-      }
-
-      return *this;
-   }
-
-   CoreParameter<T, S>&
-   operator=(
-      const std::initializer_list<BaseType>& x
-   )
-   {
-      CORE_ASSERT(x.size() == Traits::size);
-
-      std::size_t i = 0;
-
-      for (BaseType v : x) {
-         storage[i++] = v;
-      }
-
-      return *this;
-   }
-
-   static inline CoreParameter<T, S>&
-   reference(
-      CoreParameterBase& x
-   )
-   {
-      return static_cast<CoreParameter<T, S>&>(x);
-   }
-
-private:
-   Type storage;
-};
-
-template <std::size_t S>
-struct CoreParameter<CoreType::CHAR, S> :
-   CoreParameterBase {
-   using Traits   = CoreTypeTraits<CoreType::CHAR, S>;
-   using BaseType = typename Traits::BaseType;
-   using Type     = typename Traits::Type;
-
-   constexpr std::size_t
-   getSize() const
-   {
-      return Traits::size;
-   }
-
-   constexpr
-   CoreType
-   getCoreType() const
-   {
-      return Traits::types;
-   }
-
-   CoreParameter()
-   {}
-
-   CoreParameter(
-      BaseType& v
-   )
-   {
-      storage = v;
-   }
-
-   void
-   set(
-      const void* data
-   )
-   {
-      const BaseType* tmp = static_cast<const BaseType*>(data); // array = pointer to...
-      std::size_t i       = Traits::size;
-
-      while (i--) {
-         BaseType t = tmp[i];
-         storage[i] = t;
-      }
-   }
-
-   void
-   set(
-      std::size_t i,
-      const void* data
-   )
-   {
-      const BaseType* tmp = static_cast<const BaseType*>(data); // array = pointer to...
-
-      storage[i] = *tmp;
-   }
-
-   void
-   get(
-      void* data
-   ) const
-   {
-      BaseType* tmp = static_cast<BaseType*>(data);
-      std::size_t i = Traits::size;
-
-      while (i--) {
-         tmp[i] = storage[i];
-      }
-   }
-
-   BaseType&
-   operator[](
-      size_t i
-   )
-   {
-      return const_cast<BaseType&>(storage[i]);
-   }
-
-   const BaseType&
-   operator[](
-      size_t i
-   ) const
-   {
-      return const_cast<BaseType&>(storage[i]);
-   }
-
-   void
-   copyStorageTo(
-      Type& x
-   )
-   {
-      std::size_t i = Traits::size;
-
-      while (i--) {
-         x[i] = storage[i];
-      }
-   }
-
-   const Type*
-   raw()
-   {
-      return storage;
-   }
-
-   operator Type() const {
-      return storage;
-   }
-
-   CoreParameter<CoreType::CHAR, S>&
-   operator=(
-      Type& x
-   )
-   {
-      std::size_t i = Traits::size;
-
-      while (i--) {
-         storage[i] = x[i];
-      }
-
-      return *this;
-   }
-
-   CoreParameter<CoreType::CHAR, S>&
-   operator=(
-      const CoreParameter<CoreType::CHAR, S>& x
-   )
-   {
-      std::size_t i = Traits::size;
-
-      while (i--) {
-         storage[i] = x.storage[i];
-      }
-
-      return *this;
-   }
-
-   static inline CoreParameter<CoreType::CHAR, S>&
-   reference(
-      CoreParameterBase& x
-   )
-   {
-      return static_cast<CoreParameter<CoreType::CHAR, S>&>(x);
-   }
-
-   CoreParameter<CoreType::CHAR, S>
-   operator=(
-      const char* x
-   )
-   {
-      CORE_ASSERT(strlen(x) < Traits::size);
-
-      std::size_t i = 0;
-      std::size_t l = strlen(x) + 1;
-
-      while (i < l) {
-         storage[i] = x[i];
-         i++;
-      }
-
-      while (i < Traits::size) {
-         storage[i] = 0;
-         i++;
-      }
-
-      return *this;
-   } // =
-
-   operator const char*() const
-   {
-      return storage.begin();
-   }
-
-private:
-   Type storage;
-};
-
-template <CoreType T>
-struct CoreParameter<T, 1> :
-   CoreParameterBase {
-   using Traits   = CoreTypeTraits<T, 1>;
-   using BaseType = typename Traits::BaseType;
-   using Type     = typename Traits::Type;
-
-   constexpr std::size_t
-   getSize() const
-   {
-      return Traits::size;
-   }
-
-   constexpr
-   CoreType
-   getCoreType() const
-   {
-      return Traits::types;
-   }
-
-   CoreParameter()
-   {}
-
-   CoreParameter(
-      BaseType& v
-   )
-   {
-      storage = v;
-   }
-
-   void
-   set(
-      const void* data
-   )
-   {
-      const BaseType* tmp = static_cast<const BaseType*>(data);
-
-      storage = *tmp;
-   }
-
-   void
-   set(
-      std::size_t i,
-      const void* data
-   )
-   {
-      const BaseType* tmp = static_cast<const BaseType*>(data); // array = pointer to...
-
-      storage = *tmp;
-   }
-
-   void
-   get(
-      void* data
-   ) const
-   {
-      BaseType* tmp = static_cast<BaseType*>(data);
-
-      *tmp = storage;
-   }
-
-   operator Type() const
-   {
-      return storage;
-   }
-
-   CoreParameter<T, 1>&
-   operator=(
-      const Type& x
-   )
-   {
-      storage = x;
-      return *this;
-   }
-
-   CoreParameter<T, 1>&
-   operator=(
-      const CoreParameter<T, 1>& x
-   )
-   {
-      storage = x.storage;
-      return *this;
-   }
-
-   static inline CoreParameter<T, 1>&
-   reference(
-      CoreParameterBase& x
-   )
-   {
-      return static_cast<CoreParameter<T, 1>&>(x);
-   }
-
-private:
-   Type storage;
-};
-
-template <CoreType T>
-struct CoreParameter<T, 0> :
-   CoreParameterBase {
-   using Traits   = CoreTypeTraits<T, 0>;
-   using BaseType = typename Traits::BaseType;
-   using Type     = typename Traits::Type;
-
-   constexpr std::size_t
-   getSize() const
-   {
-      return Traits::size;
-   }
-
-   constexpr
-   CoreType
-   getCoreType() const
-   {
-      return Traits::types;
-   }
-
-   void
-   set(
-      const void* data
-   )
-   {
-      CORE_ASSERT(!"VOID");
-   }
-
-   void
-   set(
-      std::size_t i,
-      const void* data
-   )
-   {
-      CORE_ASSERT(!"VOID");
-   }
-
-   void
-   get(
-      void* data
-   ) const
-   {
-      CORE_ASSERT(!"VOID");
-   }
-};
-
-class CoreConfiguration
-{
-public:
-   using Key       = const char*;
+struct CoreConfigurationBase {
    using Signature = uint32_t;
+};
 
-   struct KeyValue {
+struct CoreConfigurationSignature {
+   virtual CoreConfigurationBase::Signature
+   getConfigurationSignature() const = 0;
+};
+
+
+struct CoreConfigurationMap {
+   using Key = const char*;
+
+   struct FieldMetadata {
       Key key;
-      core::mw::CoreParameterBase core::mw::CoreConfiguration::* ptr;
+      std::ptrdiff_t offset;
+      core::mw::CoreType type;
+      std::size_t size;
    };
 
-public:
-   CoreParameterBase&
-   operator[](
-      Key key
-   );
+   virtual const FieldMetadata&
+   getField(
+      std::size_t i
+   ) const = 0;
+
+   virtual const std::size_t
+   getSize() const = 0;
 
 
-   inline bool
-   keyMatch(
-      Key a,
-      Key b
-   )
+   const FieldMetadata
+   getField(
+      CoreConfigurationMap::Key key
+   ) const
    {
-      return strcmp(a, b) == 0;
+      // Returning a copy of the field... Not a reference (that would be to a local)
+      for (FieldMetadata f : * this) {
+         if (keyMatch(key, f.key)) {
+            return f;
+         }
+      }
    }
 
-   virtual uint32_t
-   getSignature() const = 0;
+   const std::size_t
+   getFieldIndex(
+      CoreConfigurationMap::Key key
+   ) const
+   {
+      std::size_t i = 0;
+
+      for (FieldMetadata f : * this) {
+         if (keyMatch(key, f.key)) {
+            return i;
+         }
+
+         i++;
+      }
+
+      return i; // this will be gt the last index. It will fire an assert in getField
+   }
+
+   using iterator = const FieldMetadata *;
+
+   virtual iterator
+   begin() const = 0;
+
+   virtual iterator
+   end() const = 0;
 
 
 protected:
-   using iterator = const KeyValue *;
+   inline bool
+   keyMatch(
+      CoreConfigurationMap::Key a,
+      CoreConfigurationMap::Key b
+   ) const
+   {
+      return strcmp(a, b) == 0;
+   }
+}
 
-   virtual iterator
-   begin() = 0;
+CORE_PACKED;
 
-   virtual iterator
-   end() = 0;
+template <class C>
+struct CoreConfigurationMap_:
+   public C,
+   public core::mw::CoreConfigurationMap {
+   using Type = C;
+   static const std::size_t LENGTH = Type::LENGTH;
+   const FieldMetadata&
+   getField(
+      std::size_t i
+   ) const
+   {
+      return _map.at(i);
+   }
+
+   const std::size_t
+   getSize() const
+   {
+      return _map.size();
+   }
+
+   iterator
+   begin() const
+   {
+      return _map.begin();
+   }
+
+   iterator
+   end() const
+   {
+      return _map.end();
+   }
+
+private:
+   static const core::Array<FieldMetadata, LENGTH>_map;
+}
+
+CORE_PACKED;
+
+struct CoreConfigurationStatic_ {
+   // SET
+   static void
+   set(
+      CoreConfigurationBase*                     obj,
+      const CoreConfigurationMap::FieldMetadata& field,
+      const void*                                x
+   )
+   {
+      std::size_t s1        = field.size;
+      core::mw::CoreType t1 = field.type;
+
+      std::size_t len = s1 * core::mw::CoreTypeUtils::coreTypeSize(t1);
+
+      const uint8_t* src = reinterpret_cast<const uint8_t*>(x);
+      uint8_t* dst       = reinterpret_cast<uint8_t*>(obj + field.offset);
+
+      while (len--) {
+         * dst++ = *src++;
+      }
+   }
+
+   template <typename T>
+   static void
+   set(
+      CoreConfigurationBase*                     obj,
+      const CoreConfigurationMap::FieldMetadata& field,
+      const T&                                   x
+   )
+   {
+      std::size_t s1        = field.size;
+      std::size_t s2        = core::mw::CoreTypeUtils::size(x);
+      core::mw::CoreType t1 = field.type;
+      core::mw::CoreType t2 = core::mw::CoreTypeUtils::coreType(x);
+
+      CORE_ASSERT(s1 == s2 && t1 == t2);   // make sure we are doing something meaningful...
+
+      const T* src = reinterpret_cast<const T*>(&x);
+      T* dst       = reinterpret_cast<T*>(obj + field.offset);
+
+      while (s1--) {
+         * dst++ = *src++;
+      }
+   }
+
+   template <typename T>
+   static void
+   set(
+      CoreConfigurationBase*                     obj,
+      const CoreConfigurationMap::FieldMetadata& field,
+      const std::initializer_list<T>&            x
+   )
+   {
+      std::size_t s1        = field.size;
+      std::size_t s2        = x.size();
+      core::mw::CoreType t1 = field.type;
+      core::mw::CoreType t2 = core::mw::CoreTypeTraitsHelperB<T>::types;
+
+      CORE_ASSERT(s1 == s2 && t1 == t2);   // make sure we are doing something meaningful...
+
+      T* dst = reinterpret_cast<T*>(obj + field.offset);
+
+      for (T tmp : x) {
+         * dst++ = tmp;
+      }
+   }
+
+   static void
+   set(
+      CoreConfigurationBase*                     obj,
+      const CoreConfigurationMap::FieldMetadata& field,
+      const char*                                x
+   )
+   {
+      std::size_t s1 = field.size;
+      std::size_t s2 = strlen(x);
+
+      core::mw::CoreType t1 = field.type;
+      core::mw::CoreType t2 = core::mw::CoreType::CHAR;
+
+      CORE_ASSERT(s1 >= s2 && t1 == t2);   // make sure we are doing something meaningful...
+
+      const char* src = reinterpret_cast<const char*>(x);
+      char* dst       = reinterpret_cast<char*>(obj + field.offset);
+
+      std::size_t i = 0;
+
+      while (i < s2) {
+         // copy
+         * dst++ = *src++;
+         i++;
+      }
+
+      while (i < s1) {
+         // pad
+         * dst = 0;
+         i++;
+      }
+   } // set
+
+   //GET
+   static void
+   get(
+      const CoreConfigurationBase*               obj,
+      const CoreConfigurationMap::FieldMetadata& field,
+      void*                                      x
+   )
+   {
+      std::size_t s1        = field.size;
+      core::mw::CoreType t1 = field.type;
+
+      std::size_t len = s1 * core::mw::CoreTypeUtils::coreTypeSize(t1);
+
+      const uint8_t* src = reinterpret_cast<const uint8_t*>(obj + field.offset);
+      uint8_t* dst       = reinterpret_cast<uint8_t*>(x);
+
+      while (len--) {
+         * dst++ = *src++;
+      }
+   }
+
+   template <typename T>
+   static void
+   get(
+      const CoreConfigurationBase*               obj,
+      const CoreConfigurationMap::FieldMetadata& field,
+      T&                                         x
+   )
+   {
+      std::size_t s1        = field.size;
+      std::size_t s2        = core::mw::CoreTypeUtils::size(x);
+      core::mw::CoreType t1 = field.type;
+      core::mw::CoreType t2 = core::mw::CoreTypeUtils::coreType(x);
+
+      CORE_ASSERT(s1 == s2 && t1 == t2);     // make sure we are doing something meaningful...
+
+      const T* src = reinterpret_cast<const T*>(obj + field.offset);
+      T* dst       = reinterpret_cast<T*>(&x);
+
+      while (s1--) {
+         * dst++ = *src++;
+      }
+   }
+
+   static void
+   get(
+      const CoreConfigurationBase*               obj,
+      const CoreConfigurationMap::FieldMetadata& field,
+      char*                                      x
+   )
+   {
+      std::size_t s1 = field.size;
+      std::size_t s2 = strlen(x);
+
+      core::mw::CoreType t1 = field.type;
+      core::mw::CoreType t2 = core::mw::CoreType::CHAR;
+
+      CORE_ASSERT(s1 >= s2 && t1 == t2);     // make sure we are doing something meaningful...
+
+      const char* src = reinterpret_cast<const char*>(obj + field.offset);
+      char* dst       = reinterpret_cast<char*>(x);
+
+      std::size_t i = 0;
+
+      while (i < s2) {
+         // copy
+         * dst++ = *src++;
+         i++;
+      }
+
+      while (i < s1) {
+         // pad
+         * dst = 0;
+         i++;
+      }
+   } // get
+}
+
+CORE_PACKED;
+
+struct CoreConfiguration {
+   virtual void
+   set(
+      CoreConfigurationMap::Key key,
+      const void*               x
+   ) = 0;
+
+   virtual void
+   set(
+      CoreConfigurationMap::Key key,
+      const char*               x
+   ) = 0;
+
+   virtual void
+   get(
+      CoreConfigurationMap::Key key,
+      void*                     x
+   ) const = 0;
+
+   virtual void
+   get(
+      CoreConfigurationMap::Key key,
+      char*                     x
+   ) const = 0;
 };
 
-template <typename C, typename T, T C::* m>
-struct pointer_to_helper {
-   static constexpr core::mw::CoreParameterBase core::mw::CoreConfiguration::* pointer
-      = static_cast<core::mw::CoreParameterBase core::mw::CoreConfiguration::*>(reinterpret_cast<core::mw::CoreParameterBase C::*>(m));
-};
+template <typename C>
+struct CoreConfiguration_:
+   public C,
+   public CoreConfiguration,
+   private CoreConfigurationStatic_ {
+   void
+   setAt(
+      std::size_t i,
+      const void* x
+   )
+   {
+      CoreConfigurationBase* obj = static_cast<CoreConfigurationBase*>(this);
+      CoreConfigurationStatic_::set(obj, this->getField(i), x);
+   }
 
+   template <typename T>
+   void
+   setAt(
+      std::size_t i,
+      const T&    x
+   )
+   {
+      CoreConfigurationBase* obj = static_cast<CoreConfigurationBase*>(this);
+      CoreConfigurationStatic_::set(obj, this->getField(i), x);
+   }
 
-#define p__(__class__, __member__) { # __member__, core::mw::pointer_to_helper<__class__, decltype(__class__::__member__), & __class__::__member__>::pointer}
+   template <typename T>
+   void
+   setAt(
+      std::size_t                     i,
+      const std::initializer_list<T>& x
+   )
+   {
+      CoreConfigurationBase* obj = static_cast<CoreConfigurationBase*>(this);
+      CoreConfigurationStatic_::set(obj, this->getField(i), x);
+   }
+
+   void
+   setAt(
+      std::size_t i,
+      const char* x
+   )
+   {
+      CoreConfigurationBase* obj = static_cast<CoreConfigurationBase*>(this);
+      CoreConfigurationStatic_::set(obj, this->getField(i), x);
+   }
+
+   void
+   set(
+      CoreConfigurationMap::Key key,
+      const void*               x
+   )
+   {
+      setAt(this->getFieldIndex(key), x);
+   }
+
+   template <typename T>
+   void
+   set(
+      CoreConfigurationMap::Key key,
+      const T&                  x
+   )
+   {
+      setAt(this->getFieldIndex(key), x);
+   }
+
+   template <typename T>
+   void
+   set(
+      CoreConfigurationMap::Key       key,
+      const std::initializer_list<T>& x
+   )
+   {
+      setAt(this->getFieldIndex(key), x);
+   }
+
+   void
+   set(
+      CoreConfigurationMap::Key key,
+      const char*               x
+   )
+   {
+      setAt(this->getFieldIndex(key), x);
+   }
+
+   void
+   getAt(
+      std::size_t i,
+      void*       x
+   ) const
+   {
+      const CoreConfigurationBase* obj = static_cast<const CoreConfigurationBase*>(this);
+      CoreConfigurationStatic_::get(obj, this->getField(i), x);
+   }
+
+   template <typename T>
+   void
+   getAt(
+      std::size_t i,
+      T&          x
+   ) const
+   {
+      const CoreConfigurationBase* obj = static_cast<const CoreConfigurationBase*>(this);
+      CoreConfigurationStatic_::get(obj, this->getField(i), x);
+   }
+
+   void
+   getAt(
+      std::size_t i,
+      char*       x
+   ) const
+   {
+      const CoreConfigurationBase* obj = static_cast<const CoreConfigurationBase*>(this);
+      CoreConfigurationStatic_::get(obj, this->getField(i), x);
+   }
+
+   void
+   get(
+      CoreConfigurationMap::Key key,
+      void*                     x
+   ) const
+   {
+      getAt(this->getFieldIndex(key), x);
+   }
+
+   template <typename T>
+   void
+   get(
+      CoreConfigurationMap::Key key,
+      T&                        x
+   ) const
+   {
+      getAt(this->getFieldIndex(key), x);
+   }
+
+   void
+   get(
+      CoreConfigurationMap::Key key,
+      char*                     x
+   ) const
+   {
+      getAt(this->getFieldIndex(key), x);
+   }
+}
+
+CORE_PACKED;
 
 class CoreConfigurableBase
 {
@@ -705,17 +541,20 @@ public:
    }
 
    void
-   setConfiguration(
-      const CoreConfiguration& configuration
+   setConfigurationBase(
+      const CoreConfigurationBase& configuration
    )
    {
+	   core::os::SysLock::acquire();
       _configuration = &configuration;
+      core::os::SysLock::release();
    }
 
-   const CoreConfiguration&
-   getConfiguration() const
+   const CoreConfigurationBase&
+   getConfigurationBase() const
    {
       CORE_ASSERT(_configuration != nullptr);
+
       return *_configuration;
    }
 
@@ -725,8 +564,123 @@ public:
       return _configuration != nullptr;
    }
 
+   inline const char*
+   getKey() const
+   {
+      return _key;
+   }
+
+   virtual CoreConfigurationBase::Signature
+   getConfigurationSignature() const = 0;
+
+   virtual std::size_t
+   getConfigurationSize() const = 0;
+
+
+//--- CONFIGURATION OVERRIDE --------------------------------------------------
+   virtual bool
+   overrideConfiguration() = 0;
+
+   virtual CoreConfiguration&
+   getOverridingConfiguration() = 0;
+
+   virtual CoreConfigurationBase&
+   getOverridingConfigurationBase() = 0;
+
+
+//-----------------------------------------------------------------------------
+
+//--- CONFIGURATION IO --------------------------------------------------------
+bool
+   setConfigurationFrom(
+      const uint8_t* storage,
+	  std::size_t& offset,
+      std::size_t    size
+   )
+   {
+      CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
+
+      if(strncmp(_key, reinterpret_cast<const char*>(storage + offset), NamingTraits<Node>::MAX_LENGTH ) != 0) { // This was not for us!
+    	  return false;
+      }
+
+      offset += NamingTraits<Node>::MAX_LENGTH;
+
+      CoreConfigurationBase::Signature signature;
+      memcpy(&signature, storage + offset, sizeof(CoreConfigurationBase::Signature));
+      offset += sizeof(CoreConfigurationBase::Signature);
+
+      CORE_ASSERT(signature == getConfigurationSignature());   // Avoid messing up the configuration
+
+      setConfigurationBase(*reinterpret_cast<const CoreConfigurationBase*>(storage + offset));
+
+      std::size_t dataSize = getConfigurationSize();
+      offset += dataSize;
+
+      return true;
+   } // setConfigurationFrom
+
+   bool
+   overrideConfigurationFrom(
+      const uint8_t* storage,
+	  std::size_t& offset,
+      std::size_t    size
+   )
+   {
+      CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
+
+      if(strncmp(_key, reinterpret_cast<const char*>(storage + offset), NamingTraits<Node>::MAX_LENGTH ) != 0) { // This was not for us!
+    	  return false;
+      }
+
+      offset += NamingTraits<Node>::MAX_LENGTH;
+
+      CoreConfigurationBase::Signature signature;
+      memcpy(&signature, storage + offset, sizeof(CoreConfigurationBase::Signature));
+      offset += sizeof(CoreConfigurationBase::Signature);
+
+      CORE_ASSERT(signature == getConfigurationSignature());   // Avoid messing up the configuration
+
+      overrideConfiguration();
+
+      std::size_t dataSize = getConfigurationSize();
+      memcpy(&getOverridingConfigurationBase(), storage + offset, dataSize);
+
+      offset += dataSize;
+
+      return true;
+   } // overrideConfigurationFrom
+
+   bool
+   dumpConfigurationTo(
+      uint8_t*    storage,
+	  std::size_t& offset,
+      std::size_t size
+   ) const
+   {
+      CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
+
+      memcpy(storage + offset, _key, NamingTraits<Node>::MAX_LENGTH);
+      offset += NamingTraits<Node>::MAX_LENGTH;
+
+      CoreConfigurationBase::Signature signature = getConfigurationSignature();
+
+      memcpy(storage + offset, &signature, sizeof(CoreConfigurationBase::Signature));
+      offset += sizeof(CoreConfigurationBase::Signature);
+
+      const CoreConfigurationBase* data = static_cast<const CoreConfigurationBase*>(_configuration);
+      std::size_t dataSize = getConfigurationSize();
+
+      memcpy(storage + offset, data, dataSize);
+      offset += dataSize;
+
+      return offset;
+   } // dumpTo
+
+//-----------------------------------------------------------------------------
+
 protected:
-   const CoreConfiguration* _configuration;
+   const CoreConfigurationBase* _configuration;
    const char* _key;
 
 public:
@@ -738,26 +692,88 @@ class CoreConfigurable:
    public CoreConfigurableBase
 {
 public:
-   using ConfigurationType = T;
+   using ConfigurationType     = T;
+   using ConfigurationMapType  = CoreConfigurationMap_<ConfigurationType>;
+   using CoreConfigurationType = core::mw::CoreConfiguration_<ConfigurationMapType>;
 
    CoreConfigurable(
       const char* key
-   ) : CoreConfigurableBase::CoreConfigurableBase(key) {}
+   ) : CoreConfigurableBase::CoreConfigurableBase(key), _overriding(nullptr) {}
 
    void
    setConfiguration(
-      const CoreConfiguration& configuration
+      const ConfigurationType& configuration
    )
    {
-      CORE_ASSERT(configuration.getSignature() == T::SIGNATURE);  // Make sure we are doing something good...
+//      CORE_ASSERT(configuration.getConfigurationSignature() == ConfigurationType::SIGNATURE);  // Make sure we are doing something good...
       _configuration = &configuration;
    }
 
-   inline const T&
+   inline const ConfigurationType&
    configuration() const
    {
-      return *(reinterpret_cast<const T*>(_configuration));
+      return *(reinterpret_cast<const ConfigurationType*>(_configuration));
    }
+
+   bool
+   overrideConfiguration()
+   {
+      if (_overriding == nullptr) {
+         _overriding = new CoreConfigurationType(); // It will live forever!!!
+      }
+
+      if (_overriding == nullptr) {
+         return false;
+      }
+
+      if (_configuration != nullptr) {
+         // Copy the old configuration into the overriding one
+    	  memcpy(static_cast<CoreConfigurationBase*>(_overriding), _configuration, getConfigurationSize());
+      }
+
+      setConfiguration(*_overriding);
+
+      return true;
+   } // overrideConfiguration
+
+   inline CoreConfiguration&
+   getOverridingConfiguration()
+   {
+      CORE_ASSERT(_overriding != nullptr)
+
+      return *_overriding;
+   }
+
+   inline CoreConfigurationBase&
+   getOverridingConfigurationBase()
+   {
+      CORE_ASSERT(_overriding != nullptr)
+
+      return *_overriding;
+   }
+
+   inline CoreConfigurationType&
+   overridingConfiguration()
+   {
+      CORE_ASSERT(_overriding != nullptr)
+
+      return *_overriding;
+   }
+
+   inline CoreConfigurationBase::Signature
+   getConfigurationSignature() const
+   {
+      return ConfigurationType::SIGNATURE;
+   }
+
+   inline std::size_t
+   getConfigurationSize() const
+   {
+      return sizeof(ConfigurationType);
+   }
+
+private:
+   CoreConfigurationType* _overriding;
 };
 
 NAMESPACE_CORE_MW_END
