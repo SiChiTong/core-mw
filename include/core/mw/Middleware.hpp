@@ -18,8 +18,6 @@
 #include <core/mw/SubscriberExtBuf.hpp>
 #include <core/mw/Node.hpp>
 #include <core/mw/ReMutex.hpp>
-#include <core/mw/transport/DebugTransport.hpp>
-#include <core/mw/transport/RTCANTransport.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
