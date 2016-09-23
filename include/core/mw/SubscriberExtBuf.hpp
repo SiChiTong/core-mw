@@ -53,6 +53,7 @@ public:
       Callback callback //!< [in] pointer to callback function
    );
 
+
    /*! \brief Fetch a message from the queue
     *
     * \return success
@@ -63,6 +64,7 @@ public:
    fetch(
       MessageType*& msgp //!< will reference the fetched message
    );
+
 
    /*! \brief Fetch a message from the queue
     *
@@ -75,6 +77,7 @@ public:
       MessageType*&   msgp, //!< will reference the fetched message
       core::os::Time& timestamp //!< message timestamp
    );
+
 
    /*! \brief Releases the message
     *

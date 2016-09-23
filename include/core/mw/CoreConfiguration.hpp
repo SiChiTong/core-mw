@@ -545,7 +545,8 @@ public:
       const CoreConfigurationBase& configuration
    )
    {
-	   core::os::SysLock::acquire();
+      core::os::SysLock::acquire();
+
       _configuration = &configuration;
       core::os::SysLock::release();
    }
@@ -591,17 +592,18 @@ public:
 //-----------------------------------------------------------------------------
 
 //--- CONFIGURATION IO --------------------------------------------------------
-bool
+   bool
    setConfigurationFrom(
       const uint8_t* storage,
-	  std::size_t& offset,
+      std::size_t&   offset,
       std::size_t    size
    )
    {
       CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
 
-      if(strncmp(_key, reinterpret_cast<const char*>(storage + offset), NamingTraits<Node>::MAX_LENGTH ) != 0) { // This was not for us!
-    	  return false;
+      if (strncmp(_key, reinterpret_cast<const char*>(storage + offset), NamingTraits<Node>::MAX_LENGTH) != 0) {
+         // This was not for us!
+         return false;
       }
 
       offset += NamingTraits<Node>::MAX_LENGTH;
@@ -623,14 +625,15 @@ bool
    bool
    overrideConfigurationFrom(
       const uint8_t* storage,
-	  std::size_t& offset,
+      std::size_t&   offset,
       std::size_t    size
    )
    {
       CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
 
-      if(strncmp(_key, reinterpret_cast<const char*>(storage + offset), NamingTraits<Node>::MAX_LENGTH ) != 0) { // This was not for us!
-    	  return false;
+      if (strncmp(_key, reinterpret_cast<const char*>(storage + offset), NamingTraits<Node>::MAX_LENGTH) != 0) {
+         // This was not for us!
+         return false;
       }
 
       offset += NamingTraits<Node>::MAX_LENGTH;
@@ -653,9 +656,9 @@ bool
 
    bool
    dumpConfigurationTo(
-      uint8_t*    storage,
-	  std::size_t& offset,
-      std::size_t size
+      uint8_t*     storage,
+      std::size_t& offset,
+      std::size_t  size
    ) const
    {
       CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
@@ -728,7 +731,7 @@ public:
 
       if (_configuration != nullptr) {
          // Copy the old configuration into the overriding one
-    	  memcpy(static_cast<CoreConfigurationBase*>(_overriding), _configuration, getConfigurationSize());
+         memcpy(static_cast<CoreConfigurationBase*>(_overriding), _configuration, getConfigurationSize());
       }
 
       setConfiguration(*_overriding);

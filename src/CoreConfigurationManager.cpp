@@ -23,9 +23,6 @@ CoreConfigurationManager::add(
    _objects.link(configurableObject.link);
 }
 
-#define FOREACH_NODE(_x_) \
-   for (core::mw::StaticList<CoreConfigurableBase>::Iterator _x_ = _objects.begin(); _x_ != _objects.end(); _x_++)
-
 void
 CoreConfigurationManager::dumpTo(
    uint8_t*    storage,
@@ -33,11 +30,13 @@ CoreConfigurationManager::dumpTo(
 )
 {
    std::size_t offset = 0;
-   std::size_t cnt = 0;
+   std::size_t cnt    = 0;
 
-   for (const CoreConfigurableBase& x : _objects) { // For every object...
-      if(x.dumpConfigurationTo(storage + sizeof(std::size_t), offset, size - sizeof(std::size_t))) { // If the conf has been dumped...
-    	  cnt++; // Update the number of blocks
+   for (const CoreConfigurableBase& object : _objects) {
+      // For every object...
+      if (object.dumpConfigurationTo(storage + sizeof(std::size_t), offset, size - sizeof(std::size_t))) {
+         // If the conf has been dumped...
+         cnt++; // Update the number of blocks
       }
    }
 
@@ -51,16 +50,20 @@ CoreConfigurationManager::setFrom(
 )
 {
    std::size_t offset = 0;
-   std::size_t cnt = 0;
+   std::size_t cnt    = 0;
 
    memcpy(&cnt, storage, sizeof(std::size_t)); // Number of conf blocks
 
-   for(std::size_t i = 0; i < cnt; i++) { // For every block...
-	   for (CoreConfigurableBase& x : _objects) { // Try with every object...
-		   if(x.setConfigurationFrom(storage, offset, size - sizeof(std::size_t))) { // If the block matches the object...
-			   break; // Go on with the next block!
-		   }
-	   }
+   for (std::size_t i = 0; i < cnt; i++) {
+      // For every block...
+      for (CoreConfigurableBase& object : _objects) {
+         // Try with every object...
+         if (object.setConfigurationFrom(storage, offset, size - sizeof(std::size_t))) {
+            // If the block matches the object...
+            break; // Go on with the next block!
+         }
+      }
    }
 }
+
 NAMESPACE_CORE_MW_END

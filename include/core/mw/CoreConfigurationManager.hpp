@@ -30,11 +30,13 @@ public:
       uint8_t*    storage,
       std::size_t size
    );
+
    void
    setFrom(
       uint8_t*    storage,
       std::size_t size
    );
+
 
 private:
    core::mw::StaticList<CoreConfigurableBase> _objects;
