@@ -8,6 +8,7 @@
 
 #include <core/mw/namespace.hpp>
 #include <core/Array.hpp>
+#include <core/String.hpp>
 #include <core/os/Time.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
@@ -176,7 +177,27 @@ struct CoreTypeTraits {
    static const std::size_t size        = S;
 
    using BaseType = typename CoreTypeTraitsHelperF<T>::Type;
-   using Type     = ::core::Array<BaseType, S>;
+   using Type     = core::Array<BaseType, S>;
+};
+
+template <std::size_t S>
+struct CoreTypeTraits<CoreType::CHAR, S> {
+   static const CoreType    types       = CoreType::CHAR;
+   static const std::size_t sizeOfTypes = CoreTypeTraitsHelperF<CoreType::CHAR>::sizeOfType;
+   static const std::size_t size        = S;
+
+   using BaseType = typename CoreTypeTraitsHelperF<CoreType::CHAR>::Type;
+   using Type     = core::String<S>;
+};
+
+template <>
+struct CoreTypeTraits<CoreType::CHAR, 1> {
+   static const CoreType    types       = CoreType::CHAR;
+   static const std::size_t sizeOfTypes = CoreTypeTraitsHelperF<CoreType::CHAR>::sizeOfType;
+   static const std::size_t size        = 1;
+
+   using BaseType = typename CoreTypeTraitsHelperF<CoreType::CHAR>::Type;
+   using Type     = BaseType;
 };
 
 template <CoreType T>
