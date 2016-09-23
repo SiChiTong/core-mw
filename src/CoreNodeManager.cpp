@@ -9,14 +9,10 @@
 NAMESPACE_CORE_MW_BEGIN
 
 CoreNodeManager::CoreNodeManager()
-{
-   // TODO Auto-generated constructor stub
-}
+{}
 
 CoreNodeManager::~CoreNodeManager()
-{
-   // TODO Auto-generated destructor stub
-}
+{}
 
 void
 CoreNodeManager::add(
@@ -25,9 +21,6 @@ CoreNodeManager::add(
 {
    _nodes.link(node.link);
 }
-
-#define FOREACH_NODE(_x_) \
-   for (core::mw::StaticList<CoreNode>::Iterator _x_ = _nodes.begin(); _x_ != _nodes.end(); _x_++)
 
 bool
 CoreNodeManager::syncronize(
@@ -38,8 +31,8 @@ CoreNodeManager::syncronize(
    bool done  = true;
    bool error = false;
 
-   FOREACH_NODE(node) {
-      node->execute(action);
+   for (CoreNode& node : _nodes) {
+      node.execute(action);
    }
 
    do {
@@ -48,8 +41,8 @@ CoreNodeManager::syncronize(
 
       core::os::Thread::yield();
 
-      FOREACH_NODE(node) {
-         ICoreNode::State state2 = node->state();
+      for (const CoreNode& node : _nodes) {
+         ICoreNode::State state2 = node.state();
 
          done  &= state == state2;
          error |= state == CoreNode::State::ERROR;
@@ -64,8 +57,8 @@ CoreNodeManager::setup()
 {
    bool success = true;
 
-   FOREACH_NODE(node) {
-      success &= node->setup();
+   for (CoreNode& node : _nodes) {
+      success &= node.setup();
    }
 
    return success;
@@ -101,8 +94,8 @@ CoreNodeManager::teardown()
 {
    bool success = true;
 
-   FOREACH_NODE(node) {
-      success &= node->teardown();
+   for (CoreNode& node : _nodes) {
+      success &= node.teardown();
    }
 
    return success;
@@ -113,8 +106,8 @@ CoreNodeManager::isOk()
 {
    bool success = true;
 
-   FOREACH_NODE(node) {
-      success &= node->state() != ICoreNode::State::ERROR;
+   for (const CoreNode& node : _nodes) {
+      success &= node.state() != ICoreNode::State::ERROR;
    }
 
    return success;
