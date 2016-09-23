@@ -78,7 +78,7 @@ public:
     *
     */
    virtual State
-   state() = 0;
+   state() const = 0;
 
 
    virtual ~ICoreNode() {}
