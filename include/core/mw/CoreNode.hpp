@@ -44,7 +44,7 @@ public:
    );
 
    State
-   state();
+   state() const;
 
    const char*
    name();
@@ -89,7 +89,7 @@ protected:
 
 private:
    State
-   _state();
+   _state() const;
 
    void
    _state(

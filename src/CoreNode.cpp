@@ -165,13 +165,13 @@ CoreNode::execute(
 } // CoreNode::execute
 
 ICoreNode::State
-CoreNode::state()
+CoreNode::state() const
 {
    return _state();
 }
 
 ICoreNode::State
-CoreNode::_state()
+CoreNode::_state() const
 {
    return _currentState;
 }
