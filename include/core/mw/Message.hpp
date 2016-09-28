@@ -11,11 +11,6 @@
 
 NAMESPACE_CORE_MW_BEGIN
 
-
-#if !defined(CORE_MESSAGE_REFCOUNT_TYPE) || defined(__DOXYGEN__)
-#define CORE_MESSAGE_REFCOUNT_TYPE   uint16_t
-#endif
-
 #if !defined(CORE_MESSAGE_LENGTH_TYPE) || defined(__DOXYGEN__)
 #define CORE_MESSAGE_LENGTH_TYPE     uint8_t
 #endif
@@ -30,8 +25,8 @@ class Transport;
 class Message
 {
 public:
-   typedef CORE_MESSAGE_REFCOUNT_TYPE RefcountType;
-   typedef CORE_MESSAGE_LENGTH_TYPE   LengthType;
+   using RefcountType = uint32_t;
+   using LengthType = CORE_MESSAGE_LENGTH_TYPE;
 
 private:
 #if CORE_USE_BRIDGE_MODE
