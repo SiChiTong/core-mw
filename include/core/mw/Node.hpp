@@ -59,18 +59,22 @@ public:
    bool
    get_enabled() const;
 
+
    void
    set_enabled(
       bool enabled
    );
 
 
+   /*! \brief Advertise a publisher
+    *
+    */
    template <typename MT>
    bool
    advertise(
-      Publisher<MT>&        pub,
-      const char*           namep,
-      const core::os::Time& publish_timeout = core::os::Time::INFINITE
+      Publisher<MT>&        pub, //!< publisher
+      const char*           namep, //!< name of the topic
+      const core::os::Time& publish_timeout = core::os::Time::INFINITE //!< timeout
    );
 
 
@@ -83,11 +87,14 @@ public:
    );
 
 
+   /*! \brief Subscribe
+    *
+    */
    template <typename MT, unsigned QL>
    bool
    subscribe(
-      Subscriber<MT, QL>& sub,
-      const char* namep
+      Subscriber<MT, QL>& sub, //!< subscriber
+      const char* namep //!< name of the topic
    );
 
    void
@@ -107,9 +114,14 @@ public:
    void
    notify_stop();
 
+
+   /*! \brief Dispatch
+    *
+    */
    bool
    spin(
-      const core::os::Time& timeout = core::os::Time::INFINITE
+      const core::os::Time& timeout = core::os::Time::INFINITE, //!< timeout
+      void*                 context = nullptr
    );
 
 

@@ -66,7 +66,8 @@ Node::subscribe(
 
 bool
 Node::spin(
-   const core::os::Time& timeout
+   const core::os::Time& timeout,
+   void*                 context
 )
 {
    core::os::SpinEvent::Mask mask;
@@ -89,7 +90,7 @@ Node::spin(
             Message* msgp;
 
             while (i->fetch(msgp, dummy_timestamp)) {
-               (*callback)(*msgp, this);
+               (*callback)(*msgp, context);
                i->release(*msgp);
             }
          }

@@ -28,13 +28,13 @@ public:
     *
     * Pointer to a callback function
     * \param msg received message
-    * \param node node that owns the subscriber
+    * \param context context (such as pointer to the node the subscriber belongs to)
     *
     * \return success
     */
    typedef bool (* Callback)(
       const MessageType& msg,
-      Node*              node
+      void*              context
    );
 
 public:

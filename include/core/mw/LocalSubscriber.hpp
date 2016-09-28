@@ -27,9 +27,8 @@ class LocalSubscriber:
 
 public:
    typedef bool (* Callback)(
-      const Message& msg
-      ,
-      Node*          node
+      const Message& msg,
+      void*          context
    );
 
 private:
