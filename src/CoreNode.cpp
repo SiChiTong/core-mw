@@ -12,7 +12,7 @@ CoreNode::CoreNode(
    const char*                name,
    core::os::Thread::Priority priority
 ) :
-   core::mw::Node(name, false),
+   _node(name, false),
    _workingAreaSize(0),
    _priority(priority),
    _runner(nullptr),
@@ -23,7 +23,7 @@ CoreNode::CoreNode(
 {}
 
 CoreNode::CoreNode() :
-   core::mw::Node("", false),
+   _node("", false),
    _workingAreaSize(0),
    _priority(core::os::Thread::NORMAL),
    _runner(nullptr),
@@ -36,7 +36,7 @@ CoreNode::CoreNode() :
 const char*
 CoreNode::name()
 {
-   return get_name();
+   return _node.get_name();
 }
 
 bool
@@ -49,7 +49,7 @@ CoreNode::setup()
       _runner  = core::os::Thread::create_heap(NULL, _workingAreaSize, core::os::Thread::PriorityEnum::NORMAL,
                                                [](void* arg) {
          reinterpret_cast<CoreNode*>(arg)->_run(); // execute the thread code in the thread
-      }, this, get_name());
+      }, this, _node.get_name());
 
       if (_runner != nullptr) {
          while (_currentState != State::SET_UP) {
@@ -198,7 +198,7 @@ void
 CoreNode::_run()
 {
    _currentState = State::SET_UP;
-   _runner->set_name(get_name());
+   _runner->set_name(_node.get_name());
 
    while (_mustRun) {
       if (core::os::Thread::should_terminate()) {
@@ -331,7 +331,7 @@ CoreNode::_doPrepareHW()
 inline void
 CoreNode::_doPrepareMW()
 {
-   set_enabled(true); // Enable event dispatching for this Node
+   _node.set_enabled(true); // Enable event dispatching for this Node
 
    if (onPrepareMW()) {
       _state(State::MW_READY);
@@ -394,13 +394,21 @@ CoreNode::_doError()
 inline void
 CoreNode::_doFinalize()
 {
-   set_enabled(false); // Disable event dispatching for this Node
+   _node.set_enabled(false); // Disable event dispatching for this Node
 
    if (onFinalize()) {
       _state(State::SET_UP);
    } else {
       _doError();
    }
+}
+
+bool
+CoreNode::spin(
+   const core::os::Time& timeout
+)
+{
+   return _node.spin(timeout, this);
 }
 
 NAMESPACE_CORE_MW_END
