@@ -9,113 +9,92 @@
 #include <core/mw/namespace.hpp>
 #include <core/mw/CoreType.hpp>
 #include <core/Array.hpp>
+#include <core/String.hpp>
 #include <core/mw/StaticList.hpp>
 #include <core/mw/NamingTraits.hpp>
 
 #include <initializer_list>
 #include <type_traits>
 
-/* Macros that allow us to keep the python code generator clean */
-#define CORE_CONFIGURATION_BEGIN(__name__) \
-   class __name__: \
-      public core::mw::CoreConfigurationBase { \
-public: \
-      using Type = __name__;
-#define CORE_CONFIGURATION_BEGIN_FULL(__name__, __l__, __s__) \
-   class __name__: \
-      public core::mw::CoreConfigurationBase { \
-public: \
-      using Type = __name__; \
-public: \
-      static const core::mw::CoreConfigurationBase::Signature SIGNATURE = __s__; \
-      core::mw::CoreConfigurationBase::Signature getConfigurationSignature() const { \
-         return __s__; \
-      } \
-      static const std::size_t LENGTH = __l__;
-#define CORE_CONFIGURATION_FIELD(__name__, __type__, __size__) \
-public: \
-   core::mw::CoreTypeTraits<core::mw::CoreType::__type__, __size__>::Type __name__;
-#define CORE_CONFIGURATION_SIGNATURE(__s__) \
-public: \
-   static const core::mw::CoreConfigurationBase::Signature SIGNATURE = __s__; \
-   core::mw::CoreConfigurationBase::Signature getConfigurationSignature() const { \
-      return __s__; \
-   }
-#define CORE_CONFIGURATION_LENGTH(__l__) \
-   static const std::size_t LENGTH = __l__;
-#define CORE_CONFIGURATION_END() \
-   };
-
-#define CORE_CONFIGURATION_MAP_BEGIN(__name__) \
-   template <> \
-   const core::Array<core::mw::CoreConfigurationMap::FieldMetadata, core::mw::CoreConfigurationMap_<__name__>::LENGTH>core::mw::CoreConfigurationMap_<__name__>::_map = {{
-#define CORE_CONFIGURATION_MAP_ENTRY(__name__, __field__, __type__, __size__) \
-   { # __field__, offsetof(__name__, __field__), core::mw::CoreType::__type__, __size__},
-#define CORE_CONFIGURATION_MAP_END() \
-   } \
-   };
-
 NAMESPACE_CORE_MW_BEGIN
 
+/*! \brief Base class for all the configurations
+ *
+ */
 struct CoreConfigurationBase {
+   //! Type of the signature
    using Signature = uint32_t;
-};
+}
 
+CORE_PACKED_ALIGNED;
+
+/*! \brief Something with a signature
+ *
+ */
 struct CoreConfigurationSignature {
+   /*! \brief Get the signature for the object
+    *
+    * \return Signature of the object
+    */
    virtual CoreConfigurationBase::Signature
    getConfigurationSignature() const = 0;
 };
 
-
+/*! \brief CoreConfigurationMap
+ *
+ */
 struct CoreConfigurationMap {
-   using Key = const char*;
+   //! Type of the map key
+   using Key = core::String<24>;
 
+   /*! \brief Metadata about a configuration field
+    *
+    */
    struct FieldMetadata {
-      Key key;
-      std::ptrdiff_t offset;
-      core::mw::CoreType type;
-      std::size_t size;
+      Key                key; //!< key (== name) of the field
+      std::ptrdiff_t     offset; //!< offset wrt the beginnig of the configuration struct
+      core::mw::CoreType type; //!< type of the field
+      std::size_t        size; //!< size of the field (== 1 for scalar types)
    };
 
-   virtual const FieldMetadata&
-   getField(
-      std::size_t i
-   ) const = 0;
-
+   /*! \brief Get the number of fields in the map
+    *
+    */
    virtual const std::size_t
    getSize() const = 0;
 
 
+   /*! \brief Get metadata for a field
+    *
+    * \pre i must be valid, otherwise an assert is fired
+    */
+   virtual const FieldMetadata&
+   getField(
+      std::size_t i //!< [in] index of the field in the map
+   ) const = 0;
+
+
+   /*! \brief Get metadata for a field
+    *
+    * \pre  key must be valid, otherwise an assert is fired
+    */
    const FieldMetadata
    getField(
-      CoreConfigurationMap::Key key
-   ) const
-   {
-      // Returning a copy of the field... Not a reference (that would be to a local)
-      for (FieldMetadata f : * this) {
-         if (keyMatch(key, f.key)) {
-            return f;
-         }
-      }
-   }
+      CoreConfigurationMap::Key key //!< [in] name of the field
+   ) const;
 
+
+   /*! \brief Get index of the field given its key
+    *
+    * \return index of the field in the map
+
+    * \note If the field does not exist, it returns an invalid index
+    */
    const std::size_t
    getFieldIndex(
-      CoreConfigurationMap::Key key
-   ) const
-   {
-      std::size_t i = 0;
+      CoreConfigurationMap::Key key //!< [in] name of the field
+   ) const;
 
-      for (FieldMetadata f : * this) {
-         if (keyMatch(key, f.key)) {
-            return i;
-         }
-
-         i++;
-      }
-
-      return i; // this will be gt the last index. It will fire an assert in getField
-   }
 
    using iterator = const FieldMetadata *;
 
@@ -124,27 +103,18 @@ struct CoreConfigurationMap {
 
    virtual iterator
    end() const = 0;
+};
 
-
-protected:
-   inline bool
-   keyMatch(
-      CoreConfigurationMap::Key a,
-      CoreConfigurationMap::Key b
-   ) const
-   {
-      return strcmp(a, b) == 0;
-   }
-}
-
-CORE_PACKED;
-
+/*! \brief CoreConfigurationMap_
+ *
+ */
 template <class C>
 struct CoreConfigurationMap_:
    public C,
    public core::mw::CoreConfigurationMap {
    using Type = C;
    static const std::size_t LENGTH = Type::LENGTH;
+
    const FieldMetadata&
    getField(
       std::size_t i
@@ -172,11 +142,12 @@ struct CoreConfigurationMap_:
    }
 
 private:
-   static const core::Array<FieldMetadata, LENGTH>_map;
-}
+   static const core::Array<FieldMetadata, LENGTH> _map;
+};
 
-CORE_PACKED;
-
+/*! \brief CoreConfigurationStatic_
+ *
+ */
 struct CoreConfigurationStatic_ {
    // SET
    static void
@@ -184,20 +155,8 @@ struct CoreConfigurationStatic_ {
       CoreConfigurationBase*                     obj,
       const CoreConfigurationMap::FieldMetadata& field,
       const void*                                x
-   )
-   {
-      std::size_t s1        = field.size;
-      core::mw::CoreType t1 = field.type;
+   );
 
-      std::size_t len = s1 * core::mw::CoreTypeUtils::coreTypeSize(t1);
-
-      const uint8_t* src = reinterpret_cast<const uint8_t*>(x);
-      uint8_t* dst       = reinterpret_cast<uint8_t*>(obj + field.offset);
-
-      while (len--) {
-         * dst++ = *src++;
-      }
-   }
 
    template <typename T>
    static void
@@ -205,22 +164,8 @@ struct CoreConfigurationStatic_ {
       CoreConfigurationBase*                     obj,
       const CoreConfigurationMap::FieldMetadata& field,
       const T&                                   x
-   )
-   {
-      std::size_t s1        = field.size;
-      std::size_t s2        = core::mw::CoreTypeUtils::size(x);
-      core::mw::CoreType t1 = field.type;
-      core::mw::CoreType t2 = core::mw::CoreTypeUtils::coreType(x);
+   );
 
-      CORE_ASSERT(s1 == s2 && t1 == t2);   // make sure we are doing something meaningful...
-
-      const T* src = reinterpret_cast<const T*>(&x);
-      T* dst       = reinterpret_cast<T*>(obj + field.offset);
-
-      while (s1--) {
-         * dst++ = *src++;
-      }
-   }
 
    template <typename T>
    static void
@@ -228,54 +173,15 @@ struct CoreConfigurationStatic_ {
       CoreConfigurationBase*                     obj,
       const CoreConfigurationMap::FieldMetadata& field,
       const std::initializer_list<T>&            x
-   )
-   {
-      std::size_t s1        = field.size;
-      std::size_t s2        = x.size();
-      core::mw::CoreType t1 = field.type;
-      core::mw::CoreType t2 = core::mw::CoreTypeTraitsHelperB<T>::types;
-
-      CORE_ASSERT(s1 == s2 && t1 == t2);   // make sure we are doing something meaningful...
-
-      T* dst = reinterpret_cast<T*>(obj + field.offset);
-
-      for (T tmp : x) {
-         * dst++ = tmp;
-      }
-   }
+   );
 
    static void
    set(
       CoreConfigurationBase*                     obj,
       const CoreConfigurationMap::FieldMetadata& field,
       const char*                                x
-   )
-   {
-      std::size_t s1 = field.size;
-      std::size_t s2 = strlen(x);
+   );
 
-      core::mw::CoreType t1 = field.type;
-      core::mw::CoreType t2 = core::mw::CoreType::CHAR;
-
-      CORE_ASSERT(s1 >= s2 && t1 == t2);   // make sure we are doing something meaningful...
-
-      const char* src = reinterpret_cast<const char*>(x);
-      char* dst       = reinterpret_cast<char*>(obj + field.offset);
-
-      std::size_t i = 0;
-
-      while (i < s2) {
-         // copy
-         * dst++ = *src++;
-         i++;
-      }
-
-      while (i < s1) {
-         // pad
-         * dst = 0;
-         i++;
-      }
-   } // set
 
    //GET
    static void
@@ -283,20 +189,8 @@ struct CoreConfigurationStatic_ {
       const CoreConfigurationBase*               obj,
       const CoreConfigurationMap::FieldMetadata& field,
       void*                                      x
-   )
-   {
-      std::size_t s1        = field.size;
-      core::mw::CoreType t1 = field.type;
+   );
 
-      std::size_t len = s1 * core::mw::CoreTypeUtils::coreTypeSize(t1);
-
-      const uint8_t* src = reinterpret_cast<const uint8_t*>(obj + field.offset);
-      uint8_t* dst       = reinterpret_cast<uint8_t*>(x);
-
-      while (len--) {
-         * dst++ = *src++;
-      }
-   }
 
    template <typename T>
    static void
@@ -304,85 +198,68 @@ struct CoreConfigurationStatic_ {
       const CoreConfigurationBase*               obj,
       const CoreConfigurationMap::FieldMetadata& field,
       T&                                         x
-   )
-   {
-      std::size_t s1        = field.size;
-      std::size_t s2        = core::mw::CoreTypeUtils::size(x);
-      core::mw::CoreType t1 = field.type;
-      core::mw::CoreType t2 = core::mw::CoreTypeUtils::coreType(x);
-
-      CORE_ASSERT(s1 == s2 && t1 == t2);     // make sure we are doing something meaningful...
-
-      const T* src = reinterpret_cast<const T*>(obj + field.offset);
-      T* dst       = reinterpret_cast<T*>(&x);
-
-      while (s1--) {
-         * dst++ = *src++;
-      }
-   }
+   );
 
    static void
    get(
       const CoreConfigurationBase*               obj,
       const CoreConfigurationMap::FieldMetadata& field,
       char*                                      x
-   )
-   {
-      std::size_t s1 = field.size;
-      std::size_t s2 = strlen(x);
-
-      core::mw::CoreType t1 = field.type;
-      core::mw::CoreType t2 = core::mw::CoreType::CHAR;
-
-      CORE_ASSERT(s1 >= s2 && t1 == t2);     // make sure we are doing something meaningful...
-
-      const char* src = reinterpret_cast<const char*>(obj + field.offset);
-      char* dst       = reinterpret_cast<char*>(x);
-
-      std::size_t i = 0;
-
-      while (i < s2) {
-         // copy
-         * dst++ = *src++;
-         i++;
-      }
-
-      while (i < s1) {
-         // pad
-         * dst = 0;
-         i++;
-      }
-   } // get
+   );
 }
 
 CORE_PACKED;
 
+
+/*! \brief Interface for the configuration fields access
+ *
+ */
 struct CoreConfiguration {
+   /*! \brief Set a configuration field
+    *
+    */
    virtual void
    set(
-      CoreConfigurationMap::Key key,
-      const void*               x
+      CoreConfigurationMap::Key key, //!< [in] key (== name) of the field
+      const void*               x //!< [in] pointer to the data
    ) = 0;
 
+
+   /*! \brief Set a configuration field
+    *
+    * This is specialized for strings. It pads the field with \\0.
+    */
    virtual void
    set(
-      CoreConfigurationMap::Key key,
-      const char*               x
+      CoreConfigurationMap::Key key, //!< [in] key (== name) of the field
+      const char*               x//!< [in] string
    ) = 0;
 
+
+   /*! \brief Get a configuration field
+    *
+    */
    virtual void
    get(
-      CoreConfigurationMap::Key key,
-      void*                     x
+      CoreConfigurationMap::Key key, //!< [in] key (== name) of the field
+      void*                     x //!< [in/out] pointer to the data
    ) const = 0;
 
+
+   /*! \brief Get a configuration field
+    *
+    * This is specialized for strings. It pads the string x with \\0.
+    */
    virtual void
    get(
-      CoreConfigurationMap::Key key,
-      char*                     x
+      CoreConfigurationMap::Key key, //!< [in] key (== name) of the field
+      char*                     x//!< [in/out] string
    ) const = 0;
 };
 
+/*! \brief CoreConfiguration_
+ *
+ */
 template <typename C>
 struct CoreConfiguration_:
    public C,
@@ -528,11 +405,18 @@ struct CoreConfiguration_:
    }
 }
 
-CORE_PACKED;
+CORE_PACKED_ALIGNED;
 
+/*! \brief Base class for all configurable objects
+ *
+ */
 class CoreConfigurableBase
 {
 public:
+   /*! \brief Constructor
+    *
+    * \pre key must be a valid identifier (a 8 characters string made of a-zA-Z0-9_ that is /\\w{0,8}/ if you know what I mean)
+    */
    CoreConfigurableBase(
       const char* key
    ) : _configuration(nullptr), _key(key), link(*this)
@@ -559,6 +443,9 @@ public:
       return *_configuration;
    }
 
+   /*! \brief Check if the object has been configured
+    *
+    */
    inline bool
    isConfigured() const
    {
@@ -571,17 +458,41 @@ public:
       return _key;
    }
 
+   /*! \brief Get the signature of the configuration struct
+    *
+    * \return signature of the configuration struct
+    */
    virtual CoreConfigurationBase::Signature
    getConfigurationSignature() const = 0;
 
+
+   /*! \brief Get the size of the configuration struct
+    *
+    * \return size of the configuration struct
+    */
    virtual std::size_t
    getConfigurationSize() const = 0;
 
 
 //--- CONFIGURATION OVERRIDE --------------------------------------------------
+/*! \brief Create an overriding configuration
+ *
+ * It allocates (if required) a CoreConfigurationType struct, and copies the current configuration (if any).
+ *
+ * \post The overriding configuration is a copy of the previous configuration (if any).
+ *
+ * \return sucess
+ * \retval true a new configuration has been allocated
+ * \retval false it was not possible to allocate a new configuration
+ */
    virtual bool
    overrideConfiguration() = 0;
 
+
+   /*! \brief Get the overriding configuration
+    *
+    * \pre The overriding configuration must exist, otherwise an assert is fired
+    */
    virtual CoreConfiguration&
    getOverridingConfiguration() = 0;
 
@@ -592,93 +503,58 @@ public:
 //-----------------------------------------------------------------------------
 
 //--- CONFIGURATION IO --------------------------------------------------------
+/*! \brief Sets a configuration from memory
+ *
+ * \pre size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize(), otherwise an assert is fired
+ * \pre If a configuration matching the key is found, its signature must be valid, otherwise an assert is fired
+ * \post In case of success, offset contains the offset to the first byte after the configuration, otherwise it is unchanged
+ *
+ * \return success
+ * \retval true a valid configuration has been found, and set
+ * \retval false no valid configuration has been found at storage + offset
+ */
    bool
    setConfigurationFrom(
-      const uint8_t* storage,
-      std::size_t&   offset,
-      std::size_t    size
-   )
-   {
-      CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
+      const void*  storage, //!< [in] pointer to memory area that holds the configuration
+      std::size_t& offset,   //!< [in/out] offset
+      std::size_t  size   //!< [in] size of storage
+   );
 
-      if (strncmp(_key, reinterpret_cast<const char*>(storage + offset), NamingTraits<Node>::MAX_LENGTH) != 0) {
-         // This was not for us!
-         return false;
-      }
 
-      offset += NamingTraits<Node>::MAX_LENGTH;
-
-      CoreConfigurationBase::Signature signature;
-      memcpy(&signature, storage + offset, sizeof(CoreConfigurationBase::Signature));
-      offset += sizeof(CoreConfigurationBase::Signature);
-
-      CORE_ASSERT(signature == getConfigurationSignature());   // Avoid messing up the configuration
-
-      setConfigurationBase(*reinterpret_cast<const CoreConfigurationBase*>(storage + offset));
-
-      std::size_t dataSize = getConfigurationSize();
-      offset += dataSize;
-
-      return true;
-   } // setConfigurationFrom
-
+   /*! \brief Overrides a configuration from memory
+    *
+    * \pre size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize(), otherwise an assert is fired
+    * \pre If a configuration matching the key is found, its signature must be valid, otherwise an assert is fired
+    * \post In case of success, offset contains the offset to the first byte after the configuration, otherwise it is unchanged
+    *
+    * \return success
+    * \retval true a valid configuration has been found, and set
+    * \retval false no valid configuration has been found at storage + offset
+    */
    bool
    overrideConfigurationFrom(
-      const uint8_t* storage,
-      std::size_t&   offset,
-      std::size_t    size
-   )
-   {
-      CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
+      const void*  storage, //!< [in] pointer to memory area that holds the configuration
+      std::size_t& offset,   //!< [in/out] offset
+      std::size_t  size   //!< [in] size of storage
+   );
 
-      if (strncmp(_key, reinterpret_cast<const char*>(storage + offset), NamingTraits<Node>::MAX_LENGTH) != 0) {
-         // This was not for us!
-         return false;
-      }
 
-      offset += NamingTraits<Node>::MAX_LENGTH;
-
-      CoreConfigurationBase::Signature signature;
-      memcpy(&signature, storage + offset, sizeof(CoreConfigurationBase::Signature));
-      offset += sizeof(CoreConfigurationBase::Signature);
-
-      CORE_ASSERT(signature == getConfigurationSignature());   // Avoid messing up the configuration
-
-      overrideConfiguration();
-
-      std::size_t dataSize = getConfigurationSize();
-      memcpy(&getOverridingConfigurationBase(), storage + offset, dataSize);
-
-      offset += dataSize;
-
-      return true;
-   } // overrideConfigurationFrom
-
+   /*! \brief Dumps the current configuration to memory
+    *
+    * \pre size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize(), otherwise an assert is fired
+    * \post offset contains the offset to the first byte after the configuration, otherwise it is unchanged
+    *
+    * \return success
+    * \retval true configuration has been dumped
+    * \retval false failure
+    */
    bool
    dumpConfigurationTo(
-      uint8_t*     storage,
-      std::size_t& offset,
-      std::size_t  size
-   ) const
-   {
-      CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
+      uint8_t*     storage,//!< [in] pointer to memory area that will hold the configuration
+      std::size_t& offset,//!< [in/out] offset
+      std::size_t  size//!< [in] size of storage
+   ) const;
 
-      memcpy(storage + offset, _key, NamingTraits<Node>::MAX_LENGTH);
-      offset += NamingTraits<Node>::MAX_LENGTH;
-
-      CoreConfigurationBase::Signature signature = getConfigurationSignature();
-
-      memcpy(storage + offset, &signature, sizeof(CoreConfigurationBase::Signature));
-      offset += sizeof(CoreConfigurationBase::Signature);
-
-      const CoreConfigurationBase* data = static_cast<const CoreConfigurationBase*>(_configuration);
-      std::size_t dataSize = getConfigurationSize();
-
-      memcpy(storage + offset, data, dataSize);
-      offset += dataSize;
-
-      return offset;
-   } // dumpTo
 
 //-----------------------------------------------------------------------------
 
@@ -690,19 +566,31 @@ public:
    mutable core::mw::StaticList<CoreConfigurableBase>::Link link;
 };
 
+/*! \brief Configurable object
+ *
+ * \tparam T configuration class (must inherit from CoreConfigurationBase)
+ */
 template <typename T>
 class CoreConfigurable:
    public CoreConfigurableBase
 {
 public:
-   using ConfigurationType     = T;
-   using ConfigurationMapType  = CoreConfigurationMap_<ConfigurationType>;
-   using CoreConfigurationType = core::mw::CoreConfiguration_<ConfigurationMapType>;
+   using ConfigurationType     = T; //!< Configuration type
+   using ConfigurationMapType  = CoreConfigurationMap_<ConfigurationType>; //!< Configuration map
+   using CoreConfigurationType = core::mw::CoreConfiguration_<ConfigurationMapType>; //!< Configuration
 
+   /*! \brief Constructor
+    *
+    * \pre key must be a valid identifier (a 8 characters string made of a-zA-Z0-9_ that is /\\w{0,8}/ if you know what I mean)
+    */
    CoreConfigurable(
       const char* key
    ) : CoreConfigurableBase::CoreConfigurableBase(key), _overriding(nullptr) {}
 
+   /*! \brief Set the configuration
+    *
+    * This sets an existing configuration struct as the object configuration.
+    */
    void
    setConfiguration(
       const ConfigurationType& configuration
@@ -712,12 +600,25 @@ public:
       _configuration = &configuration;
    }
 
+   /*! \brief Get the current configuration
+    *
+    */
    inline const ConfigurationType&
    configuration() const
    {
       return *(reinterpret_cast<const ConfigurationType*>(_configuration));
    }
 
+   /*! \brief Create an overriding configuration
+    *
+    * It allocates (if required) a CoreConfigurationType struct, and copies the current configuration (if any).
+    *
+    * \post The overriding configuration is a copy of the previous configuration (if any).
+    *
+    * \return sucess
+    * \retval true a new configuration has been allocated
+    * \retval false it was not possible to allocate a new configuration
+    */
    bool
    overrideConfiguration()
    {
@@ -739,6 +640,10 @@ public:
       return true;
    } // overrideConfiguration
 
+   /*! \brief Get the overriding configuration
+    *
+    * \pre The overriding configuration must exist, otherwise an assert is fired
+    */
    inline CoreConfiguration&
    getOverridingConfiguration()
    {
@@ -755,6 +660,11 @@ public:
       return *_overriding;
    }
 
+#if 0
+   /*! \brief Get the overriding configuration
+    *
+    * \pre The overriding configuration must exist, otherwise an assert is fired
+    */
    inline CoreConfigurationType&
    overridingConfiguration()
    {
@@ -762,13 +672,22 @@ public:
 
       return *_overriding;
    }
+#endif
 
+   /*! \brief Get the signature of the configuration struct
+    *
+    * \return signature of the configuration struct
+    */
    inline CoreConfigurationBase::Signature
    getConfigurationSignature() const
    {
       return ConfigurationType::SIGNATURE;
    }
 
+   /*! \brief Get the size of the configuration struct
+    *
+    * \return size of the configuration struct
+    */
    inline std::size_t
    getConfigurationSize() const
    {
@@ -779,4 +698,118 @@ private:
    CoreConfigurationType* _overriding;
 };
 
+// --------------------------------------------------------------------------------------------------------------------
+// IMPLEMENTATION
+// --------------------------------------------------------------------------------------------------------------------
+template <typename T>
+void
+CoreConfigurationStatic_::set(
+   CoreConfigurationBase*                     obj,
+   const CoreConfigurationMap::FieldMetadata& field,
+   const T&                                   x
+)
+{
+   std::size_t        s1 = field.size;
+   std::size_t        s2 = core::mw::CoreTypeUtils::size(x);
+   core::mw::CoreType t1 = field.type;
+   core::mw::CoreType t2 = core::mw::CoreTypeUtils::coreType(x);
+
+   CORE_ASSERT(s1 == s2 && t1 == t2);   // make sure we are doing something meaningful...
+
+   const T* src = reinterpret_cast<const T*>(&x);
+   T*       dst = reinterpret_cast<T*>(obj + field.offset);
+
+   while (s1--) {
+      *dst++ = *src++;
+   }
+}
+
+template <typename T>
+void
+CoreConfigurationStatic_::set(
+   CoreConfigurationBase*                     obj,
+   const CoreConfigurationMap::FieldMetadata& field,
+   const std::initializer_list<T>&            x
+)
+{
+   std::size_t        s1 = field.size;
+   std::size_t        s2 = x.size();
+   core::mw::CoreType t1 = field.type;
+   core::mw::CoreType t2 = core::mw::CoreTypeTraitsHelperB<T>::types;
+
+   CORE_ASSERT(s1 == s2 && t1 == t2);   // make sure we are doing something meaningful...
+
+   T* dst = reinterpret_cast<T*>(obj + field.offset);
+
+   for (T tmp : x) {
+      *dst++ = tmp;
+   }
+}
+
+template <typename T>
+void
+CoreConfigurationStatic_::get(
+   const CoreConfigurationBase*               obj,
+   const CoreConfigurationMap::FieldMetadata& field,
+   T&                                         x
+)
+{
+   std::size_t        s1 = field.size;
+   std::size_t        s2 = core::mw::CoreTypeUtils::size(x);
+   core::mw::CoreType t1 = field.type;
+   core::mw::CoreType t2 = core::mw::CoreTypeUtils::coreType(x);
+
+   CORE_ASSERT(s1 == s2 && t1 == t2);     // make sure we are doing something meaningful...
+
+   const T* src = reinterpret_cast<const T*>(obj + field.offset);
+   T*       dst = reinterpret_cast<T*>(&x);
+
+   while (s1--) {
+      *dst++ = *src++;
+   }
+}
+
 NAMESPACE_CORE_MW_END
+
+// --------------------------------------------------------------------------------------------------------------------
+// Macros that allow us to keep the python code generator clean
+// --------------------------------------------------------------------------------------------------------------------
+#define CORE_CONFIGURATION_BEGIN(__name__) \
+   class __name__: \
+      public core::mw::CoreConfigurationBase { \
+public: \
+      using Type = __name__;
+#define CORE_CONFIGURATION_BEGIN_FULL(__name__, __l__, __s__) \
+   class __name__: \
+      public core::mw::CoreConfigurationBase { \
+public: \
+      using Type = __name__; \
+public: \
+      static const core::mw::CoreConfigurationBase::Signature SIGNATURE = __s__; \
+      core::mw::CoreConfigurationBase::Signature getConfigurationSignature() const { \
+         return __s__; \
+      } \
+      static const std::size_t LENGTH = __l__;
+#define CORE_CONFIGURATION_FIELD(__name__, __type__, __size__) \
+public: \
+   core::mw::CoreTypeTraits<core::mw::CoreType::__type__, __size__>::Type __name__;
+#define CORE_CONFIGURATION_SIGNATURE(__s__) \
+public: \
+   static const core::mw::CoreConfigurationBase::Signature SIGNATURE = __s__; \
+   core::mw::CoreConfigurationBase::Signature getConfigurationSignature() const { \
+      return __s__; \
+   }
+#define CORE_CONFIGURATION_LENGTH(__l__) \
+   static const std::size_t LENGTH = __l__;
+#define CORE_CONFIGURATION_END() \
+   } \
+   CORE_PACKED_ALIGNED;
+
+#define CORE_CONFIGURATION_MAP_BEGIN(__name__) \
+   template <> \
+   const core::Array<core::mw::CoreConfigurationMap::FieldMetadata, core::mw::CoreConfigurationMap_<__name__>::LENGTH>core::mw::CoreConfigurationMap_<__name__>::_map = {{
+#define CORE_CONFIGURATION_MAP_ENTRY(__name__, __field__, __type__, __size__) \
+   { # __field__, offsetof(__name__, __field__), core::mw::CoreType::__type__, __size__},
+#define CORE_CONFIGURATION_MAP_END() \
+   } \
+   };

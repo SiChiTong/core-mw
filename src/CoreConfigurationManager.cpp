@@ -64,6 +64,6 @@ CoreConfigurationManager::setFrom(
          }
       }
    }
-}
+} // CoreConfigurationManager::setFrom
 
 NAMESPACE_CORE_MW_END
