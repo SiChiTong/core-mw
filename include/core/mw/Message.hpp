@@ -11,14 +11,8 @@
 
 NAMESPACE_CORE_MW_BEGIN
 
-#if !defined(CORE_MESSAGE_LENGTH_TYPE) || defined(__DOXYGEN__)
-#define CORE_MESSAGE_LENGTH_TYPE     uint8_t
-#endif
-
 class Transport;
 
-
-// TODO: Add refcount as a decorator, user should only declare the contents type
 /*! \brief Base class for all the messages
  *
  */
@@ -26,10 +20,9 @@ class Message
 {
 public:
    using RefcountType = uint32_t;
-   using LengthType = CORE_MESSAGE_LENGTH_TYPE;
 
 private:
-#if CORE_USE_BRIDGE_MODE
+ #if CORE_USE_BRIDGE_MODE
    Transport * sourcep CORE_PACKED;
 #endif
    RefcountType refcount CORE_PACKED;
@@ -115,7 +108,7 @@ public:
    );
 }
 
-CORE_PACKED;
+CORE_PACKED_ALIGNED;
 
 
 inline
@@ -132,10 +125,9 @@ Message::get_msg_from_raw_data(
    const uint8_t* datap
 )
 {
+   // Probably these casts are safe, as datap is taken from message::get_raw_data()
 #if CORE_USE_BRIDGE_MODE
-   return *reinterpret_cast<const Message*>(
-      datap - (sizeof(Transport*) + sizeof(RefcountType))
-   );
+   return *reinterpret_cast<const Message*>(datap - (sizeof(Transport*) + sizeof(RefcountType)));
 
 #else
    return *reinterpret_cast<const Message*>(datap - sizeof(RefcountType));
@@ -166,7 +158,8 @@ inline
 void
 Message::acquire_unsafe()
 {
-   CORE_ASSERT(refcount < ((1 << (8 * sizeof(refcount) - 1)) - 1));
+   // CORE_ASSERT(refcount < ((1 << (8 * sizeof(refcount) - 1)) - 1));
+   // CORE_ASSERT(refcount < (std::numeric_limits<RefcountType>::max() - 1));
 
    ++refcount;
 }

@@ -17,4 +17,4 @@ public: \
    core::mw::CoreTypeTraits<core::mw::CoreType::__type__, __size__>::Type __name__;
 #define CORE_MESSAGE_END \
    } \
-   CORE_PACKED;
+   CORE_PACKED_ALIGNED;

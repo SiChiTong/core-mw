@@ -12,7 +12,6 @@
 #include <core/mw/RemoteSubscriber.hpp>
 #include <core/mw/TimestampedMsgPtrQueue.hpp>
 #include <core/os/ScopedLock.hpp>
-#include <core/mw/transport/RTCANPublisher.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -71,9 +70,7 @@ Transport::touch_subscriber(
    Message* msgpool_bufp = NULL;
    TimestampedMsgPtrQueue::Entry* queue_bufp = NULL;
 
-   msgpool_bufp = reinterpret_cast<Message*>(
-      new uint8_t[topic.get_type_size() * queue_length]
-                  );
+   msgpool_bufp = reinterpret_cast<Message*>(new uint8_t[topic.get_type_size() * queue_length]); // TODO check with M0
 
    if (msgpool_bufp != NULL) {
       queue_bufp = new TimestampedMsgPtrQueue::Entry[queue_length];
