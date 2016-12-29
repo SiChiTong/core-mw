@@ -35,6 +35,7 @@ CoreNodeManager::syncronize(
       node.execute(action);
    }
 
+
    do {
       done  = true;
       error = false;
@@ -45,7 +46,7 @@ CoreNodeManager::syncronize(
          ICoreNode::State state2 = node.state();
 
          done  &= state == state2;
-         error |= state == CoreNode::State::ERROR;
+         error |= (state2 == ICoreNode::State::ERROR);
       }
    } while (!done && !error);
 
