@@ -35,11 +35,13 @@ class Node:
 {
    friend class Middleware;
 
+public:
+   core::os::SpinEvent event;
+
 private:
    const char* const           namep;
    StaticList<LocalPublisher>  publishers;
    StaticList<LocalSubscriber> subscribers;
-   core::os::SpinEvent         event;
    core::os::Time timeout;
 
    mutable StaticList<Node>::Link by_middleware;

@@ -15,7 +15,7 @@ class Middleware;
 class Node;
 class Topic;
 class Transport;
-
+class CoreConfigurableBase;
 
 template <typename T>
 struct NamingTraits {};
@@ -52,5 +52,11 @@ struct NamingTraits<Transport> {
    };
 };
 
+template <>
+struct NamingTraits<CoreConfigurableBase> {
+   enum {
+      MAX_LENGTH = 16
+   };
+};
 
 NAMESPACE_CORE_MW_END

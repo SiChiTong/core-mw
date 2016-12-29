@@ -105,8 +105,8 @@ Node::Node(
    bool        enabled
 )
    :
-   namep(namep),
    event(enabled ? &core::os::Thread::self() : NULL),
+   namep(namep),
    by_middleware(*this)
 {
    CORE_ASSERT(is_identifier(namep, NamingTraits<Node>::MAX_LENGTH));

@@ -77,6 +77,7 @@ private:
 
 #if CORE_IS_BOOTLOADER_BRIDGE
    Topic boot_topic;
+   Topic bootmaster_topic;
 #endif
 #if CORE_USE_BRIDGE_MODE
    PubSubStep* pubsub_stepsp;
@@ -123,6 +124,8 @@ public:
 #if CORE_IS_BOOTLOADER_BRIDGE
    Topic&
    get_boot_topic();
+   Topic&
+   get_bootmaster_topic();
 #endif
 
    bool
@@ -317,6 +320,13 @@ Topic&
 Middleware::get_boot_topic()
 {
    return boot_topic;
+}
+
+inline
+Topic&
+Middleware::get_bootmaster_topic()
+{
+   return bootmaster_topic;
 }
 #endif
 

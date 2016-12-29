@@ -41,6 +41,7 @@ Middleware::initialize(
    topics.link(mgmt_topic.by_middleware);
 #if CORE_IS_BOOTLOADER_BRIDGE
    topics.link(boot_topic.by_middleware);
+   topics.link(bootmaster_topic.by_middleware);
 #endif
 } // Middleware::initialize
 
@@ -55,7 +56,7 @@ Middleware::start()
 
    while (!mgmt_topic.has_local_publishers() || !mgmt_topic.has_local_subscribers()) {
       core::os::SysLock::release();
-      core::os::Thread::sleep(core::os::Time::ms(500)); // TODO: configure
+      core::os::Thread::sleep(core::os::Time::ms(100));
       core::os::SysLock::acquire();
    }
 
@@ -176,7 +177,7 @@ Middleware::advertise(
 
    if (topicp != &mgmt_topic) {
 #if CORE_IS_BOOTLOADER_BRIDGE
-      if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
+      if (!(Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME) || Topic::has_name(*topicp, BOOTLOADER_MASTER_TOPIC_NAME))) {
 #endif
       {
          core::os::SysLock::Scope lock;
@@ -248,7 +249,7 @@ Middleware::subscribe(
 
    if (topicp != &mgmt_topic) {
 #if CORE_IS_BOOTLOADER_BRIDGE
-      if (!Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME)) {
+      if (!(Topic::has_name(*topicp, BOOTLOADER_TOPIC_NAME) || Topic::has_name(*topicp, BOOTLOADER_MASTER_TOPIC_NAME))) {
 #endif
 
       for (StaticList<Transport>::Iterator i = transports.begin(); i != transports.end(); ++i) {
@@ -813,6 +814,7 @@ Middleware::Middleware(
    mgmt_sub(mgmt_queue_buf, MGMT_BUFFER_LENGTH, NULL),
 #if CORE_IS_BOOTLOADER_BRIDGE
    boot_topic(BOOTLOADER_TOPIC_NAME, sizeof(BootMsg), false),
+   bootmaster_topic(BOOTLOADER_MASTER_TOPIC_NAME, sizeof(BootMasterMsg), false),
 #endif
 #if CORE_USE_BRIDGE_MODE
    pubsub_stepsp(NULL),

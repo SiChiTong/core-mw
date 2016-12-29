@@ -60,4 +60,23 @@ public:
 
 CORE_PACKED;
 
+static const uint32_t MESSAGE_MASTER_LENGTH = 8;
+
+class BootMasterMsg:
+   public Message
+{
+public:
+   enum MessageType : uint8_t {
+	   ADVERTISE = 0x00,
+      IGNORE = 0x10,
+      FORCE = 0x20
+   };
+
+public:
+   MessageType type;
+   uint8_t     payload[MESSAGE_MASTER_LENGTH - sizeof(MessageType)];
+}
+
+CORE_PACKED;
+
 NAMESPACE_CORE_MW_END
