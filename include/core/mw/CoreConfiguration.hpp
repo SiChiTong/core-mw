@@ -421,7 +421,8 @@ public:
       const char* key
    ) : _configuration(nullptr), _key(key), link(*this)
    {
-      CORE_ASSERT(is_identifier(key, NamingTraits<Node>::MAX_LENGTH));
+      //CORE_ASSERT(is_identifier(key, NamingTraits<Node>::MAX_LENGTH));
+	   CORE_ASSERT(strlen(key) <= NamingTraits<CoreConfigurableBase>::MAX_LENGTH);
    }
 
    void
@@ -778,7 +779,8 @@ NAMESPACE_CORE_MW_END
    class __name__: \
       public core::mw::CoreConfigurationBase { \
 public: \
-      using Type = __name__;
+      using Type = __name__; \
+      __name__();
 #define CORE_CONFIGURATION_BEGIN_FULL(__name__, __l__, __s__) \
    class __name__: \
       public core::mw::CoreConfigurationBase { \
@@ -804,7 +806,20 @@ public: \
 #define CORE_CONFIGURATION_END() \
    } \
    CORE_PACKED_ALIGNED;
-
+#define CORE_CONFIGURATION_CONSTRUCTOR_BEGIN(__name__) \
+		__name__::__name__() :
+#define CORE_CONFIGURATION_CONSTRUCTOR_FIELD(__name__) \
+		__name__(defaults::__name__)
+#define CORE_CONFIGURATION_CONSTRUCTOR_FIELD_NONE(__name__) \
+		__name__()
+#define CORE_CONFIGURATION_CONSTRUCTOR_END(__name__) \
+		{}
+#define CORE_CONFIGURATION_DEFAULT_BEGIN() \
+		namespace defaults {
+#define CORE_CONFIGURATION_DEFAULT_FIELD(__name__, __type__, __size__, ...) \
+		static const core::mw::CoreTypeTraits<core::mw::CoreType::__type__, __size__>::Type __name__ = {__VA_ARGS__};
+#define CORE_CONFIGURATION_DEFAULT_END() \
+		}
 #define CORE_CONFIGURATION_MAP_BEGIN(__name__) \
    template <> \
    const core::Array<core::mw::CoreConfigurationMap::FieldMetadata, core::mw::CoreConfigurationMap_<__name__>::LENGTH>core::mw::CoreConfigurationMap_<__name__>::_map = {{
