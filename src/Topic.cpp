@@ -114,10 +114,12 @@ Topic::notify_locals(
 {
    if (has_local_subscribers()) {
       for (StaticList<LocalSubscriber>::Iterator i = local_subscribers.begin(); i != local_subscribers.end(); ++i) {
-         msg.acquire();
+         if (*i->nodep->event.get_thread() != core::os::Thread::self()) {
+            msg.acquire();
 
-         if (!i->notify(msg, timestamp, mustReschedule)) {
-            msg.release();
+            if (!i->notify(msg, timestamp, mustReschedule)) {
+               msg.release();
+            }
          }
       }
    }
@@ -153,7 +155,7 @@ Topic::notify_remotes(
 
       msg.acquire();
 
-      if (!i->notify(msg, timestamp)) {
+      if (!i->notify(msg, timestamp, false)) {
          msg.release();
       }
    }
@@ -185,7 +187,7 @@ Topic::forward_copy(
          patch_pubsub_msg(*msgp, *i->get_transport());
          msgp->acquire();
 
-         if (!i->notify(*msgp, timestamp)) {
+         if (!i->notify(*msgp, timestamp, false)) {
             free(*msgp);
             all = false;
          }
