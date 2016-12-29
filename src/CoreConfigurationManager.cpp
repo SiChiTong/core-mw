@@ -53,7 +53,7 @@ CoreConfigurationManager::setFrom(
    std::size_t cnt    = 0;
 
    memcpy(&cnt, storage, sizeof(std::size_t)); // Number of conf blocks
-
+   offset += sizeof(std::size_t);
    for (std::size_t i = 0; i < cnt; i++) {
       // For every block...
       for (CoreConfigurableBase& object : _objects) {
