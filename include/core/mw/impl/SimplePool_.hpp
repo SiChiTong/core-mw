@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -13,48 +13,48 @@ NAMESPACE_CORE_MW_BEGIN
 
 
 class SimplePool_:
-   private core::Uncopyable
+    private core::Uncopyable
 {
 public:
-   struct Header {
-      Header* nextp;
-   };
+    struct Header {
+        Header* nextp;
+    };
 
 private:
-   Header* headp;
+    Header* headp;
 
 public:
-   void*
-   alloc_unsafe();
+    void*
+    alloc_unsafe();
 
-   void
-   free_unsafe(
-      void* objp
-   );
+    void
+    free_unsafe(
+        void* objp
+    );
 
-   void*
-   alloc();
+    void*
+    alloc();
 
-   void
-   free(
-      void* objp
-   );
+    void
+    free(
+        void* objp
+    );
 
-   void
-   grow(
-      void*  arrayp,
-      size_t length,
-      size_t blocklen
-   );
+    void
+    grow(
+        void*  arrayp,
+        size_t length,
+        size_t blocklen
+    );
 
 
 public:
-   SimplePool_();
-   SimplePool_(
-      void*  arrayp,
-      size_t length,
-      size_t blocklen
-   );
+    SimplePool_();
+    SimplePool_(
+        void*  arrayp,
+        size_t length,
+        size_t blocklen
+    );
 };
 
 

@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -22,41 +22,41 @@ class Message;
  */
 template <typename MessageType>
 class Publisher:
-   public LocalPublisher
+    public LocalPublisher
 {
 public:
-   /*! \brief Allocate a message
-    *
-    */
-   bool
-   alloc(
-      MessageType*& msgp //!< [in,out] pointer to the allocated message
-   );
+    /*! \brief Allocate a message
+     *
+     */
+    bool
+    alloc(
+        MessageType*& msgp //!< [in,out] pointer to the allocated message
+    );
 
 
-   /*! \brief Publish a message
-    *
-    * \pre The message must have been previously allocated with alloc()
-    */
-   bool
-   publish(
-      MessageType& msg //!< [in] message to be published
-   );
+    /*! \brief Publish a message
+     *
+     * \pre The message must have been previously allocated with alloc()
+     */
+    bool
+    publish(
+        MessageType& msg //!< [in] message to be published
+    );
 
 
-   /*! \brief Publish a message
-    *
-    * \pre The message must have been previously allocated with alloc()
-    */
-   bool
-   publish(
-      MessageType* msg //!< [in] message to be published
-   );
+    /*! \brief Publish a message
+     *
+     * \pre The message must have been previously allocated with alloc()
+     */
+    bool
+    publish(
+        MessageType* msg //!< [in] message to be published
+    );
 
 
 public:
-   Publisher();
-   ~Publisher();
+    Publisher();
+    ~Publisher();
 };
 
 
@@ -64,46 +64,46 @@ template <typename MessageType>
 inline
 bool
 Publisher<MessageType>::alloc(
-   MessageType*& msgp
+    MessageType*& msgp
 )
 {
-   static_cast_check<MessageType, Message>();
-   return BasePublisher::alloc(reinterpret_cast<Message*&>(msgp));
+    static_cast_check<MessageType, Message>();
+    return BasePublisher::alloc(reinterpret_cast<Message*&>(msgp));
 }
 
 template <typename MessageType>
 bool
 Publisher<MessageType>::publish(
-   MessageType& msg
+    MessageType& msg
 )
 {
-   static_cast_check<MessageType, Message>();
-   return BasePublisher::publish(static_cast<Message&>(msg));
+    static_cast_check<MessageType, Message>();
+    return BasePublisher::publish(static_cast<Message&>(msg));
 }
 
 template <typename MessageType>
 inline
 bool
 Publisher<MessageType>::publish(
-   MessageType* msg
+    MessageType* msg
 )
 {
-   static_cast_check<MessageType, Message>();
-   return BasePublisher::publish(static_cast<Message&>(*msg));
+    static_cast_check<MessageType, Message>();
+    return BasePublisher::publish(static_cast<Message&>(*msg));
 }
 
 template <typename MessageType>
 inline
 Publisher<MessageType>::Publisher()
 {
-   static_cast_check<MessageType, Message>();
+    static_cast_check<MessageType, Message>();
 }
 
 template <typename MessageType>
 inline
 Publisher<MessageType>::~Publisher()
 {
-   static_cast_check<MessageType, Message>();
+    static_cast_check<MessageType, Message>();
 }
 
 NAMESPACE_CORE_MW_END

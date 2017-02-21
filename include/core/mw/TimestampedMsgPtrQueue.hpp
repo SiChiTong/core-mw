@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -19,142 +19,142 @@ class Message;
 class TimestampedMsgPtrQueue
 {
 public:
-   struct Entry {
-      Message*       msgp;
-      core::os::Time timestamp;
+    struct Entry {
+        Message*       msgp;
+        core::os::Time timestamp;
 
-      Entry&
-      operator=(
-         const Entry& other
-      );
+        Entry&
+        operator=(
+            const Entry& other
+        );
 
 
-      Entry();
-      Entry(
-         Message*              msgp,
-         const core::os::Time& timestamp
-      );
-   };
+        Entry();
+        Entry(
+            Message*              msgp,
+            const core::os::Time& timestamp
+        );
+    };
 
 private:
-   ArrayQueue<Entry> impl;
+    ArrayQueue<Entry> impl;
 
 public:
-   size_t
-   get_count_unsafe() const;
+    size_t
+    get_count_unsafe() const;
 
-   bool
-   post_unsafe(
-      Entry& entry
-   );
+    bool
+    post_unsafe(
+        Entry& entry
+    );
 
-   bool
-   fetch_unsafe(
-      Entry& entry
-   );
+    bool
+    fetch_unsafe(
+        Entry& entry
+    );
 
-   size_t
-   get_length() const;
+    size_t
+    get_length() const;
 
-   size_t
-   get_count() const;
+    size_t
+    get_count() const;
 
-   bool
-   post(
-      Entry& entry
-   );
+    bool
+    post(
+        Entry& entry
+    );
 
-   bool
-   fetch(
-      Entry& entry
-   );
+    bool
+    fetch(
+        Entry& entry
+    );
 
 
 public:
-   TimestampedMsgPtrQueue(
-      Entry  array[],
-      size_t length
-   );
+    TimestampedMsgPtrQueue(
+        Entry  array[],
+        size_t length
+    );
 };
 
 
 inline
 TimestampedMsgPtrQueue::Entry&
 TimestampedMsgPtrQueue::Entry::operator=(
-   const Entry& other
+    const Entry& other
 )
 {
-   msgp      = other.msgp;
-   timestamp = other.timestamp;
-   return *this;
+    msgp      = other.msgp;
+    timestamp = other.timestamp;
+    return *this;
 }
 
 inline
 TimestampedMsgPtrQueue::Entry::Entry(
-   Message*              msgp,
-   const core::os::Time& timestamp
+    Message*              msgp,
+    const core::os::Time& timestamp
 )
-   :
-   msgp(msgp),
-   timestamp(timestamp)
+    :
+    msgp(msgp),
+    timestamp(timestamp)
 {
-   CORE_ASSERT(msgp != NULL);
+    CORE_ASSERT(msgp != NULL);
 }
 
 inline
 bool
 TimestampedMsgPtrQueue::post_unsafe(
-   Entry& entry
+    Entry& entry
 )
 {
-   return impl.post_unsafe(entry);
+    return impl.post_unsafe(entry);
 }
 
 inline
 bool
 TimestampedMsgPtrQueue::fetch_unsafe(
-   Entry& entry
+    Entry& entry
 )
 {
-   return impl.fetch_unsafe(entry);
+    return impl.fetch_unsafe(entry);
 }
 
 inline
 size_t
 TimestampedMsgPtrQueue::get_length() const
 {
-   return impl.get_length();
+    return impl.get_length();
 }
 
 inline
 size_t
 TimestampedMsgPtrQueue::get_count() const
 {
-   return impl.get_count();
+    return impl.get_count();
 }
 
 inline
 bool
 TimestampedMsgPtrQueue::post(
-   Entry& entry
+    Entry& entry
 )
 {
-   return impl.post(entry);
+    return impl.post(entry);
 }
 
 inline
 bool
 TimestampedMsgPtrQueue::fetch(
-   Entry& entry
+    Entry& entry
 )
 {
-   return impl.fetch(entry);
+    return impl.fetch(entry);
 }
 
 inline
 TimestampedMsgPtrQueue::Entry::Entry()
-   :
-   msgp()
+    :
+    msgp()
 {}
 
 

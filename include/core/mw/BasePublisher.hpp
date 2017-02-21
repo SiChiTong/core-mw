@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -18,74 +18,74 @@ class Topic;
 
 
 class BasePublisher:
-   private core::Uncopyable
+    private core::Uncopyable
 {
 private:
-   Topic* topicp;
+    Topic* topicp;
 
 public:
-   Topic*
-   get_topic() const;
+    Topic*
+    get_topic() const;
 
-   void
-   notify_advertised(
-      Topic& topic
-   );
+    void
+    notify_advertised(
+        Topic& topic
+    );
 
-   bool
-   alloc_unsafe(
-      Message*& msgp
-   );
+    bool
+    alloc_unsafe(
+        Message*& msgp
+    );
 
-   bool
-   publish_unsafe(
-      Message& msg
-   );
+    bool
+    publish_unsafe(
+        Message& msg
+    );
 
-   bool
-   publish_locally_unsafe(
-      Message& msg
-   );
+    bool
+    publish_locally_unsafe(
+        Message& msg
+    );
 
-   bool
-   publish_remotely_unsafe(
-      Message& msg
-   );
+    bool
+    publish_remotely_unsafe(
+        Message& msg
+    );
 
-   bool
-   alloc(
-      Message*& msgp
-   );
+    bool
+    alloc(
+        Message*& msgp
+    );
 
-   bool
-   publish(
-      Message& msg,
-      bool     mustReschedule = false
-   );
+    bool
+    publish(
+        Message& msg,
+        bool     mustReschedule = false
+    );
 
-   bool
-   publish_locally(
-      Message& msg,
-      bool     mustReschedule = false
-   );
+    bool
+    publish_locally(
+        Message& msg,
+        bool     mustReschedule = false
+    );
 
-   bool
-   publish_remotely(
-      Message& msg
-   );
+    bool
+    publish_remotely(
+        Message& msg
+    );
 
 
 protected:
-   BasePublisher();
-   virtual
-   ~BasePublisher() = 0;
+    BasePublisher();
+    virtual
+    ~BasePublisher() = 0;
 
 public:
-   static bool
-   has_topic(
-      const BasePublisher& pub,
-      const char*          namep
-   );
+    static bool
+    has_topic(
+        const BasePublisher& pub,
+        const char*          namep
+    );
 };
 
 
@@ -100,76 +100,76 @@ inline
 Topic*
 BasePublisher::get_topic() const
 {
-   return topicp;
+    return topicp;
 }
 
 inline
 void
 BasePublisher::notify_advertised(
-   Topic& topic
+    Topic& topic
 )
 {
-   CORE_ASSERT(topicp == NULL);
+    CORE_ASSERT(topicp == NULL);
 
-   topicp = &topic;
+    topicp = &topic;
 }
 
 inline
 bool
 BasePublisher::alloc_unsafe(
-   Message*& msgp
+    Message*& msgp
 )
 {
-   CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != NULL);
 
-   msgp = topicp->alloc_unsafe();
-   return msgp != NULL;
+    msgp = topicp->alloc_unsafe();
+    return msgp != NULL;
 }
 
 inline
 bool
 BasePublisher::alloc(
-   Message*& msgp
+    Message*& msgp
 )
 {
-   core::os::SysLock::acquire();
-   bool success = alloc_unsafe(msgp);
-   core::os::SysLock::release();
+    core::os::SysLock::acquire();
+    bool success = alloc_unsafe(msgp);
+    core::os::SysLock::release();
 
-   return success;
+    return success;
 }
 
 inline
 bool
 BasePublisher::publish_locally(
-   Message& msg,
-   bool     mustReschedule
+    Message& msg,
+    bool     mustReschedule
 )
 {
-   CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != NULL);
 
-   return topicp->notify_locals(msg, core::os::Time::now(), mustReschedule);
+    return topicp->notify_locals(msg, core::os::Time::now(), mustReschedule);
 }
 
 inline
 bool
 BasePublisher::publish_remotely(
-   Message& msg
+    Message& msg
 )
 {
-   CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != NULL);
 
-   return topicp->notify_remotes(msg, core::os::Time::now());
+    return topicp->notify_remotes(msg, core::os::Time::now());
 }
 
 inline
 bool
 BasePublisher::has_topic(
-   const BasePublisher& pub,
-   const char*          namep
+    const BasePublisher& pub,
+    const char*          namep
 )
 {
-   return pub.topicp != NULL && Topic::has_name(*pub.topicp, namep);
+    return pub.topicp != NULL && Topic::has_name(*pub.topicp, namep);
 }
 
 NAMESPACE_CORE_MW_END

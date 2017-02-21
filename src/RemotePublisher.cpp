@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -10,12 +10,12 @@
 NAMESPACE_CORE_MW_BEGIN
 
 RemotePublisher::RemotePublisher(
-   Transport& transport
+    Transport& transport
 )
-   :
-   BasePublisher(),
-   transportp(&transport),
-   by_transport(*this)
+    :
+    BasePublisher(),
+    transportp(&transport),
+    by_transport(*this)
 {}
 
 

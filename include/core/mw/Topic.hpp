@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -28,246 +28,246 @@ class RemoteSubscriber;
 
 
 class Topic:
-   private core::Uncopyable
+    private core::Uncopyable
 {
-   friend class Middleware;
+    friend class Middleware;
 
 private:
-   const char* const     namep;
-   core::os::Time        publish_timeout;
-   core::os::MemoryPool_ msg_pool;
-   size_t num_local_publishers;
-   size_t num_remote_publishers;
-   StaticList<LocalSubscriber>  local_subscribers;
-   StaticList<RemoteSubscriber> remote_subscribers;
-   size_t max_queue_length;
+    const char* const     namep;
+    core::os::Time        publish_timeout;
+    core::os::MemoryPool_ msg_pool;
+    size_t num_local_publishers;
+    size_t num_remote_publishers;
+    StaticList<LocalSubscriber>  local_subscribers;
+    StaticList<RemoteSubscriber> remote_subscribers;
+    size_t max_queue_length;
 #if CORE_USE_BRIDGE_MODE
-   bool forwarding;
+    bool forwarding;
 #endif
 
-   StaticList<Topic>::Link by_middleware;
+    StaticList<Topic>::Link by_middleware;
 
 public:
-   const char*
-   get_name() const;
+    const char*
+    get_name() const;
 
-   const core::os::Time&
-   get_publish_timeout() const;
+    const core::os::Time&
+    get_publish_timeout() const;
 
-   size_t
-   get_type_size() const;
+    size_t
+    get_type_size() const;
 
-   size_t
-   get_payload_size() const;
+    size_t
+    get_payload_size() const;
 
-   size_t
-   get_max_queue_length() const;
+    size_t
+    get_max_queue_length() const;
 
-   bool
-   is_forwarding() const;
+    bool
+    is_forwarding() const;
 
-   bool
-   has_local_publishers() const;
+    bool
+    has_local_publishers() const;
 
-   bool
-   has_remote_publishers() const;
+    bool
+    has_remote_publishers() const;
 
-   bool
-   has_publishers() const;
+    bool
+    has_publishers() const;
 
-   bool
-   has_local_subscribers() const;
+    bool
+    has_local_subscribers() const;
 
-   bool
-   has_remote_subscribers() const;
+    bool
+    has_remote_subscribers() const;
 
-   bool
-   has_subscribers() const;
+    bool
+    has_subscribers() const;
 
-   bool
-   is_awaiting_advertisements() const;
+    bool
+    is_awaiting_advertisements() const;
 
-   bool
-   is_awaiting_subscriptions() const;
+    bool
+    is_awaiting_subscriptions() const;
 
-   const core::os::Time
-   compute_deadline_unsafe(
-      const core::os::Time& timestamp
-   ) const;
+    const core::os::Time
+    compute_deadline_unsafe(
+        const core::os::Time& timestamp
+    ) const;
 
-   const core::os::Time
-   compute_deadline_unsafe() const;
+    const core::os::Time
+    compute_deadline_unsafe() const;
 
-   Message*
-   alloc_unsafe();
-
-
-   template <typename MessageType>
-   bool
-   alloc_unsafe(
-      MessageType*& msgp
-   );
-
-   bool
-   release_unsafe(
-      Message& msg
-   );
-
-   void
-   free_unsafe(
-      Message& msg
-   );
-
-   bool
-   notify_locals_unsafe(
-      Message&              msg,
-      const core::os::Time& timestamp
-   );
-
-   bool
-   notify_remotes_unsafe(
-      Message&              msg,
-      const core::os::Time& timestamp
-   );
-
-   bool
-   forward_copy_unsafe(
-      const Message&        msg,
-      const core::os::Time& timestamp
-   );
+    Message*
+    alloc_unsafe();
 
 
-   const core::os::Time
-   compute_deadline(
-      const core::os::Time& timestamp
-   ) const;
+    template <typename MessageType>
+    bool
+    alloc_unsafe(
+        MessageType*& msgp
+    );
 
-   const core::os::Time
-   compute_deadline() const;
+    bool
+    release_unsafe(
+        Message& msg
+    );
 
-   Message*
-   alloc();
+    void
+    free_unsafe(
+        Message& msg
+    );
+
+    bool
+    notify_locals_unsafe(
+        Message&              msg,
+        const core::os::Time& timestamp
+    );
+
+    bool
+    notify_remotes_unsafe(
+        Message&              msg,
+        const core::os::Time& timestamp
+    );
+
+    bool
+    forward_copy_unsafe(
+        const Message&        msg,
+        const core::os::Time& timestamp
+    );
 
 
-   template <typename MessageType>
-   bool
-   alloc(
-      MessageType*& msgp
-   );
+    const core::os::Time
+    compute_deadline(
+        const core::os::Time& timestamp
+    ) const;
 
-   bool
-   release(
-      Message& msg
-   );
+    const core::os::Time
+    compute_deadline() const;
 
-   void
-   free(
-      Message& msg
-   );
+    Message*
+    alloc();
 
-   bool
-   notify_locals(
-      Message&              msg,
-      const core::os::Time& timestamp,
-      bool                  mustReschedule = false
-   );
 
-   bool
-   notify_remotes(
-      Message&              msg,
-      const core::os::Time& timestamp
-   );
+    template <typename MessageType>
+    bool
+    alloc(
+        MessageType*& msgp
+    );
 
-   bool
-   forward_copy(
-      const Message&        msg,
-      const core::os::Time& timestamp
-   );
+    bool
+    release(
+        Message& msg
+    );
 
-   void
-   extend_pool(
-      Message array[],
-      size_t  arraylen
-   );
+    void
+    free(
+        Message& msg
+    );
 
-   void
-   advertise(
-      LocalPublisher&       pub,
-      const core::os::Time& publish_timeout
-   );
+    bool
+    notify_locals(
+        Message&              msg,
+        const core::os::Time& timestamp,
+        bool                  mustReschedule = false
+    );
 
-   void
-   advertise(
-      RemotePublisher&      pub,
-      const core::os::Time& publish_timeout
-   );
+    bool
+    notify_remotes(
+        Message&              msg,
+        const core::os::Time& timestamp
+    );
 
-   void
-   subscribe(
-      LocalSubscriber& sub,
-      size_t           queue_length
-   );
+    bool
+    forward_copy(
+        const Message&        msg,
+        const core::os::Time& timestamp
+    );
 
-   void
-   subscribe(
-      RemoteSubscriber& sub,
-      size_t            queue_length
-   );
+    void
+    extend_pool(
+        Message array[],
+        size_t  arraylen
+    );
+
+    void
+    advertise(
+        LocalPublisher&       pub,
+        const core::os::Time& publish_timeout
+    );
+
+    void
+    advertise(
+        RemotePublisher&      pub,
+        const core::os::Time& publish_timeout
+    );
+
+    void
+    subscribe(
+        LocalSubscriber& sub,
+        size_t           queue_length
+    );
+
+    void
+    subscribe(
+        RemoteSubscriber& sub,
+        size_t            queue_length
+    );
 
 
 private:
-   void
-   patch_pubsub_msg(
-      Message&   msg,
-      Transport& transport
-   ) const;
+    void
+    patch_pubsub_msg(
+        Message&   msg,
+        Transport& transport
+    ) const;
 
 
 public:
-   Topic(
-      const char* namep,
-      size_t      type_size,
-      bool        forwarding = CORE_DEFAULT_FORWARDING_RULE
-   );
+    Topic(
+        const char* namep,
+        size_t      type_size,
+        bool        forwarding = CORE_DEFAULT_FORWARDING_RULE
+    );
 
 public:
-   static bool
-   has_name(
-      const Topic& topic,
-      const char*  namep
-   );
+    static bool
+    has_name(
+        const Topic& topic,
+        const char*  namep
+    );
 };
 
 
 class MessageGuard:
-   private core::Uncopyable
+    private core::Uncopyable
 {
 private:
-   Message& msg;
-   Topic&   topic;
+    Message& msg;
+    Topic&   topic;
 
 public:
-   MessageGuard(
-      Message& msg,
-      Topic&   topic
-   );
-   ~MessageGuard();
+    MessageGuard(
+        Message& msg,
+        Topic&   topic
+    );
+    ~MessageGuard();
 };
 
 
 class MessageGuardUnsafe:
-   private core::Uncopyable
+    private core::Uncopyable
 {
 private:
-   Message& msg;
-   Topic&   topic;
+    Message& msg;
+    Topic&   topic;
 
 public:
-   MessageGuardUnsafe(
-      Message& msg,
-      Topic&   topic
-   );
-   ~MessageGuardUnsafe();
+    MessageGuardUnsafe(
+        Message& msg,
+        Topic&   topic
+    );
+    ~MessageGuardUnsafe();
 };
 
 
@@ -286,35 +286,35 @@ inline
 const char*
 Topic::get_name() const
 {
-   return namep;
+    return namep;
 }
 
 inline
 const core::os::Time&
 Topic::get_publish_timeout() const
 {
-   return publish_timeout;
+    return publish_timeout;
 }
 
 inline
 size_t
 Topic::get_type_size() const
 {
-   return msg_pool.get_item_size();
+    return msg_pool.get_item_size();
 }
 
 inline
 size_t
 Topic::get_payload_size() const
 {
-   return Message::get_payload_size(msg_pool.get_item_size());
+    return Message::get_payload_size(msg_pool.get_item_size());
 }
 
 inline
 size_t
 Topic::get_max_queue_length() const
 {
-   return max_queue_length;
+    return max_queue_length;
 }
 
 inline
@@ -322,10 +322,10 @@ bool
 Topic::is_forwarding() const
 {
 #if CORE_USE_BRIDGE_MODE
-   return forwarding;
+    return forwarding;
 
 #else
-   return CORE_DEFAULT_FORWARDING_RULE;
+    return CORE_DEFAULT_FORWARDING_RULE;
 #endif
 }
 
@@ -333,232 +333,232 @@ inline
 bool
 Topic::has_local_publishers() const
 {
-   return num_local_publishers > 0;
+    return num_local_publishers > 0;
 }
 
 inline
 bool
 Topic::has_remote_publishers() const
 {
-   return num_remote_publishers > 0;
+    return num_remote_publishers > 0;
 }
 
 inline
 bool
 Topic::has_publishers() const
 {
-   return num_local_publishers > 0 || num_remote_publishers > 0;
+    return num_local_publishers > 0 || num_remote_publishers > 0;
 }
 
 inline
 bool
 Topic::has_local_subscribers() const
 {
-   return !local_subscribers.is_empty_unsafe();
+    return !local_subscribers.is_empty_unsafe();
 }
 
 inline
 bool
 Topic::has_remote_subscribers() const
 {
-   return !remote_subscribers.is_empty_unsafe();
+    return !remote_subscribers.is_empty_unsafe();
 }
 
 inline
 bool
 Topic::has_subscribers() const
 {
-   return !local_subscribers.is_empty_unsafe()
-          || !remote_subscribers.is_empty_unsafe();
+    return !local_subscribers.is_empty_unsafe()
+           || !remote_subscribers.is_empty_unsafe();
 }
 
 inline
 bool
 Topic::is_awaiting_advertisements() const
 {
-   return !has_local_publishers() && !has_remote_publishers()
-          && has_local_subscribers();
+    return !has_local_publishers() && !has_remote_publishers()
+           && has_local_subscribers();
 }
 
 inline
 bool
 Topic::is_awaiting_subscriptions() const
 {
-   return !has_local_subscribers() && !has_remote_subscribers()
-          && has_local_publishers();
+    return !has_local_subscribers() && !has_remote_subscribers()
+           && has_local_publishers();
 }
 
 inline
 const core::os::Time
 Topic::compute_deadline_unsafe(
-   const core::os::Time& timestamp
+    const core::os::Time& timestamp
 ) const
 {
-   return timestamp + publish_timeout;
+    return timestamp + publish_timeout;
 }
 
 inline
 const core::os::Time
 Topic::compute_deadline_unsafe() const
 {
-   return compute_deadline_unsafe(core::os::Time::now());
+    return compute_deadline_unsafe(core::os::Time::now());
 }
 
 inline
 Message*
 Topic::alloc_unsafe()
 {
-   register Message* msgp = reinterpret_cast<Message*>(msg_pool.alloc_unsafe());
+    register Message* msgp = reinterpret_cast<Message*>(msg_pool.alloc_unsafe());
 
-   if (msgp != NULL) {
-      msgp->reset_unsafe();
-      return msgp;
-   }
+    if (msgp != NULL) {
+        msgp->reset_unsafe();
+        return msgp;
+    }
 
-   return NULL;
+    return NULL;
 }
 
 template <typename MessageType>
 inline
 bool
 Topic::alloc_unsafe(
-   MessageType*& msgp
+    MessageType*& msgp
 )
 {
-   static_cast_check<MessageType, Message>();
-   return (msgp = reinterpret_cast<MessageType*>(alloc_unsafe())) != NULL;
+    static_cast_check<MessageType, Message>();
+    return (msgp = reinterpret_cast<MessageType*>(alloc_unsafe())) != NULL;
 }
 
 inline
 bool
 Topic::release_unsafe(
-   Message& msg
+    Message& msg
 )
 {
-   if (!msg.release_unsafe()) {
-      free_unsafe(msg);
-      return true;
-   }
+    if (!msg.release_unsafe()) {
+        free_unsafe(msg);
+        return true;
+    }
 
-   return false;
+    return false;
 }
 
 inline
 void
 Topic::free_unsafe(
-   Message& msg
+    Message& msg
 )
 {
-   msg_pool.free_unsafe(reinterpret_cast<void*>(&msg));
+    msg_pool.free_unsafe(reinterpret_cast<void*>(&msg));
 }
 
 inline
 const core::os::Time
 Topic::compute_deadline(
-   const core::os::Time& timestamp
+    const core::os::Time& timestamp
 ) const
 {
-   core::os::SysLock::acquire();
-   const core::os::Time& deadline = compute_deadline_unsafe(timestamp);
-   core::os::SysLock::release();
+    core::os::SysLock::acquire();
+    const core::os::Time& deadline = compute_deadline_unsafe(timestamp);
+    core::os::SysLock::release();
 
-   return deadline;
+    return deadline;
 }
 
 inline
 const core::os::Time
 Topic::compute_deadline() const
 {
-   return compute_deadline(core::os::Time::now());
+    return compute_deadline(core::os::Time::now());
 }
 
 template <typename MessageType>
 inline
 bool
 Topic::alloc(
-   MessageType*& msgp
+    MessageType*& msgp
 )
 {
-   static_cast_check<MessageType, Message>();
-   return (msgp = reinterpret_cast<MessageType*>(alloc())) != NULL;
+    static_cast_check<MessageType, Message>();
+    return (msgp = reinterpret_cast<MessageType*>(alloc())) != NULL;
 }
 
 inline
 bool
 Topic::release(
-   Message& msg
+    Message& msg
 )
 {
-   core::os::SysLock::acquire();
-   bool freed = release_unsafe(msg);
-   core::os::SysLock::release();
+    core::os::SysLock::acquire();
+    bool freed = release_unsafe(msg);
+    core::os::SysLock::release();
 
-   return freed;
+    return freed;
 }
 
 inline
 void
 Topic::free(
-   Message& msg
+    Message& msg
 )
 {
-   msg_pool.free(reinterpret_cast<void*>(&msg));
+    msg_pool.free(reinterpret_cast<void*>(&msg));
 }
 
 inline
 void
 Topic::extend_pool(
-   Message array[],
-   size_t  arraylen
+    Message array[],
+    size_t  arraylen
 )
 {
-   msg_pool.extend(array, arraylen);
+    msg_pool.extend(array, arraylen);
 }
 
 inline
 bool
 Topic::has_name(
-   const Topic& topic,
-   const char*  namep
+    const Topic& topic,
+    const char*  namep
 )
 {
-   return namep != NULL && 0 == strncmp(topic.get_name(), namep, NamingTraits<Topic>::MAX_LENGTH);
+    return namep != NULL && 0 == strncmp(topic.get_name(), namep, NamingTraits<Topic>::MAX_LENGTH);
 }
 
 inline
 MessageGuard::MessageGuard(
-   Message& msg,
-   Topic&   topic
+    Message& msg,
+    Topic&   topic
 )
-   :
-   msg(msg),
-   topic(topic)
+    :
+    msg(msg),
+    topic(topic)
 {
-   msg.acquire();
+    msg.acquire();
 }
 
 inline
 MessageGuard::~MessageGuard()
 {
-   topic.release(msg);
+    topic.release(msg);
 }
 
 inline
 MessageGuardUnsafe::MessageGuardUnsafe(
-   Message& msg,
-   Topic&   topic
+    Message& msg,
+    Topic&   topic
 )
-   :
-   msg(msg),
-   topic(topic)
+    :
+    msg(msg),
+    topic(topic)
 {
-   msg.acquire_unsafe();
+    msg.acquire_unsafe();
 }
 
 inline
 MessageGuardUnsafe::~MessageGuardUnsafe()
 {
-   topic.release_unsafe(msg);
+    topic.release_unsafe(msg);
 }
 
 NAMESPACE_CORE_MW_END

@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -17,19 +17,19 @@ NAMESPACE_CORE_MW_BEGIN
 void
 Middleware::reboot()
 {
-   CoreModule::reset();
+    CoreModule::reset();
 } // Middleware::reboot
 
 void
 Middleware::preload_bootloader_mode(
-   bool enable
+    bool enable
 )
 {
-   if (enable) {
-      CoreModule::enableBootloader();
-   } else {
-      CoreModule::disableBootloader();
-   }
+    if (enable) {
+        CoreModule::enableBootloader();
+    } else {
+        CoreModule::disableBootloader();
+    }
 }
 
 NAMESPACE_CORE_MW_END

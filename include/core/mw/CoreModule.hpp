@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -16,53 +16,53 @@
 NAMESPACE_CORE_MW_BEGIN
 
 class CoreModule:
-   public CoreNodeManager
+    public CoreNodeManager
 {
 public:
-   using UID = core::hw::UID;  // Alias for cleanliness
+    using UID = core::hw::UID; // Alias for cleanliness
 
 public:
-   class Led
-   {
+    class Led
+    {
 public:
-      void
-      toggle();
+        void
+        toggle();
 
-      void
-      write(
-         unsigned on
-      );
-   };
+        void
+        write(
+            unsigned on
+        );
+    };
 
-   static Led& led;
+    static Led& led;
 
-   static const UID&
-   uid();
+    static const UID&
+    uid();
 
-   bool
-   initialize();
+    bool
+    initialize();
 
-   static const void
-   halt(
-      const char* message
-   );
+    static const void
+    halt(
+        const char* message
+    );
 
-   static void
-   reset();
+    static void
+    reset();
 
-   static void
-   keepAlive();
+    static void
+    keepAlive();
 
-   static void
-   disableBootloader();
+    static void
+    disableBootloader();
 
-   static void
-   enableBootloader();
+    static void
+    enableBootloader();
 
 
-   CoreModule();
+    CoreModule();
 
-   virtual ~CoreModule() {}
+    virtual ~CoreModule() {}
 };
 
 NAMESPACE_CORE_MW_END

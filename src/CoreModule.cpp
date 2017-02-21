@@ -1,4 +1,4 @@
-/* COPYRIGHT (c) 2016 Nova Labs SRL
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
  *
  * All rights reserved. All use of this software and documentation is
  * subject to the License Agreement located in the file LICENSE.
@@ -23,39 +23,39 @@ CoreModule::Led& CoreModule::led = _led;
 bool
 CoreModule::initialize()
 {
-   return true;
+    return true;
 }
 
 const void
 CoreModule::halt(
-   const char* message
+    const char* message
 )
 {
-   osalSysHalt(message);
+    osalSysHalt(message);
 }
 
 void
 CoreModule::reset()
 {
-   core::hw::IWDG_::woof();
+    core::hw::IWDG_::woof();
 }
 
 void
 CoreModule::keepAlive()
 {
-   core::hw::IWDG_::reload();
+    core::hw::IWDG_::reload();
 }
 
 void
 CoreModule::disableBootloader()
 {
-   RTC->BKP0R = 0x55AA55AA; // TODO: wrap it somewhere.
+    RTC->BKP0R = 0x55AA55AA; // TODO: wrap it somewhere.
 }
 
 void
 CoreModule::enableBootloader()
 {
-   RTC->BKP0R = 0xB0BAFE77; // TODO: wrap it somewhere.
+    RTC->BKP0R = 0xB0BAFE77; // TODO: wrap it somewhere.
 }
 
 CoreModule::CoreModule() {}
@@ -63,7 +63,7 @@ CoreModule::CoreModule() {}
 const CoreModule::UID&
 CoreModule::uid()
 {
-   return core::hw::UID_::get();
+    return core::hw::UID_::get();
 }
 
 /*
