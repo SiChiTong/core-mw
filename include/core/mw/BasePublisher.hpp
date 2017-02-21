@@ -109,7 +109,7 @@ BasePublisher::notify_advertised(
     Topic& topic
 )
 {
-    CORE_ASSERT(topicp == NULL);
+    CORE_ASSERT(topicp == nullptr);
 
     topicp = &topic;
 }
@@ -120,10 +120,10 @@ BasePublisher::alloc_unsafe(
     Message*& msgp
 )
 {
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
 
     msgp = topicp->alloc_unsafe();
-    return msgp != NULL;
+    return msgp != nullptr;
 }
 
 inline
@@ -146,7 +146,7 @@ BasePublisher::publish_locally(
     bool     mustReschedule
 )
 {
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
 
     return topicp->notify_locals(msg, core::os::Time::now(), mustReschedule);
 }
@@ -157,7 +157,7 @@ BasePublisher::publish_remotely(
     Message& msg
 )
 {
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
 
     return topicp->notify_remotes(msg, core::os::Time::now());
 }
@@ -169,7 +169,7 @@ BasePublisher::has_topic(
     const char*          namep
 )
 {
-    return pub.topicp != NULL && Topic::has_name(*pub.topicp, namep);
+    return pub.topicp != nullptr && Topic::has_name(*pub.topicp, namep);
 }
 
 NAMESPACE_CORE_MW_END

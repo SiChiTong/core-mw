@@ -23,7 +23,7 @@ public:
         Link(
             void* itemp
         ) :
-            nextp(NULL),
+            nextp(nullptr),
             itemp(itemp)
         {}
     };
@@ -137,7 +137,7 @@ inline
 bool
 StaticList_::is_empty_unsafe() const
 {
-    return headp == NULL;
+    return headp == nullptr;
 }
 
 inline
@@ -146,7 +146,7 @@ StaticList_::link_unsafe(
     Link& link
 )
 {
-    CORE_ASSERT(link.nextp == NULL);
+    CORE_ASSERT(link.nextp == nullptr);
     CORE_ASSERT(!contains_unsafe(link.itemp));
 
     link.nextp = headp;

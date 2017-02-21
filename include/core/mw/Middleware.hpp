@@ -141,7 +141,7 @@ public:
         void*                      mgmt_stackp,
         size_t                     mgmt_stacklen,
         core::os::Thread::Priority mgmt_priority,
-        void*                      boot_stackp = NULL,
+        void*                      boot_stackp = nullptr,
         size_t                     boot_stacklen = 0,
         core::os::Thread::Priority boot_priority = core::os::Thread::LOWEST
     );
@@ -248,7 +248,7 @@ private:
     Middleware(
         const char* module_namep,
         const char* bootloader_namep,
-        PubSubStep  pubsub_buf[] = NULL,
+        PubSubStep  pubsub_buf[] = nullptr,
         size_t      pubsub_length = 0
     );
 

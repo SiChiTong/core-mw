@@ -29,7 +29,7 @@ public:
 
         Link(
             Item& item
-        ) : nextp(NULL), itemp(&item) {}
+        ) : nextp(nullptr), itemp(&item) {}
     };
 
     struct ConstLink {
@@ -38,7 +38,7 @@ public:
 
         ConstLink(
             const Item& item
-        ) : nextp(NULL), itemp(&item) {}
+        ) : nextp(nullptr), itemp(&item) {}
 
         ConstLink(
             const Link& link
@@ -53,7 +53,7 @@ private:
         const Link* curp;
 
 public:
-        IteratorUnsafe() : curp(NULL) {}
+        IteratorUnsafe() : curp(nullptr) {}
 
         IteratorUnsafe(
             const IteratorUnsafe& rhs
@@ -124,7 +124,7 @@ public:
         bool
         is_valid() const
         {
-            return curp != NULL;
+            return curp != nullptr;
         }
     };
 
@@ -136,7 +136,7 @@ private:
         const ConstLink* curp;
 
 public:
-        ConstIteratorUnsafe() : curp(NULL) {}
+        ConstIteratorUnsafe() : curp(nullptr) {}
 
         ConstIteratorUnsafe(
             const ConstIteratorUnsafe& rhs
@@ -207,7 +207,7 @@ public:
         bool
         is_valid() const
         {
-            return curp != NULL;
+            return curp != nullptr;
         }
     };
 
@@ -219,7 +219,7 @@ private:
         const Link* curp;
 
 public:
-        Iterator() : curp(NULL) {}
+        Iterator() : curp(nullptr) {}
 
         Iterator(
             const Iterator& rhs
@@ -295,7 +295,7 @@ public:
         bool
         is_valid() const
         {
-            return curp != NULL;
+            return curp != nullptr;
         }
     };
 
@@ -307,7 +307,7 @@ private:
         const ConstLink* curp;
 
 public:
-        ConstIterator() : curp(NULL) {}
+        ConstIterator() : curp(nullptr) {}
 
         ConstIterator(
             const ConstIterator& rhs
@@ -383,7 +383,7 @@ public:
         bool
         is_valid() const
         {
-            return curp != NULL;
+            return curp != nullptr;
         }
     };
 
@@ -475,7 +475,7 @@ public:
     IteratorUnsafe
     end_unsafe()
     {
-        return IteratorUnsafe(NULL);
+        return IteratorUnsafe(nullptr);
     }
 
     void
@@ -497,7 +497,7 @@ public:
     const ConstIteratorUnsafe
     end_unsafe() const
     {
-        return ConstIteratorUnsafe(NULL);
+        return ConstIteratorUnsafe(nullptr);
     }
 
     void
@@ -585,7 +585,7 @@ public:
     const Iterator
     end()
     {
-        return Iterator(NULL);
+        return Iterator(nullptr);
     }
 
     void
@@ -605,7 +605,7 @@ public:
     const ConstIterator
     end() const
     {
-        return ConstIterator(NULL);
+        return ConstIterator(nullptr);
     }
 
     void
@@ -640,7 +640,7 @@ public:
     bool
     is_empty_unsafe() const
     {
-        return headp == NULL;
+        return headp == nullptr;
     }
 
     size_t
@@ -652,7 +652,7 @@ public:
         Link& link
     )
     {
-        CORE_ASSERT(link.nextp == NULL);
+        CORE_ASSERT(link.nextp == nullptr);
         CORE_ASSERT(!unlink_unsafe(link));
 
         link.nextp = headp;
@@ -666,13 +666,13 @@ public:
     {
         Link* curp = headp;
 
-        CORE_ASSERT(link.nextp == NULL);
+        CORE_ASSERT(link.nextp == nullptr);
         CORE_ASSERT(!unlink_unsafe(link));
 
         if (is_empty_unsafe()) {
             headp = &link;
         } else {
-            while (curp->nextp != NULL) {
+            while (curp->nextp != nullptr) {
                 curp = curp->nextp;
             }
 
@@ -716,7 +716,7 @@ public:
     const IteratorUnsafe
     end_unsafe()
     {
-        return IteratorUnsafe(NULL);
+        return IteratorUnsafe(nullptr);
     }
 
     void
@@ -736,7 +736,7 @@ public:
     const ConstIteratorUnsafe
     end_unsafe() const
     {
-        return ConstIteratorUnsafe(NULL);
+        return ConstIteratorUnsafe(nullptr);
     }
 
     void
@@ -817,7 +817,7 @@ public:
     const Iterator
     end()
     {
-        return Iterator(NULL);
+        return Iterator(nullptr);
     }
 
     void
@@ -839,7 +839,7 @@ public:
     const ConstIterator
     end() const
     {
-        return ConstIterator(NULL);
+        return ConstIterator(nullptr);
     }
 
     void
@@ -850,7 +850,7 @@ public:
         iterator = begin();
     }
 
-    StaticList() : headp(NULL) {}
+    StaticList() : headp(nullptr) {}
 #endif // CORE_FORCE_STATICLIST_IMPL
 };
 
@@ -864,7 +864,7 @@ StaticList<Item>::count_unsafe() const
 {
     size_t count = 0;
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         ++count;
     }
 
@@ -878,17 +878,17 @@ StaticList<Item>::unlink_unsafe(
     Link& link
 )
 {
-    for (Link* curp = headp, * prevp = NULL;
-         curp != NULL;
+    for (Link* curp = headp, * prevp = nullptr;
+         curp != nullptr;
          prevp = curp, curp = curp->nextp) {
         if (curp == &link) {
-            if (prevp != NULL) {
+            if (prevp != nullptr) {
                 prevp->nextp = curp->nextp;
             } else {
                 headp = curp->nextp;
             }
 
-            curp->nextp = NULL;
+            curp->nextp = nullptr;
             return true;
         }
     }
@@ -905,7 +905,7 @@ StaticList<Item>::index_of_unsafe(
 {
     int i = 0;
 
-    for (const Link* linkp = headp; linkp != NULL; ++i, linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; ++i, linkp = linkp->nextp) {
         if (linkp->itemp == &item) {
             return i;
         }
@@ -921,7 +921,7 @@ StaticList<Item>::contains_unsafe(
     const Item& item
 ) const
 {
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         if (linkp->itemp == &item) {
             return true;
         }
@@ -937,13 +937,13 @@ StaticList<Item>::find_first_unsafe(
     Predicate pred_func
 ) const
 {
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         if (pred_func(linkp->itemp)) {
             return linkp->itemp;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 template <typename Item>
@@ -954,15 +954,15 @@ StaticList<Item>::find_first_unsafe(
     const void* featuresp
 ) const
 {
-    CORE_ASSERT(featuresp != NULL);
+    CORE_ASSERT(featuresp != nullptr);
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         if (match_func(linkp->itemp, featuresp)) {
             return linkp->itemp;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 template <typename Item>
@@ -995,7 +995,7 @@ StaticList<Item>::count() const
     size_t count = 0;
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         core::os::SysLock::release();
         ++count;
         core::os::SysLock::acquire();
@@ -1043,7 +1043,7 @@ StaticList<Item>::index_of(
     int i = 0;
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; ++i, linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; ++i, linkp = linkp->nextp) {
         core::os::SysLock::release();
 
         if (linkp->itemp == &item) {
@@ -1066,7 +1066,7 @@ StaticList<Item>::contains(
 {
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         if (linkp->itemp == &item) {
             core::os::SysLock::release();
             return true;
@@ -1089,7 +1089,7 @@ StaticList<Item>::find_first(
 {
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         core::os::SysLock::release();
 
         if (pred_func(linkp->itemp)) {
@@ -1100,7 +1100,7 @@ StaticList<Item>::find_first(
     }
 
     core::os::SysLock::release();
-    return NULL;
+    return nullptr;
 }
 
 template <typename Item>
@@ -1111,11 +1111,11 @@ StaticList<Item>::find_first(
     const void* featuresp
 ) const
 {
-    CORE_ASSERT(featuresp != NULL);
+    CORE_ASSERT(featuresp != nullptr);
 
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         core::os::SysLock::release();
 
         if (match_func(*linkp->itemp, featuresp)) {
@@ -1126,7 +1126,7 @@ StaticList<Item>::find_first(
     }
 
     core::os::SysLock::release();
-    return NULL;
+    return nullptr;
 } // >::find_first
 #endif // !CORE_FORCE_STATICLIST_IMPL
 

@@ -99,7 +99,7 @@ BaseSubscriber::notify_subscribed(
     Topic& topic
 )
 {
-    CORE_ASSERT(topicp == NULL);
+    CORE_ASSERT(topicp == nullptr);
 
     topicp = &topic;
 }

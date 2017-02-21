@@ -23,7 +23,7 @@ public:
         Link(
             void* datap
         ) :
-            nextp(NULL),
+            nextp(nullptr),
             datap(datap)
         {}
     };
@@ -97,7 +97,7 @@ inline
 bool
 StaticQueue_::is_empty_unsafe() const
 {
-    return headp == NULL;
+    return headp == nullptr;
 }
 
 NAMESPACE_CORE_MW_END

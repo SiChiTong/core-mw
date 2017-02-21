@@ -194,7 +194,7 @@ inline
 bool
 Node::get_enabled() const
 {
-    return event.get_thread() != NULL;
+    return event.get_thread() != nullptr;
 }
 
 inline
@@ -203,7 +203,7 @@ Node::set_enabled(
     bool enabled
 )
 {
-    event.set_thread(enabled ? &core::os::Thread::self() : NULL);
+    event.set_thread(enabled ? &core::os::Thread::self() : nullptr);
 }
 
 template <typename MessageType>
@@ -282,7 +282,7 @@ Node::has_name(
     const char* namep
 )
 {
-    return namep != NULL && 0 == strncmp(node.get_name(), namep, NamingTraits<Node>::MAX_LENGTH);
+    return namep != nullptr && 0 == strncmp(node.get_name(), namep, NamingTraits<Node>::MAX_LENGTH);
 }
 
 NAMESPACE_CORE_MW_END

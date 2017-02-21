@@ -24,7 +24,7 @@ Node::advertise(
 )
 {
     // already advertised
-    if (pub.get_topic() != NULL) {
+    if (pub.get_topic() != nullptr) {
         return false;
     }
 
@@ -45,7 +45,7 @@ Node::subscribe(
 )
 {
     // already subscribed
-    if (sub.get_topic() != NULL) {
+    if (sub.get_topic() != nullptr) {
         return false;
     }
 
@@ -86,7 +86,7 @@ Node::spin(
             mask &= ~bit;
             const LocalSubscriber::CallbackFunction* callback = i->get_callback();
 
-            if (callback != NULL) {
+            if (callback != nullptr) {
                 Message* msgp;
 
                 while (i->fetch(msgp, dummy_timestamp)) {
@@ -105,7 +105,7 @@ Node::Node(
     bool        enabled
 )
     :
-    event(enabled ? &core::os::Thread::self() : NULL),
+    event(enabled ? &core::os::Thread::self() : nullptr),
     namep(namep),
     by_middleware(*this)
 {

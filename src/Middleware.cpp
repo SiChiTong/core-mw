@@ -29,7 +29,7 @@ Middleware::initialize(
     core::os::Thread::Priority boot_priority
 )
 {
-    CORE_ASSERT(mgmt_stackp != NULL);
+    CORE_ASSERT(mgmt_stackp != nullptr);
     CORE_ASSERT(mgmt_stacklen > 0);
 
     lists_lock.initialize();
@@ -48,8 +48,8 @@ Middleware::initialize(
 void
 Middleware::start()
 {
-    mgmt_threadp = core::os::Thread::create_static(mgmt_stackp, mgmt_stacklen, mgmt_priority, mgmt_threadf, NULL, "CORE_MGMT");
-    CORE_ASSERT(mgmt_threadp != NULL);
+    mgmt_threadp = core::os::Thread::create_static(mgmt_stackp, mgmt_stacklen, mgmt_priority, mgmt_threadf, nullptr, "CORE_MGMT");
+    CORE_ASSERT(mgmt_threadp != nullptr);
 
     // Wait until the info topic is fully initialized
     core::os::SysLock::acquire();
@@ -151,7 +151,7 @@ Middleware::add(
     Topic& topic
 )
 {
-    CORE_ASSERT(find_topic(topic.get_name()) == NULL);
+    CORE_ASSERT(find_topic(topic.get_name()) == nullptr);
 
     topics.link(topic.by_middleware);
 }
@@ -167,7 +167,7 @@ Middleware::advertise(
     lists_lock.acquire();
     Topic* topicp = touch_topic(namep, type_size);
 
-    if (topicp == NULL) {
+    if (topicp == nullptr) {
         return false;
     }
 
@@ -182,7 +182,7 @@ Middleware::advertise(
         {
             core::os::SysLock::Scope lock;
 
-            if (mgmt_pub.get_topic() == NULL) {
+            if (mgmt_pub.get_topic() == nullptr) {
                 return true;
             }
         }
@@ -215,7 +215,7 @@ Middleware::advertise(
     lists_lock.acquire();
     Topic* topicp = touch_topic(namep, type_size);
 
-    if (topicp == NULL) {
+    if (topicp == nullptr) {
         return false;
     }
 
@@ -238,7 +238,7 @@ Middleware::subscribe(
     lists_lock.acquire();
     Topic* topicp = touch_topic(namep, type_size);
 
-    if (topicp == NULL) {
+    if (topicp == nullptr) {
         return false;
     }
 
@@ -256,7 +256,7 @@ Middleware::subscribe(
             {
                 core::os::SysLock::Scope lock;
 
-                if (mgmt_pub.get_topic() == NULL) {
+                if (mgmt_pub.get_topic() == nullptr) {
                     return true;
                 }
             }
@@ -293,7 +293,7 @@ Middleware::subscribe(
 
     lists_lock.acquire();
     Topic* topicp = find_topic(namep);
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
     topicp->extend_pool(msgpool_buf, msgpool_buflen);
     sub.notify_subscribed(*topicp);
     topicp->subscribe(sub, msgpool_buflen);
@@ -349,11 +349,11 @@ Middleware::touch_topic(
     // Check if there is a topic with the desired name
     Topic* topicp = find_topic(namep);
 
-    if (topicp == NULL) {
+    if (topicp == nullptr) {
         // Allocate a new topic
         topicp = new Topic(namep, type_size);
 
-        if (topicp != NULL) {
+        if (topicp != nullptr) {
             topics.link(topicp->by_middleware);
         }
     }
@@ -568,18 +568,18 @@ Middleware::do_cmd_advertise(
     Topic* topicp = find_topic(msg.pubsub.topic);
 
 #if CORE_USE_BRIDGE_MODE
-    CORE_ASSERT(msg.get_source() != NULL);
+    CORE_ASSERT(msg.get_source() != nullptr);
 
-    if ((topicp != NULL) && topicp->has_subscribers()) {
+    if ((topicp != nullptr) && topicp->has_subscribers()) {
 #else // CORE_USE_BRIDGE_MODE
     CORE_ASSERT(transports.count() == 1);
 
-    if ((topicp != NULL) && topicp->has_local_subscribers()) {
+    if ((topicp != nullptr) && topicp->has_local_subscribers()) {
 #endif // CORE_USE_BRIDGE_MODE
         {
             core::os::SysLock::Scope lock;
 
-            if (mgmt_pub.get_topic() == NULL) {
+            if (mgmt_pub.get_topic() == nullptr) {
                 return;
             }
         }
@@ -608,7 +608,7 @@ Middleware::do_cmd_advertise(
     else {
         PubSubStep* curp;
 
-        for (curp = pubsub_stepsp; curp != NULL; curp = curp->nextp) {
+        for (curp = pubsub_stepsp; curp != nullptr; curp = curp->nextp) {
             if ((0 == strncmp(curp->topic, msg.pubsub.topic, NamingTraits<Topic>::MAX_LENGTH)) && (curp->type == MgmtMsg::ADVERTISE)) {
                 // Advertisement already cached
                 curp->timestamp = core::os::Time::now();
@@ -616,7 +616,7 @@ Middleware::do_cmd_advertise(
             }
         }
 
-        if (curp != NULL) {
+        if (curp != nullptr) {
             curp               = alloc_pubsub_step();
             curp->type         = MgmtMsg::ADVERTISE;
             curp->transportp   = msg.get_source();
@@ -635,18 +635,18 @@ Middleware::do_cmd_subscribe_request(
     Topic* topicp = find_topic(msg.pubsub.topic);
 
 #if CORE_USE_BRIDGE_MODE
-    CORE_ASSERT(msg.get_source() != NULL);
+    CORE_ASSERT(msg.get_source() != nullptr);
 
-    if (topicp != NULL) {
+    if (topicp != nullptr) {
 #else // CORE_USE_BRIDGE_MODE
     CORE_ASSERT(transports.count() == 1);
 
-    if ((topicp != NULL) && topicp->has_local_publishers()) {
+    if ((topicp != nullptr) && topicp->has_local_publishers()) {
 #endif // CORE_USE_BRIDGE_MODE
         {
             core::os::SysLock::Scope lock;
 
-            if (mgmt_pub.get_topic() == NULL) {
+            if (mgmt_pub.get_topic() == nullptr) {
                 return;
             }
         }
@@ -675,9 +675,9 @@ Middleware::do_cmd_subscribe_request(
 
 #if CORE_USE_BRIDGE_MODE
     else {
-        PubSubStep* curp, * prevp = NULL;
+        PubSubStep* curp, * prevp = nullptr;
 
-        for (curp = pubsub_stepsp; curp != NULL; prevp = curp, curp = curp->nextp) {
+        for (curp = pubsub_stepsp; curp != nullptr; prevp = curp, curp = curp->nextp) {
             if (0 == strncmp(curp->topic, msg.pubsub.topic, NamingTraits<Topic>::MAX_LENGTH)) {
                 if (curp->type == MgmtMsg::SUBSCRIBE_REQUEST) {
                     // Subscription request already cached
@@ -685,23 +685,23 @@ Middleware::do_cmd_subscribe_request(
                     break;
                 } else if (curp->type == MgmtMsg::ADVERTISE) {
                     // Subscription request matching advertisement
-                    if (prevp != NULL) {
+                    if (prevp != nullptr) {
                         prevp->nextp = curp->nextp;
                     }
 
                     char* namep = new char[NamingTraits < Topic > ::MAX_LENGTH];
-                    CORE_ASSERT(namep != NULL);
+                    CORE_ASSERT(namep != nullptr);
                     strncpy(namep, curp->topic, NamingTraits<Topic>::MAX_LENGTH);
                     topicp = touch_topic(namep, Message::get_type_size(curp->payload_size));
-                    CORE_ASSERT(topicp != NULL);
+                    CORE_ASSERT(topicp != nullptr);
                     pubsub_pool.free(curp);
-                    curp = NULL;
+                    curp = nullptr;
                     break;
                 }
             }
         }
 
-        if (curp == NULL) {
+        if (curp == nullptr) {
             curp               = alloc_pubsub_step();
             curp->type         = MgmtMsg::SUBSCRIBE_REQUEST;
             curp->transportp   = msg.get_source();
@@ -721,29 +721,29 @@ Middleware::do_cmd_subscribe_response(
 )
 {
 #if CORE_USE_BRIDGE_MODE
-    CORE_ASSERT(msg.get_source() != NULL);
+    CORE_ASSERT(msg.get_source() != nullptr);
 
     Topic* topicp = find_topic(msg.pubsub.topic);
 
-    if (topicp != NULL) {
+    if (topicp != nullptr) {
         msg.get_source()->advertise_cb(*topicp, msg.pubsub.raw_params);
     } else {
-        PubSubStep* curp, * prevp = NULL;
+        PubSubStep* curp, * prevp = nullptr;
 
-        for (curp = pubsub_stepsp; curp != NULL; prevp = curp, curp = curp->nextp) {
+        for (curp = pubsub_stepsp; curp != nullptr; prevp = curp, curp = curp->nextp) {
             if ((0 == strncmp(curp->topic, msg.pubsub.topic, NamingTraits<Topic>::MAX_LENGTH)) && (curp->type == MgmtMsg::SUBSCRIBE_REQUEST)) {
                 // Subscription response matching request
-                if (prevp != NULL) {
+                if (prevp != nullptr) {
                     prevp->nextp = curp->nextp;
                 }
 
                 char* namep = new char[NamingTraits < Topic > ::MAX_LENGTH];
-                CORE_ASSERT(namep != NULL);
+                CORE_ASSERT(namep != nullptr);
                 strncpy(namep, curp->topic, NamingTraits<Topic>::MAX_LENGTH);
                 topicp = touch_topic(namep, Message::get_type_size(curp->payload_size));
-                CORE_ASSERT(topicp != NULL);
+                CORE_ASSERT(topicp != nullptr);
                 pubsub_pool.free(curp);
-                curp = NULL;
+                curp = nullptr;
                 break;
             }
         }
@@ -754,7 +754,7 @@ Middleware::do_cmd_subscribe_response(
 
     Topic* topicp = find_topic(msg.pubsub.topic);
 
-    if ((topicp != NULL) && topicp->has_local_subscribers()) {
+    if ((topicp != nullptr) && topicp->has_local_subscribers()) {
         transports.begin()->advertise_cb(*topicp, msg.pubsub.raw_params);
     }
 #endif // CORE_USE_BRIDGE_MODE
@@ -767,7 +767,7 @@ Middleware::alloc_pubsub_step()
 {
     PubSubStep* stepp = pubsub_pool.alloc();
 
-    if (stepp != NULL) {
+    if (stepp != nullptr) {
         memset(stepp, 0, sizeof(PubSubStep));
         stepp->timestamp = core::os::Time::now();
         stepp->nextp     = pubsub_stepsp;
@@ -777,14 +777,14 @@ Middleware::alloc_pubsub_step()
         core::os::Time now  = core::os::Time::now();
         PubSubStep* oldestp = pubsub_stepsp;
 
-        for (stepp = pubsub_stepsp; stepp != NULL; stepp = stepp->nextp) {
+        for (stepp = pubsub_stepsp; stepp != nullptr; stepp = stepp->nextp) {
             if ((now - stepp->timestamp) > (now - oldestp->timestamp)) {
                 oldestp = stepp;
                 break;
             }
         }
 
-        CORE_ASSERT(oldestp != NULL);
+        CORE_ASSERT(oldestp != nullptr);
         PubSubStep* old_nextp = oldestp->nextp;
         memset(oldestp, 0, sizeof(PubSubStep));
         oldestp->nextp     = old_nextp;
@@ -805,19 +805,19 @@ Middleware::Middleware(
     module_namep(module_namep),
     lists_lock(false),
     mgmt_topic(MANAGEMENT_TOPIC_NAME, sizeof(MgmtMsg), false),
-    mgmt_stackp(NULL),
+    mgmt_stackp(nullptr),
     mgmt_stacklen(0),
-    mgmt_threadp(NULL),
+    mgmt_threadp(nullptr),
     mgmt_priority(core::os::Thread::LOWEST),
     mgmt_node("CORE_MGMT", false),
     mgmt_pub(),
-    mgmt_sub(mgmt_queue_buf, MGMT_BUFFER_LENGTH, NULL),
+    mgmt_sub(mgmt_queue_buf, MGMT_BUFFER_LENGTH, nullptr),
 #if CORE_IS_BOOTLOADER_BRIDGE
     boot_topic(BOOTLOADER_TOPIC_NAME, sizeof(BootMsg), false),
     bootmaster_topic(BOOTLOADER_MASTER_TOPIC_NAME, sizeof(BootMasterMsg), false),
 #endif
 #if CORE_USE_BRIDGE_MODE
-    pubsub_stepsp(NULL),
+    pubsub_stepsp(nullptr),
     pubsub_pool(pubsub_buf, pubsub_length),
 #endif
     stopped(false),

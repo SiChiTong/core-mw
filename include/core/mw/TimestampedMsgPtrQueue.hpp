@@ -98,7 +98,7 @@ TimestampedMsgPtrQueue::Entry::Entry(
     msgp(msgp),
     timestamp(timestamp)
 {
-    CORE_ASSERT(msgp != NULL);
+    CORE_ASSERT(msgp != nullptr);
 }
 
 inline

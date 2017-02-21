@@ -197,7 +197,7 @@ ArrayQueue<Item>::ArrayQueue(
     headp(array),
     tailp(array)
 {
-    CORE_ASSERT(array != NULL);
+    CORE_ASSERT(array != nullptr);
     CORE_ASSERT(length > 0);
 }
 

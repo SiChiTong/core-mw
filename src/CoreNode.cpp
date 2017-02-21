@@ -46,7 +46,7 @@ CoreNode::setup()
 
     if (_state() == State::NONE) {
         _mustRun = true;
-        _runner  = core::os::Thread::create_heap(NULL, _workingAreaSize, core::os::Thread::PriorityEnum::NORMAL,
+        _runner  = core::os::Thread::create_heap(nullptr, _workingAreaSize, core::os::Thread::PriorityEnum::NORMAL,
                                                  [](void* arg) {
             reinterpret_cast<CoreNode*>(arg)->_run(); // execute the thread code in the thread
         }, this, _node.get_name());

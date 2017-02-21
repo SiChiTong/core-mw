@@ -13,13 +13,13 @@ NAMESPACE_CORE_MW_BEGIN
 void*
 SimplePool_::alloc_unsafe()
 {
-    if (headp != NULL) {
+    if (headp != nullptr) {
         void* blockp = headp;
         headp = headp->nextp;
         return blockp;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void
@@ -27,7 +27,7 @@ SimplePool_::free_unsafe(
     void* objp
 )
 {
-    if (objp != NULL) {
+    if (objp != nullptr) {
         reinterpret_cast<Header*>(objp)->nextp = headp;
         headp = reinterpret_cast<Header*>(objp);
     }
@@ -38,14 +38,14 @@ SimplePool_::alloc()
 {
     core::os::SysLock::acquire();
 
-    if (headp != NULL) {
+    if (headp != nullptr) {
         void* blockp = headp;
         headp = headp->nextp;
         core::os::SysLock::release();
         return blockp;
     } else {
         core::os::SysLock::release();
-        return NULL;
+        return nullptr;
     }
 }
 
@@ -54,7 +54,7 @@ SimplePool_::free(
     void* objp
 )
 {
-    if (objp != NULL) {
+    if (objp != nullptr) {
         core::os::SysLock::acquire();
         reinterpret_cast<Header*>(objp)->nextp = headp;
         headp = reinterpret_cast<Header*>(objp);
@@ -69,7 +69,7 @@ SimplePool_::grow(
     size_t blocklen
 )
 {
-    CORE_ASSERT(arrayp != NULL);
+    CORE_ASSERT(arrayp != nullptr);
     CORE_ASSERT(length > 0);
     CORE_ASSERT(blocklen >= sizeof(void*));
 
@@ -81,7 +81,7 @@ SimplePool_::grow(
 
 SimplePool_::SimplePool_()
     :
-    headp(NULL)
+    headp(nullptr)
 {}
 
 
@@ -91,7 +91,7 @@ SimplePool_::SimplePool_(
     size_t blocklen
 )
     :
-    headp(NULL)
+    headp(nullptr)
 {
     grow(arrayp, length, blocklen);
 }

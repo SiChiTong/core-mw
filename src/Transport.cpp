@@ -29,14 +29,14 @@ Transport::touch_publisher(
 
     pubp = publishers.find_first(BasePublisher::has_topic, topic.get_name());
 
-    if (pubp != NULL) {
+    if (pubp != nullptr) {
         return true;
     }
 
     // Create a new remote publisher
     pubp = create_publisher(topic, raw_params);
 
-    if (pubp == NULL) {
+    if (pubp == nullptr) {
         return false;
     }
 
@@ -61,24 +61,24 @@ Transport::touch_subscriber(
 
     subp = subscribers.find_first(BaseSubscriber::has_topic, topic.get_name());
 
-    if (subp != NULL) {
+    if (subp != nullptr) {
         fill_raw_params(topic, raw_params);
         return true;
     }
 
     // Create a new remote subscriber
-    Message* msgpool_bufp = NULL;
-    TimestampedMsgPtrQueue::Entry* queue_bufp = NULL;
+    Message* msgpool_bufp = nullptr;
+    TimestampedMsgPtrQueue::Entry* queue_bufp = nullptr;
 
     msgpool_bufp = reinterpret_cast<Message*>(new uint8_t[topic.get_type_size() * queue_length]); // TODO check with M0
 
-    if (msgpool_bufp != NULL) {
+    if (msgpool_bufp != nullptr) {
         queue_bufp = new TimestampedMsgPtrQueue::Entry[queue_length];
 
-        if (queue_bufp != NULL) {
+        if (queue_bufp != nullptr) {
             subp = create_subscriber(topic, queue_bufp, queue_length);
 
-            if (subp != NULL) {
+            if (subp != nullptr) {
                 topic.extend_pool(msgpool_bufp, queue_length);
                 subp->notify_subscribed(topic);
                 topic.subscribe(*subp, queue_length);
@@ -89,7 +89,7 @@ Transport::touch_subscriber(
         }
     }
 
-    if ((msgpool_bufp == NULL) || (queue_bufp == NULL) || (subp == NULL)) {
+    if ((msgpool_bufp == nullptr) || (queue_bufp == nullptr) || (subp == nullptr)) {
         delete [] queue_bufp;
         delete [] msgpool_bufp;
     }

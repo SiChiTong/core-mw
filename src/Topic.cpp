@@ -41,7 +41,7 @@ Topic::notify_remotes_unsafe(
     if (has_remote_subscribers()) {
         for (StaticList<RemoteSubscriber>::IteratorUnsafe i = remote_subscribers.begin_unsafe(); i != remote_subscribers.end_unsafe(); ++i) {
 #if CORE_USE_BRIDGE_MODE
-            CORE_ASSERT(i->get_transport() != NULL);
+            CORE_ASSERT(i->get_transport() != nullptr);
 
             if (msg.get_source() == i->get_transport()) {
                 continue; // Do not send back to source transport
@@ -69,7 +69,7 @@ Topic::forward_copy_unsafe(
 
     for (StaticList<RemoteSubscriber>::IteratorUnsafe i = remote_subscribers.begin_unsafe(); i != remote_subscribers.end_unsafe(); ++i) {
 #if CORE_USE_BRIDGE_MODE
-        CORE_ASSERT(i->get_transport() != NULL);
+        CORE_ASSERT(i->get_transport() != nullptr);
 
         if (msg.get_source() == i->get_transport()) {
             continue; // Do not send back to source transport
@@ -145,7 +145,7 @@ Topic::notify_remotes(
 #if CORE_USE_BRIDGE_MODE
         {
             core::os::SysLock::Scope lock;
-            CORE_ASSERT(i->get_transport() != NULL);
+            CORE_ASSERT(i->get_transport() != nullptr);
 
             if (msg.get_source() == i->get_transport()) {
                 continue; // Do not send back to source transport
@@ -173,7 +173,7 @@ Topic::forward_copy(
 
     for (StaticList<RemoteSubscriber>::Iterator i = remote_subscribers.begin(); i != remote_subscribers.end(); ++i) {
 #if CORE_USE_BRIDGE_MODE
-        CORE_ASSERT(i->get_transport() != NULL);
+        CORE_ASSERT(i->get_transport() != nullptr);
 
         if (msg.get_source() == i->get_transport()) {
             continue; // Do not send back to source transport
@@ -285,7 +285,7 @@ Topic::patch_pubsub_msg(
           // TODO: Get the topic from a reference in function parameters, to speed up
           Topic* topicp = Middleware::instance.find_topic(mgmt_msg.pubsub.topic);
 
-          if (topicp != NULL) {
+          if (topicp != nullptr) {
               transport.fill_raw_params(*topicp, mgmt_msg.pubsub.raw_params);
           }
 

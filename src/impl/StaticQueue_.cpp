@@ -27,11 +27,11 @@ StaticQueue_::post_unsafe(
     Link& link
 )
 {
-    CORE_ASSERT((headp != NULL) == (tailp != NULL));
-    CORE_ASSERT(link.nextp == NULL);
+    CORE_ASSERT((headp != nullptr) == (tailp != nullptr));
+    CORE_ASSERT(link.nextp == nullptr);
 
-    if (tailp != NULL) {
-        CORE_ASSERT(tailp->nextp == NULL);
+    if (tailp != nullptr) {
+        CORE_ASSERT(tailp->nextp == nullptr);
         tailp->nextp = &link;
         tailp = &link;
     } else {
@@ -44,9 +44,9 @@ StaticQueue_::peek_unsafe(
     const Link*& linkp
 ) const
 {
-    CORE_ASSERT((headp != NULL) == (tailp != NULL));
+    CORE_ASSERT((headp != nullptr) == (tailp != nullptr));
 
-    if (headp != NULL) {
+    if (headp != nullptr) {
         linkp = headp;
         return true;
     }
@@ -59,16 +59,16 @@ StaticQueue_::fetch_unsafe(
     Link& link
 )
 {
-    CORE_ASSERT((headp != NULL) == (tailp != NULL));
+    CORE_ASSERT((headp != nullptr) == (tailp != nullptr));
 
-    if (headp != NULL) {
+    if (headp != nullptr) {
         register Link* nextp = headp->nextp;
-        headp->nextp = NULL;
+        headp->nextp = nullptr;
         link  = *headp;
         headp = nextp;
 
-        if (headp == NULL) {
-            tailp = NULL;
+        if (headp == nullptr) {
+            tailp = nullptr;
         }
 
         return true;
@@ -80,15 +80,15 @@ StaticQueue_::fetch_unsafe(
 bool
 StaticQueue_::skip_unsafe()
 {
-    CORE_ASSERT((headp != NULL) == (tailp != NULL));
+    CORE_ASSERT((headp != nullptr) == (tailp != nullptr));
 
-    if (headp != NULL) {
+    if (headp != nullptr) {
         register Link* nextp = headp->nextp;
-        headp->nextp = NULL;
+        headp->nextp = nullptr;
         headp = nextp;
 
-        if (headp == NULL) {
-            tailp = NULL;
+        if (headp == nullptr) {
+            tailp = nullptr;
         }
 
         return true;
@@ -174,8 +174,8 @@ StaticQueue_::skip()
 
 StaticQueue_::StaticQueue_()
     :
-    headp(NULL),
-    tailp(NULL)
+    headp(nullptr),
+    tailp(nullptr)
 {}
 
 

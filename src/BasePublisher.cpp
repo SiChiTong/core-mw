@@ -17,7 +17,7 @@ BasePublisher::publish_unsafe(
     Message& msg
 )
 {
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
 
     msg.acquire_unsafe();
 
@@ -38,7 +38,7 @@ BasePublisher::publish_locally_unsafe(
     Message& msg
 )
 {
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
 
     msg.acquire_unsafe();
     bool success = topicp->notify_locals_unsafe(msg, core::os::Time::now());
@@ -55,7 +55,7 @@ BasePublisher::publish_remotely_unsafe(
     Message& msg
 )
 {
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
 
     msg.acquire_unsafe();
     bool success = topicp->notify_remotes_unsafe(msg, core::os::Time::now());
@@ -73,7 +73,7 @@ BasePublisher::publish(
     bool     mustReschedule
 )
 {
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
 
     msg.acquire();
 
@@ -91,7 +91,7 @@ BasePublisher::publish(
 
 BasePublisher::BasePublisher()
     :
-    topicp(NULL)
+    topicp(nullptr)
 {}
 
 

@@ -179,7 +179,7 @@ void
 Message::reset_unsafe()
 {
 #if CORE_USE_BRIDGE_MODE
-    sourcep = NULL;
+    sourcep = nullptr;
 #endif
     refcount = 0;
 }
@@ -188,7 +188,7 @@ inline
 Message::Message()
     :
 #if CORE_USE_BRIDGE_MODE
-    sourcep(NULL),
+    sourcep(nullptr),
 #endif
     refcount(0)
 {}

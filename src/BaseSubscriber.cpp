@@ -17,7 +17,7 @@ BaseSubscriber::release_unsafe(
     Message& msg
 )
 {
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
 
     if (!msg.release_unsafe()) {
         topicp->free_unsafe(msg);
@@ -32,7 +32,7 @@ BaseSubscriber::release(
     Message& msg
 )
 {
-    CORE_ASSERT(topicp != NULL);
+    CORE_ASSERT(topicp != nullptr);
 
     if (!msg.release()) {
         topicp->free(msg);
@@ -44,7 +44,7 @@ BaseSubscriber::release(
 
 BaseSubscriber::BaseSubscriber()
     :
-    topicp(NULL)
+    topicp(nullptr)
 {}
 
 

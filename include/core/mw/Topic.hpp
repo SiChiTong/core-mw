@@ -410,12 +410,12 @@ Topic::alloc_unsafe()
 {
     register Message* msgp = reinterpret_cast<Message*>(msg_pool.alloc_unsafe());
 
-    if (msgp != NULL) {
+    if (msgp != nullptr) {
         msgp->reset_unsafe();
         return msgp;
     }
 
-    return NULL;
+    return nullptr;
 }
 
 template <typename MessageType>
@@ -426,7 +426,7 @@ Topic::alloc_unsafe(
 )
 {
     static_cast_check<MessageType, Message>();
-    return (msgp = reinterpret_cast<MessageType*>(alloc_unsafe())) != NULL;
+    return (msgp = reinterpret_cast<MessageType*>(alloc_unsafe())) != nullptr;
 }
 
 inline
@@ -480,7 +480,7 @@ Topic::alloc(
 )
 {
     static_cast_check<MessageType, Message>();
-    return (msgp = reinterpret_cast<MessageType*>(alloc())) != NULL;
+    return (msgp = reinterpret_cast<MessageType*>(alloc())) != nullptr;
 }
 
 inline
@@ -522,7 +522,7 @@ Topic::has_name(
     const char*  namep
 )
 {
-    return namep != NULL && 0 == strncmp(topic.get_name(), namep, NamingTraits<Topic>::MAX_LENGTH);
+    return namep != nullptr && 0 == strncmp(topic.get_name(), namep, NamingTraits<Topic>::MAX_LENGTH);
 }
 
 inline

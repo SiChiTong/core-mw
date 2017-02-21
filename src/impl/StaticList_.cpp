@@ -15,7 +15,7 @@ StaticList_::count_unsafe() const
 {
     size_t count = 0;
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         ++count;
     }
 
@@ -27,17 +27,17 @@ StaticList_::unlink_unsafe(
     Link& link
 )
 {
-    for (Link* curp = headp, * prevp = NULL;
-         curp != NULL;
+    for (Link* curp = headp, * prevp = nullptr;
+         curp != nullptr;
          prevp = curp, curp = curp->nextp) {
         if (curp == &link) {
-            if (prevp != NULL) {
+            if (prevp != nullptr) {
                 prevp->nextp = curp->nextp;
             } else {
                 headp = curp->nextp;
             }
 
-            curp->nextp = NULL;
+            curp->nextp = nullptr;
             return true;
         }
     }
@@ -50,13 +50,13 @@ StaticList_::index_of_unsafe(
     const void* itemp
 ) const
 {
-    if (itemp == NULL) {
+    if (itemp == nullptr) {
         return -1;
     }
 
     int i = 0;
 
-    for (const Link* linkp = headp; linkp != NULL; ++i, linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; ++i, linkp = linkp->nextp) {
         if (linkp->itemp == itemp) {
             return i;
         }
@@ -70,7 +70,7 @@ StaticList_::contains_unsafe(
     const void* itemp
 ) const
 {
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         if (linkp->itemp == itemp) {
             return true;
         }
@@ -84,13 +84,13 @@ StaticList_::find_first_unsafe(
     Predicate pred_func
 ) const
 {
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         if (pred_func(linkp->itemp)) {
             return linkp->itemp;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 void*
@@ -99,15 +99,15 @@ StaticList_::find_first_unsafe(
     const void* featuresp
 ) const
 {
-    CORE_ASSERT(featuresp != NULL);
+    CORE_ASSERT(featuresp != nullptr);
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         if (match_func(linkp->itemp, featuresp)) {
             return linkp->itemp;
         }
     }
 
-    return NULL;
+    return nullptr;
 }
 
 const StaticList_::Link*
@@ -136,7 +136,7 @@ StaticList_::count() const
     size_t count = 0;
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         core::os::SysLock::release();
         ++count;
         core::os::SysLock::acquire();
@@ -174,14 +174,14 @@ StaticList_::index_of(
     const void* itemp
 ) const
 {
-    if (itemp == NULL) {
+    if (itemp == nullptr) {
         return -1;
     }
 
     int i = 0;
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; ++i, linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; ++i, linkp = linkp->nextp) {
         core::os::SysLock::release();
 
         if (linkp->itemp == itemp) {
@@ -202,7 +202,7 @@ StaticList_::contains(
 {
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         if (linkp->itemp == itemp) {
             core::os::SysLock::release();
             return true;
@@ -223,7 +223,7 @@ StaticList_::find_first(
 {
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         core::os::SysLock::release();
 
         if (pred_func(linkp->itemp)) {
@@ -234,7 +234,7 @@ StaticList_::find_first(
     }
 
     core::os::SysLock::release();
-    return NULL;
+    return nullptr;
 }
 
 void*
@@ -243,11 +243,11 @@ StaticList_::find_first(
     const void* featuresp
 ) const
 {
-    CORE_ASSERT(featuresp != NULL);
+    CORE_ASSERT(featuresp != nullptr);
 
     core::os::SysLock::acquire();
 
-    for (const Link* linkp = headp; linkp != NULL; linkp = linkp->nextp) {
+    for (const Link* linkp = headp; linkp != nullptr; linkp = linkp->nextp) {
         core::os::SysLock::release();
 
         if (match_func(linkp->itemp, featuresp)) {
@@ -258,12 +258,12 @@ StaticList_::find_first(
     }
 
     core::os::SysLock::release();
-    return NULL;
+    return nullptr;
 } // StaticList_::find_first
 
 StaticList_::StaticList_()
     :
-    headp(NULL)
+    headp(nullptr)
 {}
 
 

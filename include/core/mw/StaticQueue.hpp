@@ -22,11 +22,11 @@ public:
         Link*    nextp;
         T* const itemp;
 
-        Link() : nextp(NULL), itemp(NULL) {}
+        Link() : nextp(nullptr), itemp(nullptr) {}
 
         Link(
             T& item
-        ) : nextp(NULL), itemp(&item) {}
+        ) : nextp(nullptr), itemp(&item) {}
     };
 
     class IteratorUnsafe
@@ -234,7 +234,7 @@ public:
     const IteratorUnsafe
     end_unsafe() const
     {
-        return IteratorUnsafe(NULL);
+        return IteratorUnsafe(nullptr);
     }
 
     bool
@@ -282,7 +282,7 @@ public:
     const Iterator
     end() const
     {
-        return Iterator(NULL);
+        return Iterator(nullptr);
     }
 };
 

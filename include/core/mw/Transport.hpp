@@ -60,27 +60,27 @@ protected:
     bool
     touch_publisher(
         Topic&        topic,
-        const uint8_t raw_params[] = NULL
+        const uint8_t raw_params[] = nullptr
     );
 
     bool
     touch_subscriber(
         Topic&  topic,
         size_t  queue_length,
-        uint8_t raw_params[] = NULL
+        uint8_t raw_params[] = nullptr
     );
 
     bool
     advertise_cb(
         Topic&        topic,
-        const uint8_t raw_params[] = NULL
+        const uint8_t raw_params[] = nullptr
     );
 
     bool
     subscribe_cb(
         Topic&  topic,
         size_t  queue_length,
-        uint8_t raw_params[] = NULL
+        uint8_t raw_params[] = nullptr
     );
 
     bool
@@ -122,7 +122,7 @@ protected:
     virtual RemotePublisher*
     create_publisher(
         Topic&        topic,
-        const uint8_t raw_params[] = NULL
+        const uint8_t raw_params[] = nullptr
     )
     const = 0;
 
@@ -212,7 +212,7 @@ Transport::has_name(
     const char*      namep
 )
 {
-    return namep != NULL && 0 == strncmp(transport.get_name(), namep, NamingTraits<Transport>::MAX_LENGTH);
+    return namep != nullptr && 0 == strncmp(transport.get_name(), namep, NamingTraits<Transport>::MAX_LENGTH);
 }
 
 NAMESPACE_CORE_MW_END
