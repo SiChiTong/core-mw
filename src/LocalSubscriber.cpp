@@ -13,74 +13,74 @@ NAMESPACE_CORE_MW_BEGIN
 
 bool
 LocalSubscriber::fetch(
-   Message*& msgp
+    Message*& msgp
 )
 {
-   core::os::SysLock::acquire();
+    core::os::SysLock::acquire();
 
-   if (msgp_queue.fetch_unsafe(msgp)) {
-      core::os::SysLock::release();
-      return true;
-   } else {
-      core::os::SysLock::release();
-      return false;
-   }
+    if (msgp_queue.fetch_unsafe(msgp)) {
+        core::os::SysLock::release();
+        return true;
+    } else {
+        core::os::SysLock::release();
+        return false;
+    }
 }
 
 bool
 LocalSubscriber::fetch(
-   Message*&       msgp,
-   core::os::Time& timestamp
+    Message*&       msgp,
+    core::os::Time& timestamp
 )
 {
-   core::os::SysLock::acquire();
+    core::os::SysLock::acquire();
 
-   if (msgp_queue.fetch_unsafe(msgp)) {
-      core::os::SysLock::release();
-      timestamp = core::os::Time::now();
-      return true;
-   } else {
-      core::os::SysLock::release();
-      return false;
-   }
+    if (msgp_queue.fetch_unsafe(msgp)) {
+        core::os::SysLock::release();
+        timestamp = core::os::Time::now();
+        return true;
+    } else {
+        core::os::SysLock::release();
+        return false;
+    }
 }
 
 bool
 LocalSubscriber::notify(
-   Message&              msg,
-   const core::os::Time& timestamp,
-   bool                  mustReschedule
+    Message&              msg,
+    const core::os::Time& timestamp,
+    bool                  mustReschedule
 )
 {
-   (void)timestamp;
-   core::os::SysLock::acquire();
+    (void)timestamp;
+    core::os::SysLock::acquire();
 
-   if (msgp_queue.post_unsafe(&msg)) {
-      nodep->notify_unsafe(event_index, mustReschedule);
-      core::os::SysLock::release();
-      return true;
-   } else {
-      core::os::SysLock::release();
-      return false;
-   }
+    if (msgp_queue.post_unsafe(&msg)) {
+        nodep->notify_unsafe(event_index, mustReschedule);
+        core::os::SysLock::release();
+        return true;
+    } else {
+        core::os::SysLock::release();
+        return false;
+    }
 }
 
 LocalSubscriber::LocalSubscriber(
-   Message* queue_buf[],
-   size_t   queue_length,
-   Callback callback
+    Message*          queue_buf[],
+    size_t            queue_length,
+    CallbackFunction* callback
 )
-   :
-   BaseSubscriber(),
-   nodep(NULL),
-   callback(callback),
-   msgp_queue(queue_buf, queue_length),
-   event_index(~0),
-   by_node(*this),
-   by_topic(*this)
+    :
+    BaseSubscriber(),
+    nodep(nullptr),
+    callback(callback),
+    msgp_queue(queue_buf, queue_length),
+    event_index(~0),
+    by_node(*this),
+    by_topic(*this)
 {
-   CORE_ASSERT(queue_buf != NULL);
-   CORE_ASSERT(queue_length > 0);
+    CORE_ASSERT(queue_buf != nullptr);
+    CORE_ASSERT(queue_length > 0);
 }
 
 LocalSubscriber::~LocalSubscriber() {}

@@ -18,39 +18,40 @@ class Node;
 
 /*! \brief A publisher
  *
- * \tparam MessageType type of the message to be published
+ * \tparam MESSAGE_TYPE type of the message to be published
  * \tparam QUEUE_LENGTH length of the message queue
  *
- * \note MessageType must refer to a class inherited from core::mw::Message
+ * \note MESSAGE_TYPE must refer to a class inherited from core::mw::Message
  */
-template <typename MessageType, unsigned QUEUE_LENGTH>
+template <typename MESSAGE_TYPE, unsigned QUEUE_LENGTH>
 class Subscriber:
-   public SubscriberExtBuf<MessageType>
+    public SubscriberExtBuf<MESSAGE_TYPE>
 {
-   friend class Node;
+    friend class Node;
 
 public:
-   typedef typename SubscriberExtBuf<MessageType>::Callback Callback;
+    using MessageType      = MESSAGE_TYPE;
+    using CallbackFunction = typename SubscriberExtBuf<MessageType>::CallbackFunction;
 
 private:
-   MessageType  msgpool_buf[QUEUE_LENGTH];
-   MessageType* queue_buf[QUEUE_LENGTH];
+    MessageType  msgpool_buf[QUEUE_LENGTH];
+    MessageType* queue_buf[QUEUE_LENGTH];
 
 public:
-   Subscriber(
-      Callback callback = NULL
-   );
-   ~Subscriber();
+    Subscriber(
+        CallbackFunction* callback = nullptr
+    );
+    ~Subscriber();
 };
 
 
 template <typename MT, unsigned QL>
 inline
 Subscriber<MT, QL>::Subscriber(
-   Callback callback
+    CallbackFunction* callback
 )
-   :
-   SubscriberExtBuf<MT>(queue_buf, QL, callback)
+    :
+    SubscriberExtBuf<MT>(queue_buf, QL, callback)
 {}
 
 
