@@ -26,9 +26,13 @@ class CoreNode:
 public:
     virtual ~CoreNode() {}
 
+    /*! \brief Constructor
+     *
+     * \warning The specified priority is used only during State::LOOPING state. In all the other state the node priority is core::os::Thread::PriorityEnum::NORMAL
+     */
     CoreNode(
-        const char*                name,
-        core::os::Thread::Priority priority = core::os::Thread::PriorityEnum::NORMAL
+        const char*                name, //!< [in] name of the node
+        core::os::Thread::Priority priority = core::os::Thread::PriorityEnum::NORMAL //!< [in] priority for the State::LOOPING state
     );
 
     bool
@@ -50,34 +54,34 @@ public:
 
 
     /*! \brief Advertise a publisher
-     *
      */
     template <typename MT>
     bool
     advertise(
-        Publisher<MT>&        pub, //!< publisher
-        const char*           namep, //!< name of the topic
-        const core::os::Time& publish_timeout = core::os::Time::INFINITE //!< timeout
+        Publisher<MT>&        pub, //!< [in] publisher
+        const char*           namep, //!< [in] name of the topic
+        const core::os::Time& publish_timeout = core::os::Time::INFINITE //!< [in] timeout
     );
 
 
     /*! \brief Subscribe
-     *
      */
     template <typename MT, unsigned QL>
     bool
     subscribe(
-        Subscriber<MT, QL>& sub, //!< subscriber
-        const char* namep //!< name of the topic
+        Subscriber<MT, QL>& sub, //!< [in] subscriber
+        const char* namep //!< [in] name of the topic
     );
 
 
-    /*! \brief Dispatch
+    /*! \brief Spin
      *
+     * This method calls the subscriber registered callbacks
      */
+
     bool
     spin(
-        const core::os::Time& timeout = core::os::Time::INFINITE //!< timeout
+        const core::os::Time& timeout = core::os::Time::INFINITE //!< [in] timeout
     );
 
 
@@ -175,6 +179,8 @@ private:
 public:
     mutable core::mw::StaticList<CoreNode>::Link link;
 };
+
+/* ------------------------------------------------------------------------- */
 
 inline bool
 CoreNode::mustLoop()

@@ -15,13 +15,12 @@ NAMESPACE_CORE_MW_BEGIN
 class Transport;
 
 /*! \brief Base class for all the messages
- *
- */
+  */
 class Message
 {
 public:
     using RefcountType = uint32_t;
-
+    using Signature = uint32_t;
 private:
  #if CORE_USE_BRIDGE_MODE
     Transport * sourcep CORE_PACKED;
@@ -111,6 +110,7 @@ public:
 
 CORE_PACKED_ALIGNED;
 
+/* ------------------------------------------------------------------------- */
 
 inline
 const uint8_t*
@@ -230,7 +230,7 @@ Message::copy(
     const MessageType& from
 )
 {
-    static_cast_check<MessageType, Message>();
+    static_assert(std::is_base_of<Message, MessageType>::value, "MessageType does not inherit from Message");
     return copy(to, from, sizeof(MessageType));
 }
 
@@ -250,7 +250,7 @@ Message::reset_payload(
     MessageType& msg
 )
 {
-    static_cast_check<MessageType, Message>();
+    static_assert(std::is_base_of<Message, MessageType>::value, "MessageType does not inherit from Message");
     memset(&msg.refcount + 1, 0, get_payload_size<MessageType>());
 }
 

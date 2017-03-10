@@ -16,13 +16,11 @@ NAMESPACE_CORE_MW_BEGIN
 class Message;
 class Topic;
 
-
+/*! \brief Publisher base class
+ */
 class BasePublisher:
     private core::Uncopyable
 {
-private:
-    Topic* topicp;
-
 public:
     Topic*
     get_topic() const;
@@ -52,14 +50,20 @@ public:
         Message& msg
     );
 
+    /*! \brief Allocate a message
+     */
     bool
     alloc(
-        Message*& msgp
+        Message*& msgp //!< [in,out] pointer to the allocated message
     );
 
+    /*! \brief Publish a message
+     *
+     * \pre The message must have been previously allocated with alloc()
+     */
     bool
     publish(
-        Message& msg,
+        Message& msg, //!< [in] message to be published
         bool     mustReschedule = false
     );
 
@@ -74,22 +78,25 @@ public:
         Message& msg
     );
 
+    static bool
+    has_topic(
+        const BasePublisher& pub,
+        const char*          namep
+    );
 
 protected:
     BasePublisher();
     virtual
     ~BasePublisher() = 0;
 
-public:
-    static bool
-    has_topic(
-        const BasePublisher& pub,
-        const char*          namep
-    );
+private:
+    Topic* topicp;
+
 };
 
-
 NAMESPACE_CORE_MW_END
+
+/* ------------------------------------------------------------------------- */
 
 #include <core/mw/Topic.hpp>
 

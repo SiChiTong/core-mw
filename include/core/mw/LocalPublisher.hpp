@@ -14,6 +14,9 @@
 NAMESPACE_CORE_MW_BEGIN
 
 
+/*! \brief Local subscriber
+ *
+ */
 class LocalPublisher:
     public BasePublisher
 {

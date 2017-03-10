@@ -16,7 +16,9 @@ NAMESPACE_CORE_MW_BEGIN
 class Message;
 class Node;
 
-/*! \brief A publisher
+/*! \brief A subscriber
+ *
+ * It is possible to specify a callback function that will be called by Node::spin if a message has been received.
  *
  * \tparam MESSAGE_TYPE type of the message to be published
  * \tparam QUEUE_LENGTH length of the message queue
@@ -30,20 +32,33 @@ class Subscriber:
     friend class Node;
 
 public:
+    /*! \brief Type of the Message
+     */
     using MessageType      = MESSAGE_TYPE;
+
+    /*! \brief Type of the callback function
+     *
+     * \param msg received message
+     * \param context context (such as pointer to the node the subscriber belongs to)
+     *
+     * \return success
+     */
     using CallbackFunction = typename SubscriberExtBuf<MessageType>::CallbackFunction;
+
+public:
+    /*! \brief Constructor
+     */
+    Subscriber(
+        CallbackFunction* callback = nullptr //!< [in] callback function on data reception.
+    );
+    ~Subscriber();
 
 private:
     MessageType  msgpool_buf[QUEUE_LENGTH];
     MessageType* queue_buf[QUEUE_LENGTH];
-
-public:
-    Subscriber(
-        CallbackFunction* callback = nullptr
-    );
-    ~Subscriber();
 };
 
+/* ------------------------------------------------------------------------- */
 
 template <typename MT, unsigned QL>
 inline

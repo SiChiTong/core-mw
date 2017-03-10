@@ -59,6 +59,7 @@ public:
     ~Publisher();
 };
 
+/* ------------------------------------------------------------------------- */
 
 template <typename MessageType>
 inline

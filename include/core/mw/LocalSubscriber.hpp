@@ -18,7 +18,9 @@ NAMESPACE_CORE_MW_BEGIN
 class Node;
 class Message;
 
-
+/*! \brief Local subscriber
+ *
+ */
 class LocalSubscriber:
     public BaseSubscriber
 {
@@ -26,24 +28,29 @@ class LocalSubscriber:
     friend class Topic;
 
 public:
+    /*! \brief Type of the callback function
+     *
+     * \param msg received message
+     * \param context context (such as pointer to the node the subscriber belongs to)
+     *
+     * \return success
+     */
     using CallbackFunction = bool(const Message &msg, void* context);
 
-private:
-    Node* nodep;
-    CallbackFunction* callback;
-    MessagePtrQueue   msgp_queue;
-    uint_least8_t     event_index;
-
-    mutable StaticList<LocalSubscriber>::Link by_node;
-    mutable StaticList<LocalSubscriber>::Link by_topic;
-
 public:
+    /*! \brief Get the callback to be invoked on message reception
+     *
+     * \return pointer to the callback funcion
+     * \retval nullptr no callback has been defined
+     */
     CallbackFunction*
     get_callback() const;
 
+    /*! \brief Set the callback to be invoked on message reception
+     */
     void
     set_callback(
-        CallbackFunction* callback
+        CallbackFunction* callback //!< [in] pointer to callback function
     );
 
     size_t
@@ -63,6 +70,12 @@ public:
         const core::os::Time& timestamp
     );
 
+    /*! \brief Fetch a message from the queue
+     *
+     * \return success
+     * \retval true A message has been fetched
+     * \retval false There were no message pending in the queue
+     */
     bool
     fetch(
         Message*& msgp
@@ -90,10 +103,20 @@ protected:
     );
     virtual
     ~LocalSubscriber() = 0;
+
+private:
+    Node* nodep;
+    CallbackFunction* callback;
+    MessagePtrQueue   msgp_queue;
+    uint_least8_t     event_index;
+
+    mutable StaticList<LocalSubscriber>::Link by_node;
+    mutable StaticList<LocalSubscriber>::Link by_topic;
 };
 
-
 NAMESPACE_CORE_MW_END
+
+/* ------------------------------------------------------------------------- */
 
 #include <core/mw/Node.hpp>
 

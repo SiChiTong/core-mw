@@ -74,9 +74,9 @@ public:
     template <typename MT>
     bool
     advertise(
-        Publisher<MT>&        pub, //!< publisher
-        const char*           namep, //!< name of the topic
-        const core::os::Time& publish_timeout = core::os::Time::INFINITE //!< timeout
+        Publisher<MT>&        pub, //!< [in] publisher
+        const char*           namep, //!< [in] name of the topic
+        const core::os::Time& publish_timeout = core::os::Time::INFINITE //!< [in] timeout
     );
 
 
@@ -95,8 +95,8 @@ public:
     template <typename MT, unsigned QL>
     bool
     subscribe(
-        Subscriber<MT, QL>& sub, //!< subscriber
-        const char* namep //!< name of the topic
+        Subscriber<MT, QL>& sub, //!< [in] subscriber
+        const char* namep //!< [in] name of the topic
     );
 
     void
@@ -117,13 +117,14 @@ public:
     notify_stop();
 
 
-    /*! \brief Dispatch
+    /*! \brief Spin
      *
+     * This method calls the subscriber registered callbacks
      */
     bool
     spin(
-        const core::os::Time& timeout = core::os::Time::INFINITE, //!< timeout
-        void*                 context = nullptr
+        const core::os::Time& timeout = core::os::Time::INFINITE, //!< [in] timeout
+        void*                 context = nullptr //!< [in] context for the subscriber callbacks
     );
 
 

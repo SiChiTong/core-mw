@@ -16,8 +16,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 class Message;
 
-/*! \brief TODO
- *
+/*!
  * \tparam MESSAGE_TYPE type of the message to be published
  */
 template <typename MESSAGE_TYPE>
@@ -26,10 +25,8 @@ class SubscriberExtBuf:
 {
 public:
     /*! \brief Type of the Message
-     *
-   */
+     */
     using MessageType = MESSAGE_TYPE;
-
     /*! \brief Type of the callback function
      *
      * \param msg received message
@@ -40,53 +37,28 @@ public:
     using CallbackFunction = bool(const MessageType &msg, void* context);
 
 public:
-    /*! \brief Get the callback to be invoked on message reception
-     *
-     */
     CallbackFunction*
     get_callback() const;
 
-
-    /*! \brief Set the callback to be invoked on message reception
-     *
-     */
     void
     set_callback(
-        CallbackFunction* callback //!< [in] pointer to callback function
+        CallbackFunction* callback
     );
 
-
-    /*! \brief Fetch a message from the queue
-     *
-     * \return success
-     * \retval true A message has been fetched
-     * \retval false There were no message pending in the queue
-     */
     bool
     fetch(
-        MessageType*& msgp //!< will reference the fetched message
+        MessageType*& msgp
     );
 
-
-    /*! \brief Fetch a message from the queue
-     *
-     * \return success
-     * \retval true A message has been fetched
-     * \retval false There were no message pending in the queue
-     */
     bool
     fetch(
-        MessageType*&   msgp, //!< will reference the fetched message
-        core::os::Time& timestamp //!< message timestamp
+        MessageType*&   msgp,
+        core::os::Time& timestamp
     );
 
-
-    /*! \brief Releases the message
-     *
-     */
     bool
     release(
-        MessageType& msg //!< message to be released
+        MessageType& msg
     );
 
 
@@ -99,6 +71,7 @@ public:
     ~SubscriberExtBuf();
 };
 
+/* ------------------------------------------------------------------------- */
 
 template <typename MT>
 inline

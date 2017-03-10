@@ -15,6 +15,12 @@
 #define CORE_MESSAGE_FIELD(__name__, __type__, __size__) \
 public: \
     core::mw::CoreTypeTraits<core::mw::CoreType::__type__, __size__>::Type __name__;
+#define CORE_MESSAGE_SIGNATURE(__s__) \
+public: \
+    static const core::mw::Message::Signature SIGNATURE = __s__; \
+    static constexpr core::mw::Message::Signature getMessageSignature() { \
+        return __s__; \
+    }
 #define CORE_MESSAGE_END \
     } \
     CORE_PACKED_ALIGNED;
