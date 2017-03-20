@@ -50,12 +50,14 @@ public:
         Message& msg
     );
 
+
     /*! \brief Allocate a message
      */
     bool
     alloc(
         Message*& msgp //!< [in,out] pointer to the allocated message
     );
+
 
     /*! \brief Publish a message
      *
@@ -84,6 +86,7 @@ public:
         const char*          namep
     );
 
+
 protected:
     BasePublisher();
     virtual
@@ -91,7 +94,6 @@ protected:
 
 private:
     Topic* topicp;
-
 };
 
 NAMESPACE_CORE_MW_END

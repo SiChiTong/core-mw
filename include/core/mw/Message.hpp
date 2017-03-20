@@ -20,7 +20,8 @@ class Message
 {
 public:
     using RefcountType = uint32_t;
-    using Signature = uint32_t;
+    using Signature    = uint32_t;
+
 private:
  #if CORE_USE_BRIDGE_MODE
     Transport * sourcep CORE_PACKED;

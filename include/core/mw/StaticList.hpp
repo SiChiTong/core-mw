@@ -49,22 +49,22 @@ public:
     {
         friend class StaticList;
 
-private:
+    private:
         const Link* curp;
 
-public:
+    public:
         IteratorUnsafe() : curp(nullptr) {}
 
         IteratorUnsafe(
             const IteratorUnsafe& rhs
         ) : curp(rhs.curp) {}
 
-private:
+    private:
         IteratorUnsafe(
             const Link* beginp
         ) : curp(beginp) {}
 
-private:
+    private:
         IteratorUnsafe&
         operator=(
             const IteratorUnsafe& rhs
@@ -74,7 +74,7 @@ private:
             return *this;
         }
 
-public:
+    public:
         Item*
         operator->() const
         {
@@ -132,22 +132,22 @@ public:
     {
         friend class StaticList;
 
-private:
+    private:
         const ConstLink* curp;
 
-public:
+    public:
         ConstIteratorUnsafe() : curp(nullptr) {}
 
         ConstIteratorUnsafe(
             const ConstIteratorUnsafe& rhs
         ) : curp(rhs.curp) {}
 
-private:
+    private:
         ConstIteratorUnsafe(
             const ConstLink* beginp
         ) : curp(beginp) {}
 
-private:
+    private:
         ConstIteratorUnsafe&
         operator=(
             const ConstIteratorUnsafe& rhs
@@ -157,7 +157,7 @@ private:
             return *this;
         }
 
-public:
+    public:
         const Item*
         operator->() const
         {
@@ -215,22 +215,22 @@ public:
     {
         friend class StaticList;
 
-private:
+    private:
         const Link* curp;
 
-public:
+    public:
         Iterator() : curp(nullptr) {}
 
         Iterator(
             const Iterator& rhs
         ) : curp(rhs.curp) {}
 
-private:
+    private:
         Iterator(
             const Link* beginp
         ) : curp(beginp) {}
 
-private:
+    private:
         Iterator&
         operator=(
             const Iterator& rhs
@@ -240,7 +240,7 @@ private:
             return *this;
         }
 
-public:
+    public:
         Item*
         operator->() const
         {
@@ -303,22 +303,22 @@ public:
     {
         friend class StaticList;
 
-private:
+    private:
         const ConstLink* curp;
 
-public:
+    public:
         ConstIterator() : curp(nullptr) {}
 
         ConstIterator(
             const ConstIterator& rhs
         ) : curp(rhs.curp) {}
 
-private:
+    private:
         ConstIterator(
             const ConstLink* beginp
         ) : curp(beginp) {}
 
-private:
+    private:
         ConstIterator&
         operator=(
             const ConstIterator& rhs
@@ -328,7 +328,7 @@ private:
             return *this;
         }
 
-public:
+    public:
         const Item*
         operator->() const
         {

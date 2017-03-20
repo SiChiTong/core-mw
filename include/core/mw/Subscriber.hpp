@@ -34,7 +34,7 @@ class Subscriber:
 public:
     /*! \brief Type of the Message
      */
-    using MessageType      = MESSAGE_TYPE;
+    using MessageType = MESSAGE_TYPE;
 
     /*! \brief Type of the callback function
      *

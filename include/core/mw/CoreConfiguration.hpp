@@ -778,15 +778,15 @@ NAMESPACE_CORE_MW_END
 #define CORE_CONFIGURATION_BEGIN(__name__) \
     class __name__: \
         public core::mw::CoreConfigurationBase { \
-public: \
+    public: \
         using Type = __name__; \
         __name__();
 #define CORE_CONFIGURATION_BEGIN_FULL(__name__, __l__, __s__) \
     class __name__: \
         public core::mw::CoreConfigurationBase { \
-public: \
+    public: \
         using Type = __name__; \
-public: \
+    public: \
         static const core::mw::CoreConfigurationBase::Signature SIGNATURE = __s__; \
         core::mw::CoreConfigurationBase::Signature getConfigurationSignature() const { \
             return __s__; \

@@ -24,7 +24,7 @@ public:
 public:
     class Led
     {
-public:
+    public:
         void
         toggle();
 

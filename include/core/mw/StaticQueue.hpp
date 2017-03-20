@@ -31,29 +31,29 @@ public:
 
     class IteratorUnsafe
     {
-private:
+    private:
         const Link* curp;
 
-public:
+    public:
         IteratorUnsafe(
             const IteratorUnsafe& rhs
         ) : curp(rhs.curp) {}
 
-private:
+    private:
         IteratorUnsafe(
             const Link* beginp
         ) : curp(beginp) {}
 
         friend class StaticQueue<T>;
 
-private:
+    private:
         IteratorUnsafe&
         operator=(
             const IteratorUnsafe& rhs
         );
 
 
-public:
+    public:
         const Link*
         operator->() const
         {
@@ -103,29 +103,29 @@ public:
 
     class Iterator
     {
-private:
+    private:
         const Link* curp;
 
-public:
+    public:
         Iterator(
             const Iterator& rhs
         ) : curp(rhs.curp) {}
 
-private:
+    private:
         Iterator(
             const Link* beginp
         ) : curp(beginp) {}
 
         friend class StaticQueue<T>;
 
-private:
+    private:
         Iterator&
         operator=(
             const Iterator& rhs
         );
 
 
-public:
+    public:
         const Link*
         operator->() const
         {

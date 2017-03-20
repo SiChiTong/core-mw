@@ -27,6 +27,7 @@ public:
     Topic*
     get_topic() const;
 
+
     /*! \brief Get the length of the queue
      */
     virtual size_t
@@ -61,6 +62,7 @@ public:
         bool                  mustReschedule = false
     ) = 0;
 
+
     /*! \brief Fetch a message
      *
      * \return success
@@ -72,6 +74,7 @@ public:
         Message*&       msgp,  //!< [in/out] the fetched message
         core::os::Time& timestamp //!< [out] message timestamp
     ) = 0;
+
 
     /*! \brief Release a previously fetched message
      *
@@ -89,6 +92,7 @@ public:
         const BaseSubscriber& sub,
         const char*           namep
     );
+
 
 protected:
     BaseSubscriber();

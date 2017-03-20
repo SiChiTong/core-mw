@@ -46,6 +46,7 @@ public:
     CallbackFunction*
     get_callback() const;
 
+
     /*! \brief Set the callback to be invoked on message reception
      */
     void
@@ -69,6 +70,7 @@ public:
         Message&              msg,
         const core::os::Time& timestamp
     );
+
 
     /*! \brief Fetch a message from the queue
      *
