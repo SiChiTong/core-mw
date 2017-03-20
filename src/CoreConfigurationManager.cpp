@@ -67,4 +67,12 @@ CoreConfigurationManager::setFrom(
     }
 } // CoreConfigurationManager::setFrom
 
+void
+CoreConfigurationManager::setFrom(
+    CoreConfigurationStorage& storage
+)
+{
+    setFrom(reinterpret_cast<uint8_t*>(storage.data()), storage.size());
+}
+
 NAMESPACE_CORE_MW_END

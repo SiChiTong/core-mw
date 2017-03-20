@@ -12,6 +12,15 @@
 #include <core/mw/CoreConfiguration.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
+class CoreConfigurationStorage
+{
+public:
+    virtual void*
+    data() = 0;
+
+    virtual std::size_t
+    size() = 0;
+};
 
 class CoreConfigurationManager
 {
@@ -35,6 +44,11 @@ public:
     setFrom(
         uint8_t*    storage,
         std::size_t size
+    );
+
+    void
+    setFrom(
+        CoreConfigurationStorage& storage
     );
 
 
