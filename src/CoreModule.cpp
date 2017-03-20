@@ -9,7 +9,6 @@
 #include "ch.h"
 #include "hal.h"
 
-#include <core/hw/IWDG.hpp>
 #include <core/hw/UID.hpp>
 
 #include <ModuleConfiguration.hpp>
@@ -34,30 +33,6 @@ CoreModule::halt(
     osalSysHalt(message);
 }
 
-void
-CoreModule::reset()
-{
-    core::hw::IWDG_::woof();
-}
-
-void
-CoreModule::keepAlive()
-{
-    core::hw::IWDG_::reload();
-}
-
-void
-CoreModule::disableBootloader()
-{
-    RTC->BKP0R = 0x55AA55AA; // TODO: wrap it somewhere.
-}
-
-void
-CoreModule::enableBootloader()
-{
-    RTC->BKP0R = 0xB0BAFE77; // TODO: wrap it somewhere.
-}
-
 CoreModule::CoreModule() {}
 
 const CoreModule::UID&
@@ -65,11 +40,5 @@ CoreModule::uid()
 {
     return core::hw::UID_::get();
 }
-
-/*
-   Led& Board::led() {
-
-   }
- */
 
 NAMESPACE_CORE_MW_END
