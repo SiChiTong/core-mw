@@ -9,9 +9,6 @@
 #include <core/mw/CoreModule.hpp>
 #include <core/hw/IWDG.hpp>
 
-#include "ch.h"
-#include "hal.h"
-
 NAMESPACE_CORE_MW_BEGIN
 
 void
