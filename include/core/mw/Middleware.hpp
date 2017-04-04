@@ -53,7 +53,7 @@ public:
     };
 
 private:
-    const char* const     module_namep;
+    const char*           module_namep;
     StaticList<Node>      nodes;
     StaticList<Topic>     topics;
     StaticList<Transport> transports;
@@ -138,6 +138,7 @@ public:
 
     void
     initialize(
+        const char*                module_namep,
         void*                      mgmt_stackp,
         size_t                     mgmt_stacklen,
         core::os::Thread::Priority mgmt_priority,
@@ -247,7 +248,6 @@ private:
 private:
     Middleware(
         const char* module_namep,
-        const char* bootloader_namep,
         PubSubStep  pubsub_buf[] = nullptr,
         size_t      pubsub_length = 0
     );

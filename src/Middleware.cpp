@@ -21,6 +21,7 @@ NAMESPACE_CORE_MW_BEGIN
 
 void
 Middleware::initialize(
+    const char*                module_namep,
     void*                      mgmt_stackp,
     size_t                     mgmt_stacklen,
     core::os::Thread::Priority mgmt_priority,
@@ -29,11 +30,13 @@ Middleware::initialize(
     core::os::Thread::Priority boot_priority
 )
 {
+    CORE_ASSERT(is_identifier(module_namep, NamingTraits<Middleware>::MAX_LENGTH));
     CORE_ASSERT(mgmt_stackp != nullptr);
     CORE_ASSERT(mgmt_stacklen > 0);
 
     lists_lock.initialize();
 
+    this->module_namep  = module_namep;
     this->mgmt_stackp   = mgmt_stackp;
     this->mgmt_stacklen = mgmt_stacklen;
     this->mgmt_priority = mgmt_priority;
@@ -797,7 +800,6 @@ Middleware::alloc_pubsub_step()
 
 Middleware::Middleware(
     const char* module_namep,
-    const char* bootloader_namep, // DAVIDE Remove...
     PubSubStep  pubsub_buf[],
     size_t      pubsub_length
 )
@@ -823,8 +825,6 @@ Middleware::Middleware(
     stopped(false),
     num_running_nodes(0)
 {
-    CORE_ASSERT(is_identifier(module_namep, NamingTraits<Middleware>::MAX_LENGTH));
-    (void)bootloader_namep;
     (void)pubsub_buf;
     (void)pubsub_length;
 }
