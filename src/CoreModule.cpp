@@ -6,9 +6,6 @@
 
 #include <core/mw/CoreModule.hpp>
 
-#include "ch.h"
-#include "hal.h"
-
 #include <core/hw/UID.hpp>
 
 #include <ModuleConfiguration.hpp>
@@ -39,6 +36,23 @@ const CoreModule::UID&
 CoreModule::uid()
 {
     return core::hw::UID_::get();
+}
+
+const char*
+CoreModule::moduleName()
+{
+    return ModuleConfiguration::MODULE_NAME;
+}
+
+uint8_t
+CoreModule::moduleID()
+{
+#ifdef MODULE_ID
+    return MODULE_ID & 0xFF;
+
+#else
+    return core::hw::UID_::CPU_UID(0) ^ core::hw::UID_::CPU_UID(2);
+#endif
 }
 
 NAMESPACE_CORE_MW_END

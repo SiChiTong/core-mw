@@ -39,6 +39,12 @@ public:
     static const UID&
     uid();
 
+    static const char*
+    moduleName();
+
+    static uint8_t
+    moduleID();
+
     bool
     initialize();
 
