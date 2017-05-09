@@ -45,7 +45,7 @@ public:
     static uint8_t
     moduleID();
 
-    bool
+    static bool
     initialize();
 
     static const void

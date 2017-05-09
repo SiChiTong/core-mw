@@ -6,6 +6,7 @@
 
 #include <core/mw/CoreModule.hpp>
 
+#include <core/os/OS.hpp>
 #include <core/hw/UID.hpp>
 
 #include <ModuleConfiguration.hpp>
@@ -19,6 +20,7 @@ CoreModule::Led& CoreModule::led = _led;
 bool
 CoreModule::initialize()
 {
+    core::os::OS::initialize();
     return true;
 }
 
@@ -27,7 +29,7 @@ CoreModule::halt(
     const char* message
 )
 {
-    osalSysHalt(message);
+    core::os::OS::halt(message);
 }
 
 CoreModule::CoreModule() {}
