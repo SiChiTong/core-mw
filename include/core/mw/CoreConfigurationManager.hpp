@@ -20,6 +20,27 @@ public:
 
     virtual std::size_t
     size() = 0;
+
+    virtual bool
+    beginWrite() {
+        return false;
+    }
+
+    virtual bool
+    write16(std::size_t address, uint16_t data) {
+        return false;
+    }
+
+    virtual bool
+    write32(std::size_t address, uint32_t data) {
+        return false;
+    }
+
+    virtual bool
+    endWrite() {
+        return false;
+    }
+
 };
 
 class CoreConfigurationManager
@@ -51,6 +72,10 @@ public:
         CoreConfigurationStorage& storage
     );
 
+    void
+    dumpTo(
+        CoreConfigurationStorage& storage
+    );
 
 private:
     core::mw::StaticList<CoreConfigurableBase> _objects;

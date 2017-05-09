@@ -183,11 +183,14 @@ CoreConfigurableBase::setConfigurationFrom(
 
     tmpOffset += sizeof(CoreConfigurationBase::Signature);
 
-
     setConfigurationBase(*reinterpret_cast<const CoreConfigurationBase*>((std::size_t)storage + tmpOffset));
 
     std::size_t dataSize = getConfigurationSize();
+
     tmpOffset += dataSize;
+    if((dataSize % 4) != 0) {
+        tmpOffset += 4 - (dataSize % 4);
+    }
 
     offset = tmpOffset;
 
@@ -201,27 +204,41 @@ CoreConfigurableBase::overrideConfigurationFrom(
     std::size_t  size
 )
 {
-    CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
+    std::size_t tmpOffset = offset;
 
-    if (strncmp(_key, reinterpret_cast<const char*>((std::size_t)storage + offset), NamingTraits<Node>::MAX_LENGTH) != 0) {
-        // This was not for us!
+    char name[NamingTraits < CoreConfigurableBase > ::MAX_LENGTH];
+
+    memcpy(name, reinterpret_cast<const char*>((std::size_t)storage + tmpOffset), NamingTraits<CoreConfigurableBase>::MAX_LENGTH);
+
+    if (strncmp(_key, name, NamingTraits<CoreConfigurableBase>::MAX_LENGTH) != 0) {
         return false;
     }
 
-    offset += NamingTraits<Node>::MAX_LENGTH;
+    tmpOffset += NamingTraits<CoreConfigurableBase>::MAX_LENGTH;
+
+    CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
 
     CoreConfigurationBase::Signature signature;
-    memcpy(&signature, reinterpret_cast<const void*>((std::size_t)storage + offset), sizeof(CoreConfigurationBase::Signature));
-    offset += sizeof(CoreConfigurationBase::Signature);
+    memcpy(&signature, reinterpret_cast<const void*>((std::size_t)storage + tmpOffset), sizeof(CoreConfigurationBase::Signature));
 
-    CORE_ASSERT(signature == getConfigurationSignature());  // Avoid messing up the configuration
+    if (signature != getConfigurationSignature()) {
+        return false;
+    }
+
+    tmpOffset += sizeof(CoreConfigurationBase::Signature);
 
     overrideConfiguration();
 
     std::size_t dataSize = getConfigurationSize();
-    memcpy(&getOverridingConfigurationBase(), reinterpret_cast<const void*>((std::size_t)storage + offset), dataSize);
 
-    offset += dataSize;
+    memcpy(&getOverridingConfigurationBase(), reinterpret_cast<const void*>((std::size_t)storage + tmpOffset), dataSize);
+
+    tmpOffset += dataSize;
+    if((dataSize % 4) != 0) {
+        tmpOffset += 4 - (dataSize % 4);
+    }
+
+    offset = tmpOffset;
 
     return true;
 } // overrideConfigurationFrom
@@ -247,7 +264,11 @@ CoreConfigurableBase::dumpConfigurationTo(
     std::size_t dataSize = getConfigurationSize();
 
     memcpy(storage + offset, data, dataSize);
+
     offset += dataSize;
+    if((dataSize % 4) != 0) {
+        offset += 4 - (dataSize % 4);
+    }
 
     return true;
 } // dumpTo

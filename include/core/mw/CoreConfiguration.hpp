@@ -431,7 +431,6 @@ public:
     )
     {
         core::os::SysLock::acquire();
-
         _configuration = &configuration;
         core::os::SysLock::release();
     }
@@ -561,7 +560,7 @@ public:
 
 protected:
     const CoreConfigurationBase* _configuration;
-    const char* _key;
+    const char* _key CORE_MEMORY_ALIGNED;
 
 public:
     mutable core::mw::StaticList<CoreConfigurableBase>::Link link;

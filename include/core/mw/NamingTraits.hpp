@@ -52,6 +52,7 @@ struct NamingTraits<Transport> {
     };
 };
 
+// Make sure MAX_LENGTH % 4 == 0
 template <>
 struct NamingTraits<CoreConfigurableBase> {
     enum {
