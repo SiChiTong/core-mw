@@ -815,8 +815,8 @@ Middleware::Middleware(
     mgmt_pub(),
     mgmt_sub(mgmt_queue_buf, MGMT_BUFFER_LENGTH, nullptr),
 #if CORE_IS_BOOTLOADER_BRIDGE
-    boot_topic(BOOTLOADER_TOPIC_NAME, sizeof(BootMsg), false),
-    bootmaster_topic(BOOTLOADER_MASTER_TOPIC_NAME, sizeof(BootMasterMsg), false),
+    boot_topic(BOOTLOADER_TOPIC_NAME, sizeof(bootloader::BootMsg), false),
+    bootmaster_topic(BOOTLOADER_MASTER_TOPIC_NAME, sizeof(bootloader::BootMasterMsg), false),
 #endif
 #if CORE_USE_BRIDGE_MODE
     pubsub_stepsp(nullptr),
