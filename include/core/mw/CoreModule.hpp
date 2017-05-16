@@ -19,7 +19,7 @@ class CoreModule:
     public CoreNodeManager
 {
 public:
-    using UID = core::hw::UID; // Alias for cleanliness
+    using UID = uint32_t; // Alias for cleanliness
 
 public:
     class Led
@@ -40,10 +40,10 @@ public:
     uid();
 
     static const char*
-    moduleName();
+    name();
 
     static uint8_t
-    moduleID();
+    canID();
 
     static bool
     initialize();
