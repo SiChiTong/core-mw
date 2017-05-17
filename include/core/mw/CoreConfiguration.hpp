@@ -431,6 +431,7 @@ public:
     )
     {
         core::os::SysLock::acquire();
+
         _configuration = &configuration;
         core::os::SysLock::release();
     }
@@ -564,6 +565,9 @@ protected:
 
 public:
     mutable core::mw::StaticList<CoreConfigurableBase>::Link link;
+
+private:
+    CoreConfigurableBase() : link(*this) {}
 };
 
 /*! \brief Configurable object
@@ -596,7 +600,7 @@ public:
         const ConfigurationType& configuration
     )
     {
-//      CORE_ASSERT(configuration.getConfigurationSignature() == ConfigurationType::SIGNATURE);  // Make sure we are doing something good...
+        CORE_ASSERT(configuration.getConfigurationSignature() == ConfigurationType::SIGNATURE);  // Make sure we are doing something good...
         _configuration = &configuration;
     }
 

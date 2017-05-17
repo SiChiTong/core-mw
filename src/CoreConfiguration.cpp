@@ -188,7 +188,8 @@ CoreConfigurableBase::setConfigurationFrom(
     std::size_t dataSize = getConfigurationSize();
 
     tmpOffset += dataSize;
-    if((dataSize % 4) != 0) {
+
+    if ((dataSize % 4) != 0) {
         tmpOffset += 4 - (dataSize % 4);
     }
 
@@ -234,7 +235,8 @@ CoreConfigurableBase::overrideConfigurationFrom(
     memcpy(&getOverridingConfigurationBase(), reinterpret_cast<const void*>((std::size_t)storage + tmpOffset), dataSize);
 
     tmpOffset += dataSize;
-    if((dataSize % 4) != 0) {
+
+    if ((dataSize % 4) != 0) {
         tmpOffset += 4 - (dataSize % 4);
     }
 
@@ -266,7 +268,8 @@ CoreConfigurableBase::dumpConfigurationTo(
     memcpy(storage + offset, data, dataSize);
 
     offset += dataSize;
-    if((dataSize % 4) != 0) {
+
+    if ((dataSize % 4) != 0) {
         offset += 4 - (dataSize % 4);
     }
 

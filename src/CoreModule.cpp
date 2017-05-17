@@ -17,6 +17,15 @@ static CoreModule::Led _led;
 
 CoreModule::Led& CoreModule::led = _led;
 
+CoreNodeManager CoreModule::_nodes;
+CoreConfigurationManager CoreModule::_configurations;
+
+core::mw::CoreConfigurationStorage&
+CoreModule::configurationStorage()
+{
+    return _coreConfigurationStorage;
+}
+
 bool
 CoreModule::initialize()
 {
@@ -31,6 +40,18 @@ CoreModule::halt(
 )
 {
     core::os::OS::halt(message);
+}
+
+CoreNodeManager&
+CoreModule::nodes()
+{
+    return _nodes;
+}
+
+CoreConfigurationManager&
+CoreModule::configurations()
+{
+    return _configurations;
 }
 
 CoreModule::CoreModule() {}

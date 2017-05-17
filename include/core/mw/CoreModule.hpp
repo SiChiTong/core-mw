@@ -11,12 +11,12 @@
 #include <core/mw/namespace.hpp>
 #include <core/common.hpp>
 #include <core/mw/CoreNodeManager.hpp>
+#include <core/mw/CoreConfigurationManager.hpp>
 #include <core/hw/UID.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
-class CoreModule:
-    public CoreNodeManager
+class CoreModule
 {
 public:
     using UID = uint32_t; // Alias for cleanliness
@@ -35,6 +35,17 @@ public:
     };
 
     static Led& led;
+
+    static
+    CoreNodeManager&
+    nodes();
+
+    static
+    CoreConfigurationManager&
+    configurations();
+
+    static core::mw::CoreConfigurationStorage&
+    configurationStorage();
 
     static const UID&
     uid();
@@ -69,6 +80,11 @@ public:
     CoreModule();
 
     virtual ~CoreModule() {}
+
+private:
+    static core::mw::CoreConfigurationStorage& _coreConfigurationStorage;
+    static CoreNodeManager _nodes;
+    static CoreConfigurationManager _configurations;
 };
 
 NAMESPACE_CORE_MW_END

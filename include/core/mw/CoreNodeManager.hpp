@@ -38,7 +38,7 @@ public:
     teardown();
 
     bool
-    isOk();
+    areOk();
 
 
 private:
