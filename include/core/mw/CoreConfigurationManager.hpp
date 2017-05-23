@@ -65,10 +65,6 @@ public:
 class CoreConfigurationManager
 {
 public:
-    CoreConfigurationManager();
-    virtual
-    ~CoreConfigurationManager();
-
     void
     add(
         const CoreConfigurableBase& configurableObject
@@ -104,6 +100,11 @@ public:
         CoreConfigurationStorage& storage
     );
 
+
+    CoreConfigurationManager();
+
+    virtual
+    ~CoreConfigurationManager();
 
 private:
     core::mw::StaticList<CoreConfigurableBase> _objects;
