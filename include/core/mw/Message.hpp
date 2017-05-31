@@ -10,6 +10,11 @@
 #include <core/common.hpp>
 #include <type_traits>
 
+#pragma GCC diagnostic push
+#if __GNUC__ >=6
+#pragma GCC diagnostic ignored "-Wignored-attributes"
+#endif
+
 NAMESPACE_CORE_MW_BEGIN
 
 class Transport;
@@ -256,3 +261,5 @@ Message::reset_payload(
 }
 
 NAMESPACE_CORE_MW_END
+
+#pragma GCC diagnostic pop
