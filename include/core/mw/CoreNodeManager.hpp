@@ -13,32 +13,75 @@
 
 NAMESPACE_CORE_MW_BEGIN
 
+/*! \brief CoreNode manager.
+ *
+ * Manages CoreNode objects, syncronizing their states.
+ */
 class CoreNodeManager
 {
 public:
     CoreNodeManager();
+
     virtual
     ~CoreNodeManager();
 
+    /*! \brief Adds a CoreNode to the managed objects.
+   *
+   */
     void
     add(
         const CoreNode& node
     );
 
+
+    /*! \brief Setup the nodes.
+     *
+     * For each object, it calls setup()
+     *
+     * \retval true all the nodes were successfully setup.
+     */
     bool
     setup();
 
+
+    /*! \brief Start the nodes.
+     *
+     * For each object, it calls: execute(INITIALIZE), execute(CONFIGURE), execute(PREPARE_HW), execute(PREPARE_MW), execute(START), syncronizing all the objects to the same state.
+     *
+     * \retval true all the nodes have successfully reached ICoreNode::State::RUNNING state.
+     */
     bool
     run();
 
+
+    /*! \brief Stop the nodes.
+     *
+     * For each object, it calls: execute(STOP), execute(FINALIZE), syncronizing all the objects to the same state.
+     *
+     * \retval true all the nodes have successfully reached ICoreNode::State::SET_UP state.
+     */
     bool
     stop();
 
+
+    /*! \brief Teardown the nodes.
+     *
+     * For each object, it calls teardown()
+     *
+     * \retval true all the nodes were successfully teared down.
+     */
     bool
     teardown();
 
+
+    /*! \brief Check the state of the nodes.
+     *
+     * For each object, it checks if the state is different than ICoreNode::State::ERROR
+     *
+     * \retval true all the nodes are working properly
+     */
     bool
-    isOk();
+    areOk();
 
 
 private:

@@ -68,58 +68,71 @@ CoreConfigurationManager::setFrom(
 } // CoreConfigurationManager::setFrom
 
 void
-CoreConfigurationManager::setFrom(
+CoreConfigurationManager::loadFrom(
     CoreConfigurationStorage& storage
 )
 {
-    setFrom(reinterpret_cast<uint8_t*>(storage.data()), storage.size());
+    if (storage.size() != 0) {
+        setFrom(reinterpret_cast<uint8_t*>(storage.data()), storage.size());
+    }
 }
 
 void
-CoreConfigurationManager::dumpTo(
+CoreConfigurationManager::saveTo(
     CoreConfigurationStorage& storage
-) {
+)
+{
     static_assert(sizeof(CoreConfigurationBase::Signature) == 4, "sizeof(CoreConfigurationBase::Signature) is not 4");
 
     bool success = true;
 
-    success &= storage.beginWrite();
+    if (storage.size() != 0) {
+        success &= storage.beginWrite();
 
-    std::size_t offset = 0;
-    std::size_t cnt    = 0;
+        std::size_t offset = 0;
+        std::size_t cnt    = 0;
 
-    offset += sizeof(std::size_t); // Number of conf blocks
+        offset += sizeof(std::size_t); // Number of conf blocks
 
-    for (CoreConfigurableBase& object : _objects) {
-        const uint16_t* tmp16 = nullptr;
-        const uint32_t* tmp32 = nullptr;
+        for (CoreConfigurableBase& object : _objects) {
+            const uint16_t* tmp16 = nullptr;
+            const uint32_t* tmp32 = nullptr;
 
-        tmp16 = reinterpret_cast<const uint16_t*>(object.getKey()); //NOTE: warning: cast increases required alignment of target type - It is OK by design
-        for(std::size_t i = 0; i < NamingTraits<CoreConfigurableBase>::MAX_LENGTH; i +=2 ) {
-            success &= storage.write16(offset + i, *tmp16++);
+
+            char tmp_buffer[NamingTraits < CoreConfigurableBase > ::MAX_LENGTH] CORE_MEMORY_ALIGNED;
+            memset(tmp_buffer, 0, NamingTraits<CoreConfigurableBase>::MAX_LENGTH);
+            strcpy(tmp_buffer, object.getKey());
+
+            tmp16 = reinterpret_cast<const uint16_t*>(tmp_buffer); //NOTE: warning: cast increases required alignment of target type - It is OK by design
+
+            for (std::size_t i = 0; i < NamingTraits<CoreConfigurableBase>::MAX_LENGTH; i += 2) {
+                success &= storage.write16(offset + i, *tmp16++);
+            }
+
+            offset += NamingTraits<CoreConfigurableBase>::MAX_LENGTH;
+
+            success &= storage.write32(offset, object.getConfigurationSignature());
+            offset  += sizeof(CoreConfigurationBase::Signature);
+
+            std::size_t dataSize = object.getConfigurationSize();
+
+            tmp32 = reinterpret_cast<const uint32_t*>(&object.getConfigurationBase());
+
+            for (std::size_t i = 0; i < dataSize; i += 4) {
+                success &= storage.write32(offset + i, *tmp32++);
+            }
+
+            offset += dataSize;
+
+            cnt++;
         }
-        offset += NamingTraits<CoreConfigurableBase>::MAX_LENGTH;
 
-        success &= storage.write32(offset, object.getConfigurationSignature());
-        offset += sizeof(CoreConfigurationBase::Signature);
+        success &= storage.write32(0, cnt);
 
-        std::size_t dataSize = object.getConfigurationSize();
-
-        tmp32 = reinterpret_cast<const uint32_t*>(&object.getConfigurationBase());
-        for(std::size_t i = 0; i < dataSize; i += 4 ) {
-            success &= storage.write32(offset + i, *tmp32++);
-        }
-
-        offset += dataSize;
-
-        cnt++;
+        success &= storage.endWrite();
     }
 
-    success &= storage.write32(0, cnt);
-
-    success &= storage.endWrite();
-
     CORE_ASSERT(success);
-}
+} // CoreConfigurationManager::dumpTo
 
 NAMESPACE_CORE_MW_END

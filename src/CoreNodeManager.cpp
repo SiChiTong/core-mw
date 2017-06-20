@@ -102,7 +102,7 @@ CoreNodeManager::teardown()
 }
 
 bool
-CoreNodeManager::isOk()
+CoreNodeManager::areOk()
 {
     bool success = true;
 
