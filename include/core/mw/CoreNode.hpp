@@ -19,6 +19,10 @@ NAMESPACE_CORE_MW_BEGIN
 
 /*! \brief Base class for all managed nodes
  *
+ * Each node is a thread.
+ *
+ * \todo Add some explainations about the thread thing
+ *
  */
 class CoreNode:
     public ICoreNode
@@ -35,20 +39,65 @@ public:
         core::os::Thread::Priority priority = core::os::Thread::PriorityEnum::NORMAL //!< [in] priority for the State::LOOPING state
     );
 
+    /*! \brief Constructor
+     *
+     * \warning The specified priority is used only during State::LOOPING state. In all the other state the node priority is core::os::Thread::PriorityEnum::NORMAL
+     */
+    CoreNode(
+        const char*                name, //!< [in] name of the node
+        core::os::Thread::Priority priority, //!< [in] priority for the State::LOOPING state
+        std::size_t                threadStackSize //!< [in] size of the thread stack
+    );
+
+    /*! \brief Create the node thread
+     *
+     * If the thread has been created, the caller is suspended until the node reaches a State::SET_UP state.
+     *
+     * \pre The node must be in State::NONE state
+     * \post The node is either in State::SET_UP or State::NONE states
+     *
+     * \retval true node is running
+     * \retval false it was not possible to create the thread
+     */
     bool
     setup();
 
+
+    /*! \brief Tear down the node
+     *
+     * The caller is suspended until the node is down (i.e.: the thread is finished)
+     *
+     * \post The node is in State::NONE state
+     *
+     * \return succes, and as it cannot fail, it always return true.
+     * \retval true always
+     */
     bool
     teardown();
 
+
+    /*! \brief Executes an action
+     *
+     * Depending on the state the node is into, only some actions are possible, as explained in \ref ICoreNode
+     *
+     * \retval true the action was admissible
+     * \retval false the node is not running, or the action was not admissible
+     *
+     * \see ICoreNode
+     */
     bool
     execute(
-        Action what
+        Action what //!< [in] the action we want to perform on the node
     );
 
     State
     state() const;
 
+
+    /*! \brief Name of the node
+     *
+     * \return name of the node
+     */
     const char*
     name();
 
@@ -78,7 +127,6 @@ public:
      *
      * This method calls the subscriber registered callbacks
      */
-
     bool
     spin(
         const core::os::Time& timeout = core::os::Time::INFINITE //!< [in] timeout
@@ -119,9 +167,6 @@ protected:
 
     CoreNode();
 
-private:
-    core::mw::Node _node;
-
 protected:
     std::size_t _workingAreaSize;
     core::os::Thread::Priority _priority;
@@ -138,6 +183,8 @@ private:
     void
     _run();
 
+
+    core::mw::Node _node;
 
     core::os::Thread* _runner;
 

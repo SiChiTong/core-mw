@@ -12,9 +12,24 @@ CoreNode::CoreNode(
     const char*                name,
     core::os::Thread::Priority priority
 ) :
-    _node(name, false),
     _workingAreaSize(0),
     _priority(priority),
+    _node(name, false),
+    _runner(nullptr),
+    _mustRun(false),
+    _mustLoop(false),
+    _mustTeardown(false),
+    link(*this)
+{}
+
+CoreNode::CoreNode(
+    const char*                name,
+    core::os::Thread::Priority priority,
+    std::size_t                threadStackSize
+) :
+    _workingAreaSize(threadStackSize),
+    _priority(priority),
+    _node(name, false),
     _runner(nullptr),
     _mustRun(false),
     _mustLoop(false),
@@ -23,9 +38,9 @@ CoreNode::CoreNode(
 {}
 
 CoreNode::CoreNode() :
-    _node("", false),
     _workingAreaSize(0),
     _priority(core::os::Thread::NORMAL),
+    _node("", false),
     _runner(nullptr),
     _mustRun(false),
     _mustLoop(false),
