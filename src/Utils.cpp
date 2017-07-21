@@ -19,6 +19,7 @@ is_identifier(
         while ((*namep >= 'a' && *namep <= 'z')
                || (*namep >= 'A' && *namep <= 'Z')
                || (*namep >= '0' && *namep <= '9')
+               || *namep == '-'
                || *namep == '_') {
             ++namep;
         }
@@ -39,6 +40,7 @@ is_identifier(
         while (max_length > 0 && ((*namep >= 'a' && *namep <= 'z')
                                   || (*namep >= 'A' && *namep <= 'Z')
                                   || (*namep >= '0' && *namep <= '9')
+                                  || *namep == '-'
                                   || *namep == '_')) {
             ++namep;
             --max_length;
