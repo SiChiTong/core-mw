@@ -648,6 +648,18 @@ public:
      *
      * \pre The overriding configuration must exist, otherwise an assert is fired
      */
+    inline ConfigurationType&
+    overridingConfiguration()
+    {
+        CORE_ASSERT(_overriding != nullptr);
+
+        return *(static_cast<ConfigurationType*>(_overriding));
+    }
+
+    /*! \brief Get the overriding configuration
+     *
+     * \pre The overriding configuration must exist, otherwise an assert is fired
+     */
     inline CoreConfiguration&
     getOverridingConfiguration()
     {
