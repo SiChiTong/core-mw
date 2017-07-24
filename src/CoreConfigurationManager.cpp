@@ -53,15 +53,17 @@ CoreConfigurationManager::setFrom(
     std::size_t cnt    = 0;
 
     memcpy(&cnt, storage, sizeof(std::size_t)); // Number of conf blocks
-    offset += sizeof(std::size_t);
+    if(cnt != 0xFFFFFFFF) { // Erased flash?
+        offset += sizeof(std::size_t);
 
-    for (std::size_t i = 0; i < cnt; i++) {
-        // For every block...
-        for (CoreConfigurableBase& object : _objects) {
-            // Try with every object...
-            if (object.setConfigurationFrom(storage, offset, size - sizeof(std::size_t))) {
-                // If the block matches the object...
-                break; // Go on with the next block!
+        for (std::size_t i = 0; i < cnt; i++) {
+            // For every block...
+            for (CoreConfigurableBase& object : _objects) {
+                // Try with every object...
+                if (object.setConfigurationFrom(storage, offset, size - sizeof(std::size_t))) {
+                    // If the block matches the object...
+                    break; // Go on with the next block!
+                }
             }
         }
     }
@@ -126,6 +128,8 @@ CoreConfigurationManager::saveTo(
 
             cnt++;
         }
+
+        CORE_ASSERT(cnt != 0xFFFFFFFF); // Sorry, 4294967295 configurations are too many...
 
         success &= storage.write32(0, cnt);
 
