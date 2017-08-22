@@ -53,6 +53,16 @@ public:
         MessageType* msg //!< [in] message to be published
     );
 
+    /*! \brief Publish a message
+     *
+     * The message is looped back to the subscriber in the same thread (if any).
+     *
+     * \pre The message must have been previously allocated with alloc()
+     */
+    bool
+    publish_loopback(
+        MessageType* msg //!< [in] message to be published
+    );
 
 public:
     Publisher();
@@ -91,6 +101,17 @@ Publisher<MessageType>::publish(
 {
     static_cast_check<MessageType, Message>();
     return BasePublisher::publish(static_cast<Message&>(*msg));
+}
+
+template <typename MessageType>
+inline
+bool
+Publisher<MessageType>::publish_loopback(
+    MessageType* msg
+)
+{
+    static_cast_check<MessageType, Message>();
+    return BasePublisher::publish_loopback(static_cast<Message&>(*msg));
 }
 
 template <typename MessageType>
