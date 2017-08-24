@@ -1,3 +1,23 @@
+/* COPYRIGHT (c) 2016-2017 Nova Labs SRL
+ *
+ * All rights reserved. All use of this software and documentation is
+ * subject to the License Agreement located in the file LICENSE.
+ */
+
+/*****************************************************************************
+ *
+ *   m     m   mm   mmmmm  mm   m mmmmm  mm   m   mmm
+ *   #  #  #   ##   #   "# #"m  #   #    #"m  # m"   "
+ *   " #"# #  #  #  #mmmm" # #m #   #    # #m # #   mm
+ *    ## ##"  #mm#  #   "m #  # #   #    #  # # #    #
+ *    #   #  #    # #    " #   ## mm#mm  #   ##  "mmm"
+ *
+ *   USE AT YOUR OWN RISK
+ *
+ *****************************************************************************/
+
+
+
 #include <core/mw/StaticList.hpp>
 #include <functional>
 #include <core/os/Mutex.hpp>
@@ -10,6 +30,7 @@
 namespace core {
 namespace mw {
 namespace rpc {
+
 struct BaseServ {
     virtual std::size_t
     getRequestSize() const = 0;
@@ -59,8 +80,6 @@ public:
     }
 };
 
-class RPCBase;
-
 class Transaction
 {
 public:
@@ -77,6 +96,8 @@ public:
     RPCMessage*       _outbound_message;
     uint8_t           _id;
 };
+
+class RPCBase;
 
 class ServerBase
 {
@@ -113,15 +134,22 @@ class ClientBase
 {
     friend class RPCBase;
     friend class RPC;
-
+public:
+    enum State {
+        NONE, READY, BUSY
+    };
 public:
     ClientBase(
         const char* rpc_name
-    ) : _rpc(nullptr), _id(0), _server_id(0), _by_rpc(*this)
+    ) : _rpc(nullptr), _id(0), _server_id(0), _state(State::NONE), _service(nullptr), _timeout(core::os::Time::s(1)), _by_rpc(*this)
     {
         _rpc_name = rpc_name;
         _server_name.clear();
     }
+
+    virtual bool
+    invoke(
+    ) = 0;
 
     operator bool() {
         return _server_id != 0;
@@ -134,6 +162,9 @@ protected:
     ModuleName  _server_name;
     uint8_t     _server_id;
     Transaction transaction;
+    State       _state;
+    BaseServ*    _service;
+    core::os::Time _timeout;
     mutable StaticList<ClientBase>::Link _by_rpc;
 };
 
@@ -155,11 +186,22 @@ public:
     {
         bool success = false;
 
-        if (!client) {
-            return false;
+        {
+        core::os::SysLock::Scope lock;
+            if (!client) {
+                return false;
+            }
+
+            if(client._state != ClientBase::State::READY) { // We are either not connected or a RPC is already ongoing...
+                return false;
+            }
+
+            client._state = ClientBase::State::BUSY;
         }
 
         if (beginClientTransaction(client)) {
+            client._service = &serv;
+
             RPCMessage* request = client.transaction._outbound_message;
 
             request->header.type = MessageType::REQUEST;
@@ -170,20 +212,30 @@ public:
 
             memcpy(request->payload, serv.getRequest(), serv.getRequestSize());
 
-            if (executeClientTransaction(client)) {
-                RPCMessage* response = client.transaction._inbound_message;
+            if(client.transaction._timeout == core::os::Time::IMMEDIATE) {
+                if (executeClientTransaction_async(client)) {
+                    success = true;
+                }
+            } else {
+                if (executeClientTransaction(client)) {
+                    RPCMessage* response = client.transaction._inbound_message;
 
-                CORE_ASSERT(serv.getResponseSize() < RPCMessage::PAYLOAD_SIZE);
+                    CORE_ASSERT(serv.getResponseSize() < RPCMessage::PAYLOAD_SIZE);
 
-                memcpy(serv.getResponse(), response->payload, serv.getResponseSize());
+                    memcpy(serv.getResponse(), response->payload, serv.getResponseSize());
 
-                success = true;
+                    success = true;
+                }
+
+                endClientTransaction(client);
+
+                client._service = nullptr;
+                client._state = ClientBase::State::READY;
             }
-
-            endClientTransaction(client);
         }
 
         return success;
+
     } // call
 
     bool
@@ -191,6 +243,13 @@ public:
         ClientBase& client
     )
     {
+        {
+        core::os::SysLock::Scope lock;
+            if(client._state != ClientBase::State::NONE) { // We are already connected!
+                return false;
+            }
+        }
+
         client._server_name = "";
         client._server_id   = 0;
         bool success = false;
@@ -213,6 +272,13 @@ public:
             }
 
             endClientTransaction(client);
+        }
+
+        if(success) {
+            client.transaction._timeout = client._timeout;
+            client._state = ClientBase::State::READY;
+        } else {
+            client._state = ClientBase::State::NONE;
         }
 
         return success;
@@ -266,6 +332,21 @@ protected:
     }
 
     bool
+    executeClientTransaction_async(
+        ClientBase& client
+    )
+    {
+        client.transaction._outbound_message->header.sequence       = client.transaction._sequence;
+        client.transaction._outbound_message->header.client_session = client._id;
+
+        if (!_pub.publish_loopback(client.transaction._outbound_message)) {
+            return false;
+        }
+
+        return true;
+    }
+
+    bool
     endClientTransaction(
         ClientBase& client
     )
@@ -292,7 +373,7 @@ protected:
         client.transaction._runner = &core::os::Thread::self();
         core::os::Thread::Return msg = core::os::Thread::sleep_timeout(client.transaction._timeout);
 
-        return msg == 0xBAADCAFE;
+        return msg == 0x1BADCAFE;
     }
 
     void
@@ -303,13 +384,11 @@ protected:
         core::os::SysLock::Scope lock;
 
         if (client.transaction._runner != nullptr) {
-            core::os::Thread::wake(*(client.transaction._runner), 0xBAADCAFE);
+            core::os::Thread::wake(*(client.transaction._runner), 0x1BADCAFE);
             client.transaction._runner = nullptr;
         }
     }
 };
-
-class RPC;
 
 template <class SERVICE>
 class Server:
@@ -389,12 +468,21 @@ class Client:
 
 public:
     using Service = SERVICE;
+    using CallbackType = std::function<void(Service&)>;
 
 public:
     //Client() : ClientBase::ClientBase() {};
     Client(
         const char* rpc_name
-    ) : ClientBase::ClientBase(rpc_name) {}
+    ) : ClientBase::ClientBase(rpc_name), _callback() {}
+
+    Client(
+        const char* rpc_name,
+        core::os::Time  timeout
+
+    ) : ClientBase::ClientBase(rpc_name), _callback() {
+        _timeout = timeout;
+    }
 
     bool
     call(
@@ -414,8 +502,39 @@ public:
         return _rpc->discover(*this);
     }
 
+    bool
+    close()
+    {
+        _server_id = 0;
+        _server_name.clear();
+
+        return true;
+    }
+
+    bool
+    invoke()
+    {
+        if (_callback) {
+            memcpy(transaction._inbound_message, _service->getResponse(), _service->getResponseSize());
+
+            _callback(*reinterpret_cast<Service*>(_service));
+
+            return true;
+        }
+
+        return false;
+    }
+
+    void
+    callback(
+        CallbackType callback
+    )
+    {
+        _callback = callback;
+    }
 
 private:
+    CallbackType _callback;
 };
 
 
@@ -613,7 +732,11 @@ public:
                         if (message->header.target_module_name == client._server_name) {
                             client.transaction._inbound_message = message;
 
-                            wake(client);
+                            if(client.transaction._timeout == core::os::Time::IMMEDIATE) {
+                                client.invoke();
+                            } else {
+                                wake(client);
+                            }
 
                             return true;
                         }
