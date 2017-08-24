@@ -292,7 +292,7 @@ protected:
         client.transaction._runner = &core::os::Thread::self();
         core::os::Thread::Return msg = core::os::Thread::sleep_timeout(client.transaction._timeout);
 
-        return msg == 0x2BAADCAFE;
+        return msg == 0xBAADCAFE;
     }
 
     void
@@ -303,7 +303,7 @@ protected:
         core::os::SysLock::Scope lock;
 
         if (client.transaction._runner != nullptr) {
-            core::os::Thread::wake(*(client.transaction._runner), 0x2BAADCAFE);
+            core::os::Thread::wake(*(client.transaction._runner), 0xBAADCAFE);
             client.transaction._runner = nullptr;
         }
     }
@@ -413,6 +413,7 @@ public:
 
         return _rpc->discover(*this);
     }
+
 
 private:
 };
@@ -579,10 +580,10 @@ public:
 
                     if (_pub.alloc(response_message)) {
                         RPCMessage* response = response_message;
-                        response->header.type               = core::mw::rpc::MessageType::RESPONSE;
-                        response->header.sequence           = request->header.sequence;
-                        response->header.client_session     = request->header.client_session;
-                        response->header.server_session     = request->header.server_session;
+                        response->header.type = core::mw::rpc::MessageType::RESPONSE;
+                        response->header.sequence = request->header.sequence;
+                        response->header.client_session = request->header.client_session;
+                        response->header.server_session = request->header.server_session;
                         response->header.target_module_name = _name;
 
                         server.invoke(request->payload, response->payload);
@@ -724,6 +725,7 @@ private:
         return _next_server_id;
     } // getNextServerId
 };
+
 }
 }
 }
