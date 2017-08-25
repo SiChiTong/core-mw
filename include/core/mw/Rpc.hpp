@@ -17,7 +17,6 @@
  *****************************************************************************/
 
 
-
 #include <core/mw/StaticList.hpp>
 #include <functional>
 #include <core/os/Mutex.hpp>
@@ -30,7 +29,6 @@
 namespace core {
 namespace mw {
 namespace rpc {
-
 struct BaseServ {
     virtual std::size_t
     getRequestSize() const = 0;
@@ -52,8 +50,8 @@ public:
     using Request  = REQUEST;
     using Response = RESPONSE;
 
-    Request  request;
-    Response response;
+    Request CORE_MEMORY_ALIGNED  request;
+    Response CORE_MEMORY_ALIGNED response;
 
     std::size_t
     getRequestSize() const
@@ -134,10 +132,12 @@ class ClientBase
 {
     friend class RPCBase;
     friend class RPC;
+
 public:
     enum State {
         NONE, READY, BUSY
     };
+
 public:
     ClientBase(
         const char* rpc_name
@@ -148,22 +148,22 @@ public:
     }
 
     virtual bool
-    invoke(
-    ) = 0;
+    invoke() = 0;
+
 
     operator bool() {
         return _server_id != 0;
     }
 
 protected:
-    RPCBase*    _rpc;
-    RPCName     _rpc_name;
-    uint8_t     _id;
-    ModuleName  _server_name;
-    uint8_t     _server_id;
-    Transaction transaction;
-    State       _state;
-    BaseServ*    _service;
+    RPCBase*       _rpc;
+    RPCName        _rpc_name;
+    uint8_t        _id;
+    ModuleName     _server_name;
+    uint8_t        _server_id;
+    Transaction    transaction;
+    State          _state;
+    BaseServ*      _service;
     core::os::Time _timeout;
     mutable StaticList<ClientBase>::Link _by_rpc;
 };
@@ -187,12 +187,14 @@ public:
         bool success = false;
 
         {
-        core::os::SysLock::Scope lock;
+            core::os::SysLock::Scope lock;
+
             if (!client) {
                 return false;
             }
 
-            if(client._state != ClientBase::State::READY) { // We are either not connected or a RPC is already ongoing...
+            if (client._state != ClientBase::State::READY) {
+                // We are either not connected or a RPC is already ongoing...
                 return false;
             }
 
@@ -212,7 +214,7 @@ public:
 
             memcpy(request->payload, serv.getRequest(), serv.getRequestSize());
 
-            if(client.transaction._timeout == core::os::Time::IMMEDIATE) {
+            if (client.transaction._timeout == core::os::Time::IMMEDIATE) {
                 if (executeClientTransaction_async(client)) {
                     success = true;
                 }
@@ -230,12 +232,11 @@ public:
                 endClientTransaction(client);
 
                 client._service = nullptr;
-                client._state = ClientBase::State::READY;
+                client._state   = ClientBase::State::READY;
             }
         }
 
         return success;
-
     } // call
 
     bool
@@ -244,9 +245,11 @@ public:
     )
     {
         {
-        core::os::SysLock::Scope lock;
-            if(client._state != ClientBase::State::NONE) { // We are already connected!
-                return false;
+            core::os::SysLock::Scope lock;
+
+            if (client._state != ClientBase::State::NONE) {
+                // We are already connected!
+                return true;
             }
         }
 
@@ -274,7 +277,7 @@ public:
             endClientTransaction(client);
         }
 
-        if(success) {
+        if (success) {
             client.transaction._timeout = client._timeout;
             client._state = ClientBase::State::READY;
         } else {
@@ -467,7 +470,7 @@ class Client:
     friend class RPC;
 
 public:
-    using Service = SERVICE;
+    using Service      = SERVICE;
     using CallbackType = std::function<void(Service&)>;
 
 public:
@@ -477,10 +480,10 @@ public:
     ) : ClientBase::ClientBase(rpc_name), _callback() {}
 
     Client(
-        const char* rpc_name,
-        core::os::Time  timeout
-
-    ) : ClientBase::ClientBase(rpc_name), _callback() {
+        const char*    rpc_name,
+        core::os::Time timeout
+    ) : ClientBase::ClientBase(rpc_name), _callback()
+    {
         _timeout = timeout;
     }
 
@@ -515,7 +518,7 @@ public:
     invoke()
     {
         if (_callback) {
-            memcpy(transaction._inbound_message, _service->getResponse(), _service->getResponseSize());
+            memcpy(_service->getResponse(), transaction._inbound_message, _service->getResponseSize());
 
             _callback(*reinterpret_cast<Service*>(_service));
 
@@ -545,6 +548,22 @@ public:
     RPC(
         const char* name
     ) : RPCBase::RPCBase(name), _running(false), _next_client_id(0), _next_server_id(0) {}
+
+    bool
+    start(
+        std::size_t stack_size
+    )
+    {
+        core::os::Thread::create_heap(nullptr, stack_size, core::os::Thread::PriorityEnum::NORMAL, [](void* arg) {
+                        reinterpret_cast<core::mw::rpc::RPC*>(arg)->thread();
+                    }, this, "rpcthd");
+
+        while (!_running) {
+            core::os::Thread::sleep(core::os::Time::ms(500));
+        }
+
+        return true;
+    }
 
     bool
     addClient(
@@ -699,10 +718,10 @@ public:
 
                     if (_pub.alloc(response_message)) {
                         RPCMessage* response = response_message;
-                        response->header.type = core::mw::rpc::MessageType::RESPONSE;
-                        response->header.sequence = request->header.sequence;
-                        response->header.client_session = request->header.client_session;
-                        response->header.server_session = request->header.server_session;
+                        response->header.type               = core::mw::rpc::MessageType::RESPONSE;
+                        response->header.sequence           = request->header.sequence;
+                        response->header.client_session     = request->header.client_session;
+                        response->header.server_session     = request->header.server_session;
                         response->header.target_module_name = _name;
 
                         server.invoke(request->payload, response->payload);
@@ -732,8 +751,13 @@ public:
                         if (message->header.target_module_name == client._server_name) {
                             client.transaction._inbound_message = message;
 
-                            if(client.transaction._timeout == core::os::Time::IMMEDIATE) {
+                            if (client.transaction._timeout == core::os::Time::IMMEDIATE) {
                                 client.invoke();
+
+                                endClientTransaction(client);
+
+                                client._service = nullptr;
+                                client._state   = ClientBase::State::READY;
                             } else {
                                 wake(client);
                             }
@@ -848,7 +872,6 @@ private:
         return _next_server_id;
     } // getNextServerId
 };
-
 }
 }
 }
