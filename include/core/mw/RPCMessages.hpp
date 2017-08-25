@@ -40,21 +40,21 @@ public:
         uint8_t     _rfu_padding;
     }
 
-    CORE_PACKED_ALIGNED;
+    CORE_PACKED;
 
     struct DiscoveryRequest {
         ModuleName client_name;
         RPCName    rpc_name;
     }
 
-    CORE_PACKED_ALIGNED;
+    CORE_PACKED;
 
     struct DiscoveryResponse {
         ModuleName server_name;
         RPCName    rpc_name;
     }
 
-    CORE_PACKED_ALIGNED;
+    CORE_PACKED;
 
 
     static const std::size_t PAYLOAD_SIZE = RPC_MESSAGE_LENGTH - sizeof(Header);
@@ -67,7 +67,7 @@ public:
         DiscoveryResponse discovery_response;
     }
 
-    CORE_PACKED_ALIGNED;
+    CORE_PACKED;
 }
 
 CORE_PACKED_ALIGNED;
