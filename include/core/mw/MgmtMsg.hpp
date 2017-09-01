@@ -45,14 +45,6 @@ public:
         MAX_PAYLOAD_LENGTH = 31
     };
 
-    struct Path {
-        char module[NamingTraits < Middleware > ::MAX_LENGTH];
-        char node[NamingTraits < Node > ::MAX_LENGTH];
-        char topic[NamingTraits < Topic > ::MAX_LENGTH];
-    }
-
-    CORE_PACKED;
-
     struct PubSub {
         enum {
             MAX_RAW_PARAMS_LENGTH = 10
@@ -84,7 +76,6 @@ public:
 public:
     union {
         uint8_t payload[MAX_PAYLOAD_LENGTH];
-        Path    path;
         PubSub  pubsub;
         Module  module;
     }
