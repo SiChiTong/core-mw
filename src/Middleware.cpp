@@ -399,7 +399,7 @@ Middleware::do_mgmt_thread()
                   {
                       do_cmd_advertise(*msgp);
 #if CORE_USE_BRIDGE_MODE
-                      mgmt_topic.forward_copy(*msgp, deadline);
+                      // mgmt_topic.forward_copy(*msgp, deadline);
 #endif // CORE_USE_BRIDGE_MODE
                       mgmt_sub.release(*msgp);
                       break;
@@ -408,7 +408,7 @@ Middleware::do_mgmt_thread()
                   {
                       do_cmd_subscribe_request(*msgp);
 #if CORE_USE_BRIDGE_MODE
-                      mgmt_topic.forward_copy(*msgp, deadline);
+                      // mgmt_topic.forward_copy(*msgp, deadline);
 #endif // CORE_USE_BRIDGE_MODE
                       mgmt_sub.release(*msgp);
                       break;
@@ -417,7 +417,7 @@ Middleware::do_mgmt_thread()
                   {
                       do_cmd_subscribe_response(*msgp);
 #if CORE_USE_BRIDGE_MODE
-                      mgmt_topic.forward_copy(*msgp, deadline);
+                      // mgmt_topic.forward_copy(*msgp, deadline);
 #endif // CORE_USE_BRIDGE_MODE
                       mgmt_sub.release(*msgp);
                       break;
@@ -431,7 +431,7 @@ Middleware::do_mgmt_thread()
 // [MARTINO]
 //          mgmt_topic.notify_remotes(*msgp, deadline);
 #if CORE_USE_BRIDGE_MODE
-                      mgmt_topic.forward_copy(*msgp, deadline);
+                      // mgmt_topic.forward_copy(*msgp, deadline);
 #endif // CORE_USE_BRIDGE_MODE
                       mgmt_sub.release(*msgp);
                       break;
@@ -446,7 +446,7 @@ Middleware::do_mgmt_thread()
 // [MARTINO]
 //          mgmt_topic.notify_remotes(*msgp, deadline);
 #if CORE_USE_BRIDGE_MODE
-                      mgmt_topic.forward_copy(*msgp, deadline);
+                      // mgmt_topic.forward_copy(*msgp, deadline);
 #endif // CORE_USE_BRIDGE_MODE
                       mgmt_sub.release(*msgp);
                       break;
@@ -457,11 +457,17 @@ Middleware::do_mgmt_thread()
                           preload_bootloader_mode(true);
                           reboot();
                       }
-
+#if !CORE_USE_BRIDGE_MODE
+                      // Bridges can only be rebooted by exact name
+                      if (0 == strncmp("*", msgp->module.name, NamingTraits<Middleware>::MAX_LENGTH)) {
+                          preload_bootloader_mode(true);
+                          reboot();
+                      }
+#endif
 // [MARTINO]
 //          mgmt_topic.notify_remotes(*msgp, deadline);
 #if CORE_USE_BRIDGE_MODE
-                      mgmt_topic.forward_copy(*msgp, deadline);
+                      // mgmt_topic.forward_copy(*msgp, deadline);
 #endif // CORE_USE_BRIDGE_MODE
                       mgmt_sub.release(*msgp);
                       break;
@@ -471,7 +477,7 @@ Middleware::do_mgmt_thread()
 // [MARTINO]
 //           mgmt_topic.notify_remotes(*msgp, deadline);
 #if CORE_USE_BRIDGE_MODE
-                      mgmt_topic.forward_copy(*msgp, deadline);
+                      // mgmt_topic.forward_copy(*msgp, deadline);
 #endif // CORE_USE_BRIDGE_MODE
                       mgmt_sub.release(*msgp);
                       break;
