@@ -442,6 +442,10 @@ Middleware::do_mgmt_thread()
                           preload_bootloader_mode(false);
                           reboot();
                       }
+                      if (0 == strncmp("*", msgp->module.name, NamingTraits<Middleware>::MAX_LENGTH)) {
+                          preload_bootloader_mode(false);
+                          reboot();
+                      }
 
 // [MARTINO]
 //          mgmt_topic.notify_remotes(*msgp, deadline);
