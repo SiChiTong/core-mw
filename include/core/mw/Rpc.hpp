@@ -141,7 +141,7 @@ public:
 public:
     ClientBase(
         const char* rpc_name
-    ) : _rpc(nullptr), _id(0), _server_id(0), _state(State::NONE), _service(nullptr), _timeout(core::os::Time::s(1)), _by_rpc(*this)
+    ) : _rpc(nullptr), _id(0), _server_id(0), _state(State::NONE), _service(nullptr), _timeout(core::os::Time::s(1)), _private(nullptr), _by_rpc(*this)
     {
         _rpc_name = rpc_name;
         _server_name.clear();
@@ -155,6 +155,14 @@ public:
         return _server_id != 0;
     }
 
+    void setPrivateData(void* private_data) {
+        _private = private_data;
+    }
+
+    void* getPrivateData() {
+        return _private;
+    }
+
 protected:
     RPCBase*       _rpc;
     RPCName        _rpc_name;
@@ -165,6 +173,7 @@ protected:
     State          _state;
     BaseServ*      _service;
     core::os::Time _timeout;
+    void*          _private;
     mutable StaticList<ClientBase>::Link _by_rpc;
 };
 
@@ -554,7 +563,7 @@ public:
         std::size_t stack_size
     )
     {
-        core::os::Thread::create_heap(nullptr, stack_size, core::os::Thread::PriorityEnum::NORMAL, [](void* arg) {
+        core::os::Thread::create_heap(nullptr, stack_size, core::os::Thread::PriorityEnum::NORMAL - 2, [](void* arg) {
                         reinterpret_cast<core::mw::rpc::RPC*>(arg)->thread();
                     }, this, "rpcthd");
 
