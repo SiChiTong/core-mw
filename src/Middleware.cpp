@@ -844,7 +844,7 @@ Middleware::mgmt_threadf(
     core::os::Thread::Argument
 )
 {
-    instance.do_mgmt_thread();
+    instance().do_mgmt_thread();
     chThdExitS(core::os::Thread::OK);
 }
 

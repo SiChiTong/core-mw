@@ -103,7 +103,10 @@ private:
     size_t num_running_nodes;
 
 public:
-    static Middleware instance;
+    static Middleware& instance() {
+    	static Middleware instance("MW");
+    	return instance;
+    }
 
 public:
     const char*
@@ -347,7 +350,7 @@ bool
 ok()
 {
     core::os::SysLock::acquire();
-    bool alive = !Middleware::instance.is_stopped();
+    bool alive = !Middleware::instance().is_stopped();
     core::os::SysLock::release();
 
     return alive;

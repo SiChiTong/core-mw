@@ -28,7 +28,7 @@ Node::advertise(
         return false;
     }
 
-    if (Middleware::instance.advertise(pub, namep, publish_timeout, msg_size)) {
+    if (Middleware::instance().advertise(pub, namep, publish_timeout, msg_size)) {
         publishers.link(pub.by_node);
         return true;
     }
@@ -56,7 +56,7 @@ Node::subscribe(
     CORE_ASSERT(index <= static_cast<int>(core::os::SpinEvent::MAX_INDEX));
     sub.event_index = static_cast<uint_least8_t>(index);
 
-    if (!Middleware::instance.subscribe(sub, namep, msgpool_buf, sub.get_queue_length(), msg_size)) {
+    if (!Middleware::instance().subscribe(sub, namep, msgpool_buf, sub.get_queue_length(), msg_size)) {
         subscribers.unlink(sub.by_node);
         return false;
     }
@@ -111,12 +111,12 @@ Node::Node(
 {
     CORE_ASSERT(is_identifier(namep, NamingTraits<Node>::MAX_LENGTH));
 
-    Middleware::instance.add(*this);
+    Middleware::instance().add(*this);
 }
 
 Node::~Node()
 {
-    Middleware::instance.confirm_stop(*this);
+    Middleware::instance().confirm_stop(*this);
 }
 
 NAMESPACE_CORE_MW_END
