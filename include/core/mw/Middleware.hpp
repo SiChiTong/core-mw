@@ -73,7 +73,7 @@ private:
     size_t mgmt_stacklen;
     core::os::Thread* mgmt_threadp;
     core::os::Thread::Priority mgmt_priority;
-    Node mgmt_node;
+    //Node mgmt_node;
     Publisher<MgmtMsg>        mgmt_pub;
     SubscriberExtBuf<MgmtMsg> mgmt_sub;
     MgmtMsg* mgmt_queue_buf[MGMT_BUFFER_LENGTH];

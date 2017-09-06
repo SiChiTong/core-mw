@@ -368,10 +368,12 @@ Middleware::touch_topic(
 void
 Middleware::do_mgmt_thread()
 {
-    core::os::SysLock::acquire();
+    Node mgmt_node("CORE_MGMT", false);
 
+    core::os::SysLock::acquire();
     mgmt_node.set_enabled(true);
     core::os::SysLock::release();
+
     mgmt_node.advertise(mgmt_pub, mgmt_topic.get_name(), core::os::Time::INFINITE);
     mgmt_node.subscribe(mgmt_sub, mgmt_topic.get_name(), mgmt_msg_buf);
 
@@ -821,7 +823,7 @@ Middleware::Middleware(
     mgmt_stacklen(0),
     mgmt_threadp(nullptr),
     mgmt_priority(core::os::Thread::LOWEST),
-    mgmt_node("CORE_MGMT", false),
+	// mgmt_node("CORE_MGMT", false),
     mgmt_pub(),
     mgmt_sub(mgmt_queue_buf, MGMT_BUFFER_LENGTH, nullptr),
 #if CORE_IS_BOOTLOADER_BRIDGE
