@@ -53,6 +53,7 @@ public:
         MessageType* msg //!< [in] message to be published
     );
 
+
     /*! \brief Publish a message
      *
      * The message is looped back to the subscriber in the same thread (if any).
@@ -63,6 +64,7 @@ public:
     publish_loopback(
         MessageType* msg //!< [in] message to be published
     );
+
 
 public:
     Publisher();

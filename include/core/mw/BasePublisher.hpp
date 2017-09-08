@@ -69,6 +69,7 @@ public:
         bool     mustReschedule = false
     );
 
+
     /*! \brief Publish a message
      *
      * \pre The message must have been previously allocated with alloc()
