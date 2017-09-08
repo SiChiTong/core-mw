@@ -6,12 +6,13 @@
 
 #pragma once
 
+#include <core/mw/namespace.hpp>
+#include <core/common.hpp>
 #include <core/mw/Message.hpp>
 
 #include <type_traits>
 
-namespace core {
-namespace mw {
+NAMESPACE_CORE_MW_BEGIN
 namespace rpc {
 static const uint32_t RPC_MESSAGE_LENGTH = 64;
 static const uint32_t RPC_NAME_LENGTH    = 16;
@@ -72,5 +73,4 @@ public:
 
 CORE_PACKED_ALIGNED;
 }
-}
-}
+NAMESPACE_CORE_MW_END

@@ -16,9 +16,11 @@
  *
  *****************************************************************************/
 
+#pragma once
 
+#include <core/mw/namespace.hpp>
+#include <core/common.hpp>
 #include <core/mw/StaticList.hpp>
-#include <functional>
 #include <core/os/Mutex.hpp>
 #include <core/mw/Middleware.hpp>
 #include <core/mw/Publisher.hpp>
@@ -26,8 +28,9 @@
 
 #include <core/mw/RPCMessages.hpp>
 
-namespace core {
-namespace mw {
+#include <functional>
+
+NAMESPACE_CORE_MW_BEGIN
 namespace rpc {
 struct BaseServ {
     virtual std::size_t
@@ -103,6 +106,11 @@ class ServerBase
     friend class RPC;
 
 public:
+    ServerBase() : _rpc(nullptr), _id(0), _timeout(core::os::Time::INFINITE), _by_rpc(*this)
+    {
+        _rpc_name.clear();
+    }
+
     ServerBase(
         const char* rpc_name
     ) : _rpc(nullptr), _id(0), _timeout(core::os::Time::INFINITE), _by_rpc(*this)
@@ -155,11 +163,17 @@ public:
         return _server_id != 0;
     }
 
-    void setPrivateData(void* private_data) {
+    void
+    setPrivateData(
+        void* private_data
+    )
+    {
         _private = private_data;
     }
 
-    void* getPrivateData() {
+    void*
+    getPrivateData()
+    {
         return _private;
     }
 
@@ -564,8 +578,8 @@ public:
     )
     {
         core::os::Thread::create_heap(nullptr, stack_size, core::os::Thread::PriorityEnum::NORMAL - 2, [](void* arg) {
-                        reinterpret_cast<core::mw::rpc::RPC*>(arg)->thread();
-                    }, this, "rpcthd");
+                reinterpret_cast<core::mw::rpc::RPC*>(arg)->thread();
+            }, this, "rpcthd");
 
         while (!_running) {
             core::os::Thread::sleep(core::os::Time::ms(500));
@@ -636,6 +650,16 @@ public:
         _lock.release();
 
         return true;
+    } // addServer
+
+    bool
+    addServer(
+        const char* rpc,
+        ServerBase& server
+    )
+    {
+        server._rpc_name = rpc;
+        return addServer(server);
     } // addServer
 
     bool
@@ -882,5 +906,4 @@ private:
     } // getNextServerId
 };
 }
-}
-}
+NAMESPACE_CORE_MW_END
