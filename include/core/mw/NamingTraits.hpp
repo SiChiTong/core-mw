@@ -24,7 +24,7 @@ struct NamingTraits {};
 template <>
 struct NamingTraits<Middleware> {
     enum {
-        MAX_LENGTH = 7
+        MAX_LENGTH = 16
     };
 };
 

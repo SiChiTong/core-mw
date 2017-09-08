@@ -11,7 +11,7 @@
 #include <type_traits>
 
 #pragma GCC diagnostic push
-#if __GNUC__ >=6
+#if __GNUC__ >= 6
 #pragma GCC diagnostic ignored "-Wignored-attributes"
 #endif
 
