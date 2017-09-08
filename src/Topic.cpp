@@ -291,7 +291,7 @@ Topic::patch_pubsub_msg(
     Transport& transport
 ) const
 {
-    if (this != &Middleware::instance.get_mgmt_topic()) {
+    if (this != &Middleware::instance().get_mgmt_topic()) {
         return;
     }
 
@@ -303,7 +303,7 @@ Topic::patch_pubsub_msg(
       case MgmtMsg::SUBSCRIBE_RESPONSE:
       {
           // TODO: Get the topic from a reference in function parameters, to speed up
-          Topic* topicp = Middleware::instance.find_topic(mgmt_msg.pubsub.topic);
+          Topic* topicp = Middleware::instance().find_topic(mgmt_msg.pubsub.topic);
 
           if (topicp != nullptr) {
               transport.fill_raw_params(*topicp, mgmt_msg.pubsub.raw_params);

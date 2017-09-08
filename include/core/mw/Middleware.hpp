@@ -73,7 +73,7 @@ private:
     size_t mgmt_stacklen;
     core::os::Thread* mgmt_threadp;
     core::os::Thread::Priority mgmt_priority;
-    Node mgmt_node;
+    //Node mgmt_node;
     Publisher<MgmtMsg>        mgmt_pub;
     SubscriberExtBuf<MgmtMsg> mgmt_sub;
     MgmtMsg* mgmt_queue_buf[MGMT_BUFFER_LENGTH];
@@ -103,7 +103,13 @@ private:
     size_t num_running_nodes;
 
 public:
-    static Middleware instance;
+    static Middleware&
+    instance()
+    {
+        static Middleware instance("MW");
+
+        return instance;
+    }
 
 public:
     const char*
@@ -141,10 +147,7 @@ public:
         const char*                module_namep,
         void*                      mgmt_stackp,
         size_t                     mgmt_stacklen,
-        core::os::Thread::Priority mgmt_priority,
-        void*                      boot_stackp = nullptr,
-        size_t                     boot_stacklen = 0,
-        core::os::Thread::Priority boot_priority = core::os::Thread::LOWEST
+        core::os::Thread::Priority mgmt_priority
     );
 
     void
@@ -247,9 +250,7 @@ private:
 
 private:
     Middleware(
-        const char* module_namep,
-        PubSubStep  pubsub_buf[] = nullptr,
-        size_t      pubsub_length = 0
+        const char* module_namep
     );
 
 private:
@@ -280,6 +281,13 @@ private:
 #if CORE_USE_BRIDGE_MODE
     PubSubStep*
     alloc_pubsub_step();
+
+
+    enum {
+        PUBSUB_BUFFER_LENGTH = 16
+    };
+
+    core::mw::Middleware::PubSubStep pubsub_buf[PUBSUB_BUFFER_LENGTH];
 #endif
 };
 
@@ -347,7 +355,7 @@ bool
 ok()
 {
     core::os::SysLock::acquire();
-    bool alive = !Middleware::instance.is_stopped();
+    bool alive = !Middleware::instance().is_stopped();
     core::os::SysLock::release();
 
     return alive;

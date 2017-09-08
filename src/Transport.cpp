@@ -126,7 +126,7 @@ Transport::advertise(
 {
     publishers_lock.acquire();
 
-    if (Middleware::instance.advertise(pub, namep, publish_timeout, type_size)) {
+    if (Middleware::instance().advertise(pub, namep, publish_timeout, type_size)) {
         publishers.link(pub.by_transport);
         publishers_lock.release();
         return true;
@@ -147,7 +147,7 @@ Transport::subscribe(
 {
     subscribers_lock.acquire();
 
-    if (Middleware::instance.subscribe(sub, namep, msgpool_buf, msgpool_buflen, type_size)) {
+    if (Middleware::instance().subscribe(sub, namep, msgpool_buf, msgpool_buflen, type_size)) {
         subscribers.link(sub.by_transport);
         subscribers_lock.release();
         return true;
