@@ -24,10 +24,7 @@ Middleware::initialize(
     const char*                module_namep,
     void*                      mgmt_stackp,
     size_t                     mgmt_stacklen,
-    core::os::Thread::Priority mgmt_priority,
-    void*                      boot_stackp,
-    size_t                     boot_stacklen,
-    core::os::Thread::Priority boot_priority
+    core::os::Thread::Priority mgmt_priority
 )
 {
     CORE_ASSERT(is_identifier(module_namep, NamingTraits<Middleware>::MAX_LENGTH));
@@ -371,6 +368,7 @@ Middleware::do_mgmt_thread()
     Node mgmt_node("CORE_MGMT", false);
 
     core::os::SysLock::acquire();
+
     mgmt_node.set_enabled(true);
     core::os::SysLock::release();
 
@@ -444,6 +442,7 @@ Middleware::do_mgmt_thread()
                           preload_bootloader_mode(false);
                           reboot();
                       }
+
                       if (0 == strncmp("*", msgp->module.name, NamingTraits<Middleware>::MAX_LENGTH)) {
                           preload_bootloader_mode(false);
                           reboot();
@@ -463,6 +462,7 @@ Middleware::do_mgmt_thread()
                           preload_bootloader_mode(true);
                           reboot();
                       }
+
 #if !CORE_USE_BRIDGE_MODE
                       // Bridges can only be rebooted by exact name
                       if (0 == strncmp("*", msgp->module.name, NamingTraits<Middleware>::MAX_LENGTH)) {
@@ -811,9 +811,7 @@ Middleware::alloc_pubsub_step()
 
 
 Middleware::Middleware(
-    const char* module_namep,
-    PubSubStep  pubsub_buf[],
-    size_t      pubsub_length
+    const char* module_namep
 )
     :
     module_namep(module_namep),
@@ -823,7 +821,7 @@ Middleware::Middleware(
     mgmt_stacklen(0),
     mgmt_threadp(nullptr),
     mgmt_priority(core::os::Thread::LOWEST),
-	// mgmt_node("CORE_MGMT", false),
+    // mgmt_node("CORE_MGMT", false),
     mgmt_pub(),
     mgmt_sub(mgmt_queue_buf, MGMT_BUFFER_LENGTH, nullptr),
 #if CORE_IS_BOOTLOADER_BRIDGE
@@ -832,14 +830,11 @@ Middleware::Middleware(
 #endif
 #if CORE_USE_BRIDGE_MODE
     pubsub_stepsp(nullptr),
-    pubsub_pool(pubsub_buf, pubsub_length),
+    pubsub_pool(pubsub_buf, PUBSUB_BUFFER_LENGTH),
 #endif
     stopped(false),
     num_running_nodes(0)
-{
-    (void)pubsub_buf;
-    (void)pubsub_length;
-}
+{}
 
 void
 Middleware::mgmt_threadf(

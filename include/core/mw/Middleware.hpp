@@ -103,9 +103,12 @@ private:
     size_t num_running_nodes;
 
 public:
-    static Middleware& instance() {
-    	static Middleware instance("MW");
-    	return instance;
+    static Middleware&
+    instance()
+    {
+        static Middleware instance("MW");
+
+        return instance;
     }
 
 public:
@@ -144,10 +147,7 @@ public:
         const char*                module_namep,
         void*                      mgmt_stackp,
         size_t                     mgmt_stacklen,
-        core::os::Thread::Priority mgmt_priority,
-        void*                      boot_stackp = nullptr,
-        size_t                     boot_stacklen = 0,
-        core::os::Thread::Priority boot_priority = core::os::Thread::LOWEST
+        core::os::Thread::Priority mgmt_priority
     );
 
     void
@@ -250,9 +250,7 @@ private:
 
 private:
     Middleware(
-        const char* module_namep,
-        PubSubStep  pubsub_buf[] = nullptr,
-        size_t      pubsub_length = 0
+        const char* module_namep
     );
 
 private:
@@ -283,6 +281,13 @@ private:
 #if CORE_USE_BRIDGE_MODE
     PubSubStep*
     alloc_pubsub_step();
+
+
+    enum {
+        PUBSUB_BUFFER_LENGTH = 16
+    };
+
+    core::mw::Middleware::PubSubStep pubsub_buf[PUBSUB_BUFFER_LENGTH];
 #endif
 };
 
