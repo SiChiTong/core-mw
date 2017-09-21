@@ -84,8 +84,8 @@ public:
      * Name of the module.
      *
      * The default implementations returns:
-     * 1. if the module is compiled with bootloader support: the name stored in the configuration block
-     * 2. if CORE_MODULE_NAME is defined: CORE_MODULE_NAME
+     * 1. if OVERRIDE_MODULE_ID is defined: OVERRIDE_MODULE_ID
+     * 2. if the module is compiled with bootloader support: the name stored in the configuration block
      * 3. else the module type (e.g.: "io" for an "io" module)
      *
      * \note This is HW specific, thus it must be implemented by the derived module.
@@ -99,7 +99,7 @@ public:
      * CAN ID of the module.
      *
      * The default implementations returns:
-     * 1. if MODULE_ID is defined: MODULE_ID
+     * 1. if OVERRIDE_MODULE_ID is defined: OVERRIDE_MODULE_ID
      * 2. if the module is compiled with bootloader support: the ID stored in the configuration block
      * 3. else the last byte of the UID
      *
