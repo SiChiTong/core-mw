@@ -8,7 +8,10 @@
 
 #include <core/mw/namespace.hpp>
 #include <core/common.hpp>
+
+#include <core/mw/NamingTraits.hpp>
 #include <core/mw/Message.hpp>
+#include <core/String.hpp>
 
 #include <type_traits>
 
