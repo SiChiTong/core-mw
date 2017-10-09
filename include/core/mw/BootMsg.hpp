@@ -38,11 +38,12 @@ enum class MessageType : uint8_t {
     WRITE_PROGRAM_CRC        = 0x06,
     ERASE_USER_CONFIGURATION = 0x07,
 
-    MODULE_NAME         = 0x25,
-    READ_MODULE_NAME    = 0x26,
+    // MODULE_NAME         = 0x25,
+    // READ_MODULE_NAME    = 0x26,
     WRITE_MODULE_NAME   = 0x27,
     WRITE_MODULE_CAN_ID = 0x28,
-    DESCRIBE            = 0x29,
+    DESCRIBE_V1         = 0x29,
+    DESCRIBE            = 0x26,
 
     IHEX_WRITE = 0x50,
     IHEX_READ  = 0x51,
@@ -108,7 +109,7 @@ using BootMsg       = MessageBase<LONG_MESSAGE_LENGTH>;
 
 template <typename _CONTAINER, MessageType _TYPE, typename _PAYLOAD>
 class Message_:
-    public _CONTAINER::PARENT
+    public _CONTAINER::Parent
 {
 public:
     using ContainerType = _CONTAINER;
@@ -159,6 +160,7 @@ template <typename CONTAINER, typename PAYLOAD>
 class AcknowledgeMessage_:
     public CONTAINER::ParentType
 {
+        // static_assert(sizeof(PAYLOAD) <= CONTAINER::MESSAGE_LENGTH - sizeof(AcknowledgeMessage), "Payload too large");
 public:
     using ContainerType = CONTAINER;
     using PayloadType   = PAYLOAD;
@@ -221,10 +223,21 @@ struct IHex {
 
 struct Announce {
     ModuleUID uid;
+    uint8_t   version;
+};
+
+struct DescribeV1 {
+    uint32_t   programFlashSize;
+    uint16_t   userFlashSize;
+    uint8_t    moduleId;
+    ModuleType moduleType;
+    ModuleName moduleName;
 };
 
 struct Describe {
     uint32_t   programFlashSize;
+    uint32_t   confCRC;
+    uint32_t   flashCRC;
     uint16_t   userFlashSize;
     uint8_t    moduleId;
     ModuleType moduleType;
@@ -247,8 +260,8 @@ using DeselectSlave = Message_<BootMsg, MessageType::DESELECT_SLAVE, payload::UI
 using EraseConfiguration = Message_<BootMsg, MessageType::ERASE_CONFIGURATION, payload::UID>;
 using EraseProgram       = Message_<BootMsg, MessageType::ERASE_PROGRAM, payload::UID>;
 using WriteProgramCrc    = Message_<BootMsg, MessageType::WRITE_PROGRAM_CRC, payload::UIDAndCRC>;
+using DescribeV1 = Message_<BootMsg, MessageType::DESCRIBE_V1, payload::UID>;
 using Describe = Message_<BootMsg, MessageType::DESCRIBE, payload::UID>;
-
 
 using IHexData = Message_<BootMsg, MessageType::IHEX_READ, payload::IHex>;
 
@@ -256,7 +269,7 @@ using IHexRead = Message_<BootMsg, MessageType::IHEX_WRITE, payload::UIDAndAddre
 
 using Reset = Message_<BootMsg, MessageType::RESET, payload::UID>;
 
-using ReadName = Message_<BootMsg, MessageType::READ_MODULE_NAME, payload::UID>;
+//using ReadName = Message_<BootMsg, MessageType::READ_MODULE_NAME, payload::UID>;
 using WriteModuleName = Message_<BootMsg, MessageType::WRITE_MODULE_NAME, payload::UIDAndName>;
 using WriteModuleID   = Message_<BootMsg, MessageType::WRITE_MODULE_CAN_ID, payload::UIDAndID>;
 }
