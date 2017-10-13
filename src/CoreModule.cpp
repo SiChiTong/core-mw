@@ -9,11 +9,14 @@
 #include <core/os/OS.hpp>
 #include <core/hw/UID.hpp>
 
+#include <core/utils/LFSR.hpp>
+
 #include <ModuleConfiguration.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
 static CoreModule::Led _led;
+static core::utils::LFSR<uint32_t, 0x80000ACDu> _prn(CoreModule::uid());
 
 CoreModule::Led& CoreModule::led = _led;
 
@@ -55,5 +58,11 @@ CoreModule::configurations()
 }
 
 CoreModule::CoreModule() {}
+
+uint32_t
+CoreModule::getPseudorandom()
+{
+    return _prn();
+}
 
 NAMESPACE_CORE_MW_END
