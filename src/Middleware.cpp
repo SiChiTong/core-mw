@@ -16,6 +16,7 @@
 #include <core/mw/Publisher.hpp>
 #include <core/mw/Subscriber.hpp>
 #include <core/os/ScopedLock.hpp>
+#include <core/mw/CoreModule.hpp>
 
 NAMESPACE_CORE_MW_BEGIN
 
@@ -42,6 +43,10 @@ Middleware::initialize(
 #if CORE_IS_BOOTLOADER_BRIDGE
     topics.link(boot_topic.by_middleware);
     topics.link(bootmaster_topic.by_middleware);
+#endif
+
+#if CORE_ITERATE_PUBSUB
+    iter_lasttime_random = core::mw::CoreModule::uid();
 #endif
 } // Middleware::initialize
 
@@ -496,6 +501,8 @@ Middleware::do_mgmt_thread()
         // Iterate publishers and subscribers
         else if (core::os::Time::now() - iter_lasttime >= core::os::Time::ms(ITER_TIMEOUT_MS)) {
             iter_lasttime = core::os::Time::now();
+            iter_lasttime_random = CoreModule::getPseudorandom();
+            iter_lasttime += core::os::Time::ms(iter_lasttime_random);
 
             if (!iter_nodes.is_valid()) {
                 // Restart nodes iteration
@@ -540,6 +547,10 @@ Middleware::do_mgmt_thread()
                     mgmt_sub.release(*msgp);
                 }
             } else if (iter_subscribers.is_valid()) {
+#if CORE_IS_BOOTLOADER_BRIDGE
+                if (iter_subscribers->get_topic() != &this->boot_topic) {
+#endif
+
                 // Subscribe next subscriber
                 if (mgmt_pub.alloc(msgp)) {
                     Message::reset_payload(*msgp);
@@ -558,6 +569,10 @@ Middleware::do_mgmt_thread()
 
                     mgmt_sub.release(*msgp);
                 }
+
+#if CORE_IS_BOOTLOADER_BRIDGE
+            }
+#endif
             } else {
                 ++iter_nodes;
 
