@@ -97,6 +97,7 @@ private:
     StaticList<LocalPublisher>::ConstIterator  iter_publishers;
     StaticList<LocalSubscriber>::ConstIterator iter_subscribers;
     core::os::Time iter_lasttime;
+    uint8_t        iter_lasttime_random;
 #endif
 
     bool   stopped;
