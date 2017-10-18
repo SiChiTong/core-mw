@@ -76,7 +76,7 @@ CoreConfigurationManager::loadFrom(
     CoreConfigurationStorage& storage
 )
 {
-    if (storage.size() != 0) {
+    if ((storage.data() != nullptr) && (storage.size() != 0)) {
         setFrom(reinterpret_cast<uint8_t*>(storage.data()), storage.size());
     }
 }
