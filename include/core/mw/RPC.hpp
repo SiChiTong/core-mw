@@ -201,6 +201,14 @@ public:
         _lock.initialize();
     }
 
+    RPCBase() : _name(nullptr), _runner(nullptr), _sequence(0), _sub_node("RPCSub", false), _pub_node("RPCPub")
+    {}
+
+    void initialize(const char* name) {
+        _name = name;
+        _lock.initialize();
+    }
+
     bool
     call(
         ClientBase& client,
@@ -235,7 +243,7 @@ public:
 
             CORE_ASSERT(serv.getRequestSize() < RPCMessage::PAYLOAD_SIZE);
 
-            memcpy(request->payload, serv.getRequest(), serv.getRequestSize());
+            std::memcpy(request->payload, serv.getRequest(), serv.getRequestSize());
 
             if (client.transaction._timeout == core::os::Time::IMMEDIATE) {
                 if (executeClientTransaction_async(client)) {
@@ -247,7 +255,7 @@ public:
 
                     CORE_ASSERT(serv.getResponseSize() < RPCMessage::PAYLOAD_SIZE);
 
-                    memcpy(serv.getResponse(), response->payload, serv.getResponseSize());
+                    std::memcpy(serv.getResponse(), response->payload, serv.getResponseSize());
 
                     success = true;
                 }
@@ -428,6 +436,9 @@ public:
 
 public:
     Server(
+    ) : ServerBase::ServerBase(), _callback() {}
+
+    Server(
         const char* rpc_name
     ) : ServerBase::ServerBase(rpc_name), _callback() {}
 
@@ -456,12 +467,12 @@ public:
     {
         Service ss;
 
-        memcpy(ss.getRequest(), request, ss.getRequestSize());
+        std::memcpy(ss.getRequest(), request, ss.getRequestSize());
 
         if (_callback) {
             _callback(ss);
 
-            memcpy(response, ss.getResponse(), ss.getResponseSize());
+            std::memcpy(response, ss.getResponse(), ss.getResponseSize());
 
             return true;
         }
@@ -541,7 +552,8 @@ public:
     invoke()
     {
         if (_callback) {
-            memcpy(_service->getResponse(), transaction._inbound_message, _service->getResponseSize());
+            const void* tmp = &(transaction._inbound_message->payload[0]);
+            std::memcpy(_service->getResponse(), tmp, _service->getResponseSize());
 
             _callback(*reinterpret_cast<Service*>(_service));
 
@@ -571,6 +583,8 @@ public:
     RPC(
         const char* name
     ) : RPCBase::RPCBase(name), _running(false), _next_client_id(0), _next_server_id(0) {}
+
+    RPC() : RPCBase::RPCBase(), _running(false), _next_client_id(0), _next_server_id(0) {}
 
     bool
     start(
