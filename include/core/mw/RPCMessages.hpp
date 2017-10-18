@@ -18,7 +18,7 @@
 NAMESPACE_CORE_MW_BEGIN
 namespace rpc {
 static const uint32_t RPC_MESSAGE_LENGTH = 64;
-static const uint32_t RPC_NAME_LENGTH    = 16;
+static const uint32_t RPC_NAME_LENGTH    = 24;
 
 using ModuleName = String<core::mw::NamingTraits<Middleware>::MAX_LENGTH>;
 using RPCName    = String<RPC_NAME_LENGTH>;
@@ -41,7 +41,6 @@ public:
         uint8_t     server_session;
         uint8_t     sequence;
         ModuleName  target_module_name;
-        uint8_t     _rfu_padding;
     }
 
     CORE_PACKED;
