@@ -168,6 +168,9 @@ public:
     static void
     enableBootloader();
 
+    static uint32_t
+    getPseudorandom();
+
 
 private:
     static core::mw::CoreConfigurationStorage& _coreConfigurationStorage;
