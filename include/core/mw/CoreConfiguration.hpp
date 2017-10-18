@@ -45,7 +45,7 @@ struct CoreConfigurationSignature {
  */
 struct CoreConfigurationMap {
     //! Type of the map key
-    using Key = core::String<24>;
+    using Key = core::String<16>;
 
     /*! \brief Metadata about a configuration field
      *
