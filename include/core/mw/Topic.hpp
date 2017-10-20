@@ -173,6 +173,13 @@ public:
     );
 
     bool
+    notify_locals_loopback(
+        Message&              msg,
+        const core::os::Time& timestamp,
+        bool                  mustReschedule = false
+    );
+
+    bool
     notify_remotes(
         Message&              msg,
         const core::os::Time& timestamp

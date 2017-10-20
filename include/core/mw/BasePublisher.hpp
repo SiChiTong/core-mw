@@ -69,6 +69,17 @@ public:
         bool     mustReschedule = false
     );
 
+
+    /*! \brief Publish a message
+     *
+     * \pre The message must have been previously allocated with alloc()
+     */
+    bool
+    publish_loopback(
+        Message& msg, //!< [in] message to be published
+        bool     mustReschedule = false
+    );
+
     bool
     publish_locally(
         Message& msg,

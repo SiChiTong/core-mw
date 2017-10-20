@@ -128,6 +128,26 @@ Topic::notify_locals(
 }
 
 bool
+Topic::notify_locals_loopback(
+    Message&              msg,
+    const core::os::Time& timestamp,
+    bool                  mustReschedule
+)
+{
+    if (has_local_subscribers()) {
+        for (StaticList<LocalSubscriber>::Iterator i = local_subscribers.begin(); i != local_subscribers.end(); ++i) {
+            msg.acquire();
+
+            if (!i->notify(msg, timestamp, mustReschedule)) {
+                msg.release();
+            }
+        }
+    }
+
+    return true;
+}
+
+bool
 Topic::notify_remotes(
     Message&              msg,
     const core::os::Time& timestamp

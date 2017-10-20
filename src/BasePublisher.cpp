@@ -89,6 +89,28 @@ BasePublisher::publish(
     return success;
 }
 
+bool
+BasePublisher::publish_loopback(
+    Message& msg,
+    bool     mustReschedule
+)
+{
+    CORE_ASSERT(topicp != nullptr);
+
+    msg.acquire();
+
+    core::os::Time now = core::os::Time::now();
+    bool           success;
+    success = topicp->notify_locals_loopback(msg, now, mustReschedule);
+    success = topicp->notify_remotes(msg, now) && success;
+
+    if (!msg.release()) {
+        topicp->free(msg);
+    }
+
+    return success;
+}
+
 BasePublisher::BasePublisher()
     :
     topicp(nullptr)
