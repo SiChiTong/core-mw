@@ -8,7 +8,7 @@ BootloaderMaster::BootloaderMaster() : _node("bootm", false),
     _masterAnnounceThread(nullptr),
     _masterThread(nullptr),
     _run(true),
-    _advertise(false),
+    _advertise(true),
     _bootload(true), _ack_filter(MessageType::NONE), _sequence_id(0), _command(nullptr), _selected(0), _runner(nullptr)
 {}
 
