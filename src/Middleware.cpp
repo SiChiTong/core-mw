@@ -46,7 +46,7 @@ Middleware::initialize(
 #endif
 
 #if CORE_ITERATE_PUBSUB
-    iter_lasttime_random = core::mw::CoreModule::uid();
+    iter_lasttime_random = core::os::Time(ITER_TIMEOUT_MS);
 #endif
 } // Middleware::initialize
 
@@ -499,10 +499,9 @@ Middleware::do_mgmt_thread()
 
 #if CORE_ITERATE_PUBSUB
         // Iterate publishers and subscribers
-        else if (core::os::Time::now() - iter_lasttime >= core::os::Time::ms(ITER_TIMEOUT_MS)) {
+        else if (core::os::Time::now() - iter_lasttime >= iter_lasttime_random) {
             iter_lasttime = core::os::Time::now();
-            iter_lasttime_random = CoreModule::getPseudorandom();
-            iter_lasttime += core::os::Time::ms(iter_lasttime_random);
+            iter_lasttime_random = core::os::Time::ms(ITER_TIMEOUT_MS + (CoreModule::getPseudorandom() & 0xFF));
 
             if (!iter_nodes.is_valid()) {
                 // Restart nodes iteration

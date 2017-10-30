@@ -90,14 +90,14 @@ private:
 
 #if CORE_ITERATE_PUBSUB
     enum {
-        ITER_TIMEOUT_MS = 500
+        ITER_TIMEOUT_MS = 255
     };
 
     StaticList<Node>::ConstIterator iter_nodes;
     StaticList<LocalPublisher>::ConstIterator  iter_publishers;
     StaticList<LocalSubscriber>::ConstIterator iter_subscribers;
     core::os::Time iter_lasttime;
-    uint8_t        iter_lasttime_random;
+    core::os::Time iter_lasttime_random;
 #endif
 
     bool   stopped;
