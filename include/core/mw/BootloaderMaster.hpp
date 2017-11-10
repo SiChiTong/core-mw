@@ -269,7 +269,9 @@ private:
     inline T*
     commandPayload()
     {
+    	CORE_WARNINGS_NO_CAST_ALIGN
         return reinterpret_cast<T*>(&_command->data);
+    	CORE_WARNINGS_RESET
     }
 
     bool

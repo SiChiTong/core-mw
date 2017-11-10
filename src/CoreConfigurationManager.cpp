@@ -107,7 +107,9 @@ CoreConfigurationManager::saveTo(
             memset(tmp_buffer, 0, NamingTraits<CoreConfigurableBase>::MAX_LENGTH);
             strcpy(tmp_buffer, object.getKey());
 
+            CORE_WARNINGS_NO_CAST_ALIGN
             tmp16 = reinterpret_cast<const uint16_t*>(tmp_buffer); //NOTE: warning: cast increases required alignment of target type - It is OK by design
+            CORE_WARNINGS_RESET
 
             for (std::size_t i = 0; i < NamingTraits<CoreConfigurableBase>::MAX_LENGTH; i += 2) {
                 success &= storage.write16(offset + i, *tmp16++);

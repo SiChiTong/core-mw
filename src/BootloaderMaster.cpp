@@ -155,7 +155,9 @@ BootloaderMaster::masterAnnounceNode()
                            while (_this->_run) {
                                while (sub.fetch(msgp)) {
                                    if (msgp->command == core::mw::bootloader::MessageType::REQUEST) {
+                                	   CORE_WARNINGS_NO_CAST_ALIGN
                                        core::mw::bootloader::payload::Announce* tmp = reinterpret_cast<core::mw::bootloader::payload::Announce*>(&msgp->data);
+                                	   CORE_WARNINGS_RESET
                                        _this->_slaves[tmp->uid];
                                    }
 
