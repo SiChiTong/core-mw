@@ -56,6 +56,36 @@ public:
 
     template <core::os::CallingContext CTX = core::os::CallingContext::NORMAL>
     bool
+    push_timeout(
+        Item item,
+		core::os::Time timeout
+    )
+    {
+    	bool success = false;
+
+        core::os::SysLock::ScopeFrom<CTX> lock;
+
+        _mutex.acquire_unsafe();
+
+        while (!this->post_unsafe(item)) {
+        	 success = _notFull.wait_unsafe(timeout);
+			if(!success) {
+				break;
+			}
+        }
+
+        if(success) {
+        	_totalPushed++;
+        	_notEmpty.signal_unsafe();
+        }
+
+        _mutex.release_unsafe();
+
+        return success;
+    } // push
+
+    template <core::os::CallingContext CTX = core::os::CallingContext::NORMAL>
+    bool
     try_push(
         Item item
     )
@@ -96,6 +126,36 @@ public:
 
         _mutex.release_unsafe();
     } // pop
+
+    template <core::os::CallingContext CTX = core::os::CallingContext::NORMAL>
+    bool
+    pop_timeout(
+        Item& item,
+		core::os::Time timeout
+    )
+    {
+    	bool success = false;
+
+        core::os::SysLock::ScopeFrom<CTX> lock;
+
+        _mutex.acquire_unsafe();
+
+        while (!this->fetch_unsafe(item)) {
+            success = _notEmpty.wait_unsafe(timeout);
+            if(!success) {
+            	break;
+            }
+        }
+
+        if (success) {
+            _totalPopped++;
+            _notFull.signal_unsafe();
+        }
+
+        _mutex.release_unsafe();
+
+        return success;
+    } // pop_timeout
 
     template <core::os::CallingContext CTX = core::os::CallingContext::NORMAL>
     bool
