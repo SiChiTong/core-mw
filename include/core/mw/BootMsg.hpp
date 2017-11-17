@@ -19,7 +19,7 @@ namespace bootloader {
 using ProductUID = uint16_t;
 using ModuleUID  = uint32_t;
 using ModuleType = core::String<12>;
-using ModuleName = core::String<14>;
+using ModuleName = core::String<16>;
 
 static const uint32_t LONG_MESSAGE_LENGTH  = 48;
 static const uint32_t SHORT_MESSAGE_LENGTH = 8;
