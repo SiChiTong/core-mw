@@ -51,7 +51,7 @@ BootloaderMaster::masterAdvertiseNode()
                                    pub2.publish_remotely(*msgp2);
                                }
 
-                               core::os::Thread::sleep(core::os::Time::ms(150));
+                               core::os::Thread::sleep(core::os::Time::ms(250));
                            }
                        };
 
@@ -158,6 +158,9 @@ BootloaderMaster::masterAnnounceNode()
                                 	   CORE_WARNINGS_NO_CAST_ALIGN
                                        core::mw::bootloader::payload::Announce* tmp = reinterpret_cast<core::mw::bootloader::payload::Announce*>(&msgp->data);
                                 	   CORE_WARNINGS_RESET
+
+					                    core::os::SysLock::Scope lock;
+
                                        _this->_slaves[tmp->uid];
                                    }
 
@@ -208,6 +211,8 @@ BootloaderMaster::stop()
     _masterAnnounceThread = nullptr;
     core::os::Thread::join(*(_masterThread));
     _masterThread = nullptr;
+
+    clear();
 
     return success;
 }
@@ -266,10 +271,11 @@ BootloaderMaster::beginCommand(
         _command->sequenceId = _sequence_id;
 
         return true;
-    }
+    } else {
+        _command = nullptr;
+        return false;
 
-    _command = nullptr;
-    return false;
+    }
 } // BootloaderMaster::beginCommand
 
 bool
@@ -332,6 +338,7 @@ BootloaderMaster::commandUIDAndName(
 {
     if (beginCommand(type)) {
         commandPayload<payload::UIDAndName>()->uid  = uid;
+        commandPayload<payload::UIDAndName>()->name.fill(0);
         commandPayload<payload::UIDAndName>()->name = name.c_str(); // Workaround for "STMIA bug"
 
         if (endCommand()) {
@@ -442,6 +449,13 @@ BootloaderMaster::ls()
 
     return success;
 } // BootloaderMaster::ls
+
+void
+BootloaderMaster::clear()
+{
+    core::os::SysLock::Scope lock;
+	_slaves.clear();
+}
 
 bool
 BootloaderMaster::describe(

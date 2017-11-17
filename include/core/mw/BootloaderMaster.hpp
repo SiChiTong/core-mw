@@ -113,6 +113,11 @@ public:
     {
         return N;
     }
+
+    void clear()
+    {
+    	_cnt = 0;
+    }
 };
 
 class BootloaderMaster
@@ -128,6 +133,9 @@ public:
 
     bool
     ls();
+
+    void
+	clear();
 
     bool
     identifySlave(
@@ -187,6 +195,11 @@ public:
     bool
     deselectSlave();
 
+
+    inline void
+	bootload(bool enable) {
+    	_bootload = enable;
+    }
 
     bool
     rebootRemote(
