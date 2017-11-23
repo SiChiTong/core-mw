@@ -9,6 +9,31 @@
 NAMESPACE_CORE_MW_BEGIN
 
 namespace bootloader {
+
+struct SlaveDescription {
+	friend class BootloaderMaster;
+
+	enum class Version {
+		NONE, V1, V2, V3
+	};
+
+	Version version() const;
+
+	const ModuleType& moduleType() const;
+
+	const ModuleName& moduleName() const;
+
+	uint8_t moduleID() const;
+
+private:
+	Version _version;
+	union {
+		payload::DescribeV1 _v1;
+		payload::DescribeV2 _v2;
+		payload::DescribeV3 _v3;
+	};
+};
+
 template <typename KEY, typename VALUE, std::size_t N>
 class StaticMap
 {
@@ -148,8 +173,18 @@ public:
     );
 
     bool
-    describe(
-        payload::Describe& description
+    describeV1(
+        payload::DescribeV1& description
+    );
+
+    bool
+    describeV2(
+        payload::DescribeV2& description
+    );
+
+    bool
+    describeV3(
+        payload::DescribeV3& description
     );
 
     bool
@@ -221,7 +256,7 @@ public:
         return _slaves.key(i);
     }
 
-    const payload::Describe&
+    const SlaveDescription&
     slaveDescription(
         std::size_t i
     ) const
@@ -243,7 +278,7 @@ private:
     masterNodeCode();
 
 
-    StaticMap<ModuleUID, payload::Describe, MAX_NUMBER_OF_SLAVES> _slaves;
+    StaticMap<ModuleUID, SlaveDescription, MAX_NUMBER_OF_SLAVES> _slaves;
 
     core::mw::Node _node;
     core::mw::Publisher<BootMsg>     _pub;

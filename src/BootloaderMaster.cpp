@@ -3,6 +3,55 @@
 NAMESPACE_CORE_MW_BEGIN
 
 namespace bootloader {
+
+SlaveDescription::Version SlaveDescription::version() const {
+	return _version;
+}
+const ModuleType& SlaveDescription::moduleType() const {
+	switch(_version) {
+		case Version::V1:
+			return _v1.moduleType;
+			break;
+		case Version::V2:
+			return _v2.moduleType;
+			break;
+		case Version::V3:
+		default:
+			return _v3.moduleType;
+			break;
+	}
+}
+
+const ModuleName& SlaveDescription::moduleName() const {
+	switch(_version) {
+		case Version::V1:
+			return _v1.moduleName;
+			break;
+		case Version::V2:
+			return _v2.moduleName;
+			break;
+		case Version::V3:
+		default:
+			return _v3.moduleName;
+			break;
+	}
+}
+
+uint8_t SlaveDescription::moduleID() const {
+	switch(_version) {
+		case Version::V1:
+			return _v1.moduleId;
+			break;
+		case Version::V2:
+			return _v2.moduleId;
+			break;
+		case Version::V3:
+		default:
+			return _v3.moduleId;
+			break;
+	}
+}
+
 BootloaderMaster::BootloaderMaster() : _node("bootm", false),
     _masterAdvertiseThread(nullptr),
     _masterAnnounceThread(nullptr),
@@ -441,7 +490,19 @@ BootloaderMaster::ls()
         bool      tmp = true;
         ModuleUID uid = _slaves.key(n);
         tmp &= selectSlave(uid);
-        tmp &= describe(_slaves.value(n));
+
+        if(!tmp) {
+        	_slaves.value(n)._version = SlaveDescription::Version::NONE;
+    	} else if(describeV3(_slaves.value(n)._v3)) {
+    		_slaves.value(n)._version = SlaveDescription::Version::V3;
+        } else if(describeV2(_slaves.value(n)._v2)) {
+        	_slaves.value(n)._version = SlaveDescription::Version::V2;
+        } else if(describeV1(_slaves.value(n)._v1)) {
+        	_slaves.value(n)._version = SlaveDescription::Version::V1;
+        } else {
+        	_slaves.value(n)._version = SlaveDescription::Version::NONE;
+        	tmp = false;
+        }
         tmp &= deselectSlave();
 
         success &= tmp;
@@ -458,12 +519,12 @@ BootloaderMaster::clear()
 }
 
 bool
-BootloaderMaster::describe(
-    payload::Describe& description
+BootloaderMaster::describeV1(
+    payload::DescribeV1& description
 )
 {
-    if (commandUID(MessageType::DESCRIBE, _selected)) {
-        AcknowledgeDescribe* tmp = reinterpret_cast<AcknowledgeDescribe*>(&_last_ack);
+    if (commandUID(MessageType::DESCRIBE_V1, _selected)) {
+        AcknowledgeDescribeV1* tmp = reinterpret_cast<AcknowledgeDescribeV1*>(&_last_ack);
         description = tmp->data;
         return true;
     }
@@ -471,6 +532,33 @@ BootloaderMaster::describe(
     return false;
 }
 
+bool
+BootloaderMaster::describeV2(
+    payload::DescribeV2& description
+)
+{
+    if (commandUID(MessageType::DESCRIBE_V2, _selected)) {
+        AcknowledgeDescribeV2* tmp = reinterpret_cast<AcknowledgeDescribeV2*>(&_last_ack);
+        description = tmp->data;
+        return true;
+    }
+
+    return false;
+}
+
+bool
+BootloaderMaster::describeV3(
+    payload::DescribeV3& description
+)
+{
+    if (commandUID(MessageType::DESCRIBE_V3, _selected)) {
+        AcknowledgeDescribeV3* tmp = reinterpret_cast<AcknowledgeDescribeV3*>(&_last_ack);
+        description = tmp->data;
+        return true;
+    }
+
+    return false;
+}
 bool
 BootloaderMaster::identifySlave(
     ModuleUID uid

@@ -43,7 +43,8 @@ enum class MessageType : uint8_t {
     WRITE_MODULE_NAME   = 0x27,
     WRITE_MODULE_CAN_ID = 0x28,
     DESCRIBE_V1         = 0x29,
-    DESCRIBE            = 0x26,
+    DESCRIBE_V2         = 0x26,
+    DESCRIBE_V3         = 0x30,
 
     IHEX_WRITE = 0x50,
     IHEX_READ  = 0x51,
@@ -234,11 +235,22 @@ struct DescribeV1 {
     ModuleName moduleName;
 };
 
-struct Describe {
+struct DescribeV2 {
     uint32_t   programFlashSize;
     uint32_t   confCRC;
     uint32_t   flashCRC;
     uint16_t   userFlashSize;
+    uint8_t    moduleId;
+    ModuleType moduleType;
+    ModuleName moduleName;
+};
+
+struct DescribeV3 {
+    uint32_t   programFlashSize;
+    uint16_t   userFlashSize;
+    uint16_t   tagsFlashSize;
+    uint8_t    programValid;
+    uint8_t    userValid;
     uint8_t    moduleId;
     ModuleType moduleType;
     ModuleName moduleName;
@@ -260,8 +272,10 @@ using DeselectSlave = Message_<BootMsg, MessageType::DESELECT_SLAVE, payload::UI
 using EraseConfiguration = Message_<BootMsg, MessageType::ERASE_CONFIGURATION, payload::UID>;
 using EraseProgram       = Message_<BootMsg, MessageType::ERASE_PROGRAM, payload::UID>;
 using WriteProgramCrc    = Message_<BootMsg, MessageType::WRITE_PROGRAM_CRC, payload::UIDAndCRC>;
+
 using DescribeV1 = Message_<BootMsg, MessageType::DESCRIBE_V1, payload::UID>;
-using Describe = Message_<BootMsg, MessageType::DESCRIBE, payload::UID>;
+using DescribeV2 = Message_<BootMsg, MessageType::DESCRIBE_V2, payload::UID>;
+using DescribeV3 = Message_<BootMsg, MessageType::DESCRIBE_V3, payload::UID>;
 
 using IHexData = Message_<BootMsg, MessageType::IHEX_READ, payload::IHex>;
 
@@ -276,7 +290,9 @@ using WriteModuleID   = Message_<BootMsg, MessageType::WRITE_MODULE_CAN_ID, payl
 
 using AcknowledgeMsg      = AcknowledgeMessageBase<LONG_MESSAGE_LENGTH>;
 using AcknowledgeUID      = AcknowledgeMessage_<AcknowledgeMsg, payload::UID>;
-using AcknowledgeDescribe = AcknowledgeMessage_<AcknowledgeMsg, payload::Describe>;
+using AcknowledgeDescribeV1 = AcknowledgeMessage_<AcknowledgeMsg, payload::DescribeV1>;
+using AcknowledgeDescribeV2 = AcknowledgeMessage_<AcknowledgeMsg, payload::DescribeV2>;
+using AcknowledgeDescribeV3 = AcknowledgeMessage_<AcknowledgeMsg, payload::DescribeV3>;
 using AcknowledgeString   = AcknowledgeMessage_<AcknowledgeMsg, char[44]>;
 }
 NAMESPACE_CORE_MW_END
