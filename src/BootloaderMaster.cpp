@@ -464,6 +464,26 @@ BootloaderMaster::commandIHex(
 }
 
 bool
+BootloaderMaster::commandUIDAndAddress(
+    MessageType type,
+    ModuleUID   uid,
+    uint32_t    address
+) {
+    if (beginCommand(type)) {
+        commandPayload<payload::UIDAndAddress>()->uid = uid;
+        commandPayload<payload::UIDAndAddress>()->address = address;
+
+        if (endCommand()) {
+            if (waitForAck()) {
+                return _last_ack.status == AcknowledgeStatus::OK;
+            }
+        }
+    }
+
+    return false;
+}
+
+bool
 BootloaderMaster::selectSlave(
     ModuleUID uid
 )
@@ -645,5 +665,28 @@ BootloaderMaster::endIHex()
 {
     return commandIHex(MessageType::IHEX_WRITE, payload::IHex::Type::END, "");
 }
+
+bool
+BootloaderMaster::readTags(char* buffer) {
+	if(_slaves[_selected]._version == SlaveDescription::Version::V3) {
+		uint32_t size = _slaves[_selected]._v3.tagsFlashSize;
+		if(size > 0) {
+			uint32_t offset = 0;
+			while(offset < size) {
+				if (commandUIDAndAddress(MessageType::TAGS_READ, _selected, offset)) {
+					AcknowledgeString* tmp = reinterpret_cast<AcknowledgeString*>(&_last_ack);
+					::memcpy(buffer, tmp->data, 16);
+					buffer += 16;
+					offset += 16;
+				} else {
+					return false;
+				}
+			}
+			return true;
+		}
+	}
+	return false;
+}
+
 }
 NAMESPACE_CORE_MW_END

@@ -1,6 +1,7 @@
 #include <core/mw/Middleware.hpp>
 #include <core/os/Thread.hpp>
 #include <core/mw/BootMsg.hpp>
+#include <algorithm>
 
 #ifndef MAX_NUMBER_OF_SLAVES
 #define MAX_NUMBER_OF_SLAVES 32
@@ -34,6 +35,10 @@ private:
 	};
 };
 
+/* Static size associative map.
+ *
+ * Warning: naive implementation.
+ */
 template <typename KEY, typename VALUE, std::size_t N>
 class StaticMap
 {
@@ -56,21 +61,24 @@ public:
     {
         std::size_t i;
 
+        // Search the key
         for (i = 0; i < _cnt; i++) {
             if (_data[i].key == key) {
+            	// We already have an entry.
                 return _data[i].value;
             }
         }
 
+        // No matches. Add a new entry.
         if (i < N) {
             _cnt++;
             _data[i].key   = key;
             _data[i].value = VALUE();
+
+            return _data[i].value;
         } else {
             CORE_ASSERT(!"Too many entries");
         }
-
-        return _data[i].value;
     } // []
 
 /*
@@ -142,6 +150,12 @@ public:
     void clear()
     {
     	_cnt = 0;
+    }
+
+    void sort() {
+    	std::sort(_data.begin(), _data.end(), [](const Entry& a,const Entry& b) {
+    		return a.key < b.key;
+    	});
     }
 };
 
@@ -228,6 +242,9 @@ public:
     endIHex();
 
     bool
+	readTags(char* buffer);
+
+    bool
     deselectSlave();
 
 
@@ -276,7 +293,6 @@ private:
 
     void
     masterNodeCode();
-
 
     StaticMap<ModuleUID, SlaveDescription, MAX_NUMBER_OF_SLAVES> _slaves;
 
@@ -371,6 +387,13 @@ private:
         MessageType         type,
         payload::IHex::Type ihex_type,
         const char*         ihex_string
+    );
+
+    bool
+    commandUIDAndAddress(
+        MessageType type,
+        ModuleUID   uid,
+        uint32_t    address
     );
 };
 }

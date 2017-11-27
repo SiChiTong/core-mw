@@ -46,6 +46,8 @@ enum class MessageType : uint8_t {
     DESCRIBE_V2         = 0x26,
     DESCRIBE_V3         = 0x30,
 
+	TAGS_READ           = 0x40,
+
     IHEX_WRITE = 0x50,
     IHEX_READ  = 0x51,
 
@@ -276,6 +278,8 @@ using WriteProgramCrc    = Message_<BootMsg, MessageType::WRITE_PROGRAM_CRC, pay
 using DescribeV1 = Message_<BootMsg, MessageType::DESCRIBE_V1, payload::UID>;
 using DescribeV2 = Message_<BootMsg, MessageType::DESCRIBE_V2, payload::UID>;
 using DescribeV3 = Message_<BootMsg, MessageType::DESCRIBE_V3, payload::UID>;
+
+using TagsRead = Message_<BootMsg, MessageType::TAGS_READ, payload::UIDAndAddress>;
 
 using IHexData = Message_<BootMsg, MessageType::IHEX_READ, payload::IHex>;
 
