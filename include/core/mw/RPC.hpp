@@ -158,6 +158,8 @@ public:
     virtual bool
     invoke() = 0;
 
+    virtual
+	bool open() = 0;
 
     operator bool() {
         return _server_id != 0;
@@ -176,6 +178,9 @@ public:
     {
         return _private;
     }
+
+    virtual bool
+	has_callback() = 0;
 
 protected:
     RPCBase*       _rpc;
@@ -212,7 +217,8 @@ public:
     bool
     call(
         ClientBase& client,
-        BaseServ&   serv
+        BaseServ&   serv,
+		void*       private_data = nullptr
     )
     {
         bool success = false;
@@ -233,6 +239,7 @@ public:
         }
 
         if (beginClientTransaction(client)) {
+        	client.setPrivateData(private_data);
             client._service = &serv;
 
             RPCMessage* request = client.transaction._outbound_message;
@@ -571,6 +578,11 @@ public:
         _callback = callback;
     }
 
+    bool
+	has_callback()
+    {
+    	return (bool)_callback;
+    }
 private:
     CallbackType _callback;
 };
@@ -609,6 +621,10 @@ public:
     {
         _lock.acquire();
 
+        if(client._rpc != nullptr) {
+        	return false;
+        }
+
         client._rpc = this;
         _clients.link(client._by_rpc);
         client._id = getNextClientId();
@@ -625,6 +641,10 @@ public:
     )
     {
         _lock.acquire();
+
+        if(client._rpc == nullptr) {
+        	return false;
+        }
 
         _clients.unlink(client._by_rpc);
 
