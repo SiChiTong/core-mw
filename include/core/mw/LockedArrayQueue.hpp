@@ -150,9 +150,8 @@ public:
         if (success) {
             _totalPopped++;
             _notFull.signal_unsafe();
+            _mutex.release_unsafe();
         }
-
-        _mutex.release_unsafe();
 
         return success;
     } // pop_timeout
