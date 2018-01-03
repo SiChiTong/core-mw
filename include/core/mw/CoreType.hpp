@@ -14,7 +14,7 @@
 NAMESPACE_CORE_MW_BEGIN
 
 enum class CoreType {
-    VOID, CHAR, INT8, UINT8, INT16, UINT16, INT32, UINT32, INT64, UINT64, FLOAT32, FLOAT64, TIMESTAMP
+    VOID, CHAR, INT8, UINT8, INT16, UINT16, INT32, UINT32, INT64, UINT64, FLOAT32, FLOAT64, TIMESTAMP, VARIANT
 };
 
 template <CoreType T>
@@ -102,6 +102,28 @@ struct CoreTypeTraitsHelperF<CoreType::FLOAT64>{
     static const std::size_t sizeOfType = sizeof(Type);
 };
 
+template <>
+struct CoreTypeTraitsHelperF<CoreType::VARIANT>{
+    typedef struct {
+        union {
+            CoreTypeTraitsHelperF<core::mw::CoreType::TIMESTAMP>::Type timestamp;
+            CoreTypeTraitsHelperF<core::mw::CoreType::FLOAT64>::Type f64;
+            CoreTypeTraitsHelperF<core::mw::CoreType::INT64>::Type i64;
+            CoreTypeTraitsHelperF<core::mw::CoreType::UINT64>::Type u64;
+            CoreTypeTraitsHelperF<core::mw::CoreType::FLOAT32>::Type f32;
+            CoreTypeTraitsHelperF<core::mw::CoreType::INT32>::Type i32;
+            CoreTypeTraitsHelperF<core::mw::CoreType::UINT32>::Type u32;
+            CoreTypeTraitsHelperF<core::mw::CoreType::INT16>::Type i16;
+            CoreTypeTraitsHelperF<core::mw::CoreType::UINT16>::Type u16;
+            CoreTypeTraitsHelperF<core::mw::CoreType::INT8>::Type i8;
+            CoreTypeTraitsHelperF<core::mw::CoreType::UINT8>::Type u8;
+            CoreTypeTraitsHelperF<core::mw::CoreType::CHAR>::Type c;
+        };
+        CoreType type;
+    } Type;
+    static const std::size_t sizeOfType = sizeof(Type);
+};
+
 template <typename T>
 struct CoreTypeTraitsHelperB;
 
@@ -168,6 +190,11 @@ struct CoreTypeTraitsHelperB<double>{
 template <>
 struct CoreTypeTraitsHelperB<CoreTypeTraitsHelperF<CoreType::TIMESTAMP> >{
     static const CoreType types = CoreType::TIMESTAMP;
+};
+
+template <>
+struct CoreTypeTraitsHelperB<CoreTypeTraitsHelperF<CoreType::VARIANT> >{
+    static const CoreType types = CoreType::VARIANT;
 };
 
 template <CoreType T, std::size_t S>
@@ -297,6 +324,7 @@ coreTypeSize(
         SIZE_OF_CASE(FLOAT32);
         SIZE_OF_CASE(FLOAT64);
         SIZE_OF_CASE(TIMESTAMP);
+        SIZE_OF_CASE(VARIANT);
       default:
           CORE_ASSERT(!"Undefined CoreType");
           return 0; // unreachable
