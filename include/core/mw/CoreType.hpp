@@ -119,6 +119,7 @@ struct CoreTypeTraitsHelperF<CoreType::VARIANT>{
             CoreTypeTraitsHelperF<core::mw::CoreType::UINT8>::Type u8;
             CoreTypeTraitsHelperF<core::mw::CoreType::CHAR>::Type c;
         };
+
         CoreType type;
     } Type;
     static const std::size_t sizeOfType = sizeof(Type);
@@ -332,6 +333,242 @@ coreTypeSize(
 } // coreTypeSize
 
 #undef SIZE_OF_CASE
+
+template <typename T>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    T& x
+);
+
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    double& x
+)
+{
+    x = value.f64;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    int64_t& x
+)
+{
+    x = value.i64;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    uint64_t& x
+)
+{
+    x = value.u64;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    float& x
+)
+{
+    x = value.f32;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    int32_t& x
+)
+{
+    x = value.i32;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    uint32_t& x
+)
+{
+    x = value.u32;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    int16_t& x
+)
+{
+    x = value.i16;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    uint16_t& x
+)
+{
+    x = value.u16;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    int8_t& x
+)
+{
+    x = value.i8;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    uint8_t& x
+)
+{
+    x = value.u8;
+}
+
+template <>
+inline void
+variantGet(
+    const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value,
+    char& x
+)
+{
+    x = value.c;
+}
+
+template <typename T>
+inline void
+variantSet(
+    T x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+);
+
+
+template <>
+inline void
+variantSet(
+    double x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.f64 = x;
+}
+
+template <>
+inline void
+variantSet(
+    int64_t x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.i64 = x;
+}
+
+template <>
+inline void
+variantSet(
+    uint64_t x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.u64 = x;
+}
+
+template <>
+inline void
+variantSet(
+    float x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.f32 = x;
+}
+
+template <>
+inline void
+variantSet(
+    int32_t x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.i32 = x;
+}
+
+template <>
+inline void
+variantSet(
+    uint32_t x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.u32 = x;
+}
+
+template <>
+inline void
+variantSet(
+    int16_t x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.i16 = x;
+}
+
+template <>
+inline void
+variantSet(
+    uint16_t x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.u16 = x;
+}
+
+template <>
+inline void
+variantSet(
+    int8_t x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.i8 = x;
+}
+
+template <>
+inline void
+variantSet(
+    uint8_t x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.u8 = x;
+}
+
+template <>
+inline void
+variantSet(
+    char x,
+    core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value
+)
+{
+    value.c = x;
+}
 }
 
 
