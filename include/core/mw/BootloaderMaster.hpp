@@ -85,6 +85,8 @@ public:
         } else {
             CORE_ASSERT(!"Too many entries");
         }
+
+        UNREACHABLE;
     } // []
 
 /*
