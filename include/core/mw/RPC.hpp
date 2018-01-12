@@ -22,6 +22,7 @@
 #include <core/common.hpp>
 #include <core/mw/StaticList.hpp>
 #include <core/os/Mutex.hpp>
+#include <core/os/ScopedLock.hpp>
 #include <core/mw/Middleware.hpp>
 #include <core/mw/Publisher.hpp>
 #include <core/mw/Subscriber.hpp>
@@ -341,14 +342,13 @@ protected:
         ClientBase& client
     )
     {
-        //client.transaction._lock.acquire();
-        _lock.acquire();
-        client.transaction._outbound_message = nullptr;
+    	core::os::ScopedLock<core::os::Mutex> lock(_lock);
+
+    	client.transaction._outbound_message = nullptr;
         client.transaction._inbound_message  = nullptr;
 
         _sequence++;
         client.transaction._sequence = _sequence;
-        _lock.release();
 
         if (_pub.alloc(client.transaction._outbound_message)) {
             return true;
@@ -398,8 +398,6 @@ protected:
 
         client.transaction._outbound_message = nullptr;
         client.transaction._inbound_message  = nullptr;
-
-        //client.transaction._lock.release();
 
         return true;
     }
@@ -619,7 +617,7 @@ public:
         ClientBase& client
     )
     {
-        _lock.acquire();
+    	core::os::ScopedLock<core::os::Mutex> lock(_lock);
 
         if(client._rpc != nullptr) {
         	return false;
@@ -630,8 +628,6 @@ public:
         client._id = getNextClientId();
         client._server_name = "";
 
-        _lock.release();
-
         return true;
     }
 
@@ -640,7 +636,7 @@ public:
         ClientBase& client
     )
     {
-        _lock.acquire();
+    	core::os::ScopedLock<core::os::Mutex> lock(_lock);
 
         if(client._rpc == nullptr) {
         	return false;
@@ -653,8 +649,6 @@ public:
         client._server_id   = 0;
         client._id = 0;
 
-        _lock.release();
-
         return true;
     }
 
@@ -663,15 +657,13 @@ public:
         ServerBase& server
     )
     {
-        _lock.acquire();
+    	core::os::ScopedLock<core::os::Mutex> lock(_lock);
 
         // There can be only one server x rpc name
         for (const ServerBase& srvr : _servers) {
             if (srvr._rpc_name == server._rpc_name) {
                 server._rpc = nullptr;
                 server._id  = 0;
-
-                _lock.release();
 
                 return false;
             }
@@ -680,8 +672,6 @@ public:
         server._rpc = this;
         _servers.link(server._by_rpc);
         server._id = getNextServerId();
-
-        _lock.release();
 
         return true;
     } // addServer
@@ -701,14 +691,12 @@ public:
         ServerBase& server
     )
     {
-        _lock.acquire();
+    	core::os::ScopedLock<core::os::Mutex> lock(_lock);
 
         _servers.unlink(server._by_rpc);
 
         server._rpc = nullptr;
         server._id  = 0;
-
-        _lock.release();
 
         return true;
     }
