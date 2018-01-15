@@ -592,18 +592,28 @@ class RPC:
 public:
     RPC(
         const char* name
-    ) : RPCBase::RPCBase(name), _running(false), _next_client_id(0), _next_server_id(0) {}
+    ) : RPCBase::RPCBase(name), _runner(nullptr), _running(false), _next_client_id(0), _next_server_id(0) {}
 
-    RPC() : RPCBase::RPCBase(), _running(false), _next_client_id(0), _next_server_id(0) {}
+    RPC() : RPCBase::RPCBase(), _runner(nullptr), _running(false), _next_client_id(0), _next_server_id(0) {}
 
     bool
     start(
         std::size_t stack_size
     )
     {
-        core::os::Thread::create_heap(nullptr, stack_size, core::os::Thread::PriorityEnum::NORMAL - 2, [](void* arg) {
+    	core::os::ScopedLock<core::os::Mutex> lock(_lock);
+
+    	if(_runner != nullptr) {
+            return false;
+        }
+
+        _runner = core::os::Thread::create_heap(nullptr, stack_size, core::os::Thread::PriorityEnum::NORMAL - 2, [](void* arg) {
                 reinterpret_cast<core::mw::rpc::RPC*>(arg)->thread();
             }, this, "rpcthd");
+
+        if(_runner == nullptr) {
+            return false;
+        }
 
         while (!_running) {
             core::os::Thread::sleep(core::os::Time::ms(500));
@@ -871,6 +881,7 @@ public:
     }
 
 private:
+    core::os::Thread* _runner;
     bool _running;
 
     uint8_t _next_client_id;
