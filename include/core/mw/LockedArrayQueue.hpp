@@ -12,6 +12,10 @@
 #include <core/os/Mutex.hpp>
 #include <core/os/Condition.hpp>
 
+#ifndef LOCKED_ARRAY_QUEUE_STATS
+#define LOCKED_ARRAY_QUEUE_STATS 0
+#endif
+
 NAMESPACE_CORE_MW_BEGIN
 
 /*! \brief An ArrayQueue, but locked.
@@ -27,6 +31,9 @@ public:
         Item*       storage,
         std::size_t length
     ) : core::mw::ArrayQueue<Item>(storage, length), _totalPushed(0), _totalPopped(0)
+#if LOCKED_ARRAY_QUEUE_STATS
+	, _min_level(0), _max_level(0)
+#endif
     {
         _mutex.initialize();
         _notFull.initialize();
@@ -50,6 +57,12 @@ public:
         _notEmpty.signal_unsafe();
 
         _totalPushed++;
+
+#if LOCKED_ARRAY_QUEUE_STATS
+        if(this->_count > _max_level) {
+        	_max_level = this->_count;
+        }
+#endif
 
         _mutex.release_unsafe();
     } // push
@@ -79,6 +92,12 @@ public:
         	_notEmpty.signal_unsafe();
         }
 
+#if LOCKED_ARRAY_QUEUE_STATS
+        if(this->_count > _max_level) {
+        	_max_level = this->_count;
+        }
+#endif
+
         _mutex.release_unsafe();
 
         return success;
@@ -100,6 +119,12 @@ public:
             _totalPushed++;
             _notEmpty.signal_unsafe();
         }
+
+#if LOCKED_ARRAY_QUEUE_STATS
+        if(this->_count > _max_level) {
+        	_max_level = this->_count;
+        }
+#endif
 
         _mutex.release_unsafe();
 
@@ -124,6 +149,12 @@ public:
 
         _totalPopped++;
 
+#if LOCKED_ARRAY_QUEUE_STATS
+        if(this->_count < _min_level) {
+        	_min_level = this->_count;
+        }
+#endif
+
         _mutex.release_unsafe();
     } // pop
 
@@ -146,6 +177,12 @@ public:
             	break;
             }
         }
+
+#if LOCKED_ARRAY_QUEUE_STATS
+        if(this->_count < _min_level) {
+        	_min_level = this->_count;
+        }
+#endif
 
         if (success) {
             _totalPopped++;
@@ -173,6 +210,12 @@ public:
             _notFull.signal_unsafe();
         }
 
+#if LOCKED_ARRAY_QUEUE_STATS
+        if(this->_count < _min_level) {
+        	_min_level = this->_count;
+        }
+#endif
+
         _mutex.release_unsafe();
 
         return success;
@@ -198,12 +241,48 @@ public:
         return this->get_length();
     }
 
+#if LOCKED_ARRAY_QUEUE_STATS
+    template <core::os::CallingContext CTX = core::os::CallingContext::NORMAL>
+    inline
+    void
+    reset_stats()
+    {
+        core::os::SysLock::ScopeFrom<CTX> lock;
+
+        _max_level = this->_count;
+        _min_level = this->_count;
+    }
+
+    template <core::os::CallingContext CTX = core::os::CallingContext::NORMAL>
+    inline
+    size_t
+    max_level()
+    {
+        core::os::SysLock::ScopeFrom<CTX> lock;
+
+        return _max_level;
+    }
+
+    template <core::os::CallingContext CTX = core::os::CallingContext::NORMAL>
+    inline
+    size_t
+    min_level()
+    {
+        core::os::SysLock::ScopeFrom<CTX> lock;
+
+        return _min_level;
+    }
+#endif
 private:
     core::os::Mutex     _mutex;
     core::os::Condition _notFull;
     core::os::Condition _notEmpty;
     std::size_t         _totalPushed;
     std::size_t         _totalPopped;
+#if LOCKED_ARRAY_QUEUE_STATS
+    std::size_t         _min_level;
+    std::size_t         _max_level;
+#endif
 };
 
 NAMESPACE_CORE_MW_END
