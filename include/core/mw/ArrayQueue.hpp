@@ -16,12 +16,12 @@ template <typename Item>
 class ArrayQueue:
     private core::Uncopyable
 {
-private:
-    Item*  arrayp;
-    size_t length;
-    size_t count;
-    Item*  headp;
-    Item*  tailp;
+protected:
+    Item*  _arrayp;
+    size_t _length;
+    size_t _count;
+    Item*  _headp;
+    Item*  _tailp;
 
 public:
     bool
@@ -75,12 +75,12 @@ ArrayQueue<Item>::post_unsafe(
     Item item
 )
 {
-    if (count < length) {
-        ++count;
-        *tailp = item;
+    if (_count < _length) {
+        ++_count;
+        *_tailp = item;
 
-        if (++tailp >= &arrayp[length]) {
-            tailp = &arrayp[0];
+        if (++_tailp >= &_arrayp[_length]) {
+            _tailp = &_arrayp[0];
         }
 
         return true;
@@ -96,12 +96,12 @@ ArrayQueue<Item>::fetch_unsafe(
     Item& item
 )
 {
-    if (count > 0) {
-        --count;
-        item = *headp;
+    if (_count > 0) {
+        --_count;
+        item = *_headp;
 
-        if (++headp >= &arrayp[length]) {
-            headp = &arrayp[0];
+        if (++_headp >= &_arrayp[_length]) {
+            _headp = &_arrayp[0];
         }
 
         return true;
@@ -115,11 +115,11 @@ inline
 bool
 ArrayQueue<Item>::skip_unsafe()
 {
-    if (count > 0) {
-        --count;
+    if (_count > 0) {
+        --_count;
 
-        if (++headp >= &arrayp[length]) {
-            headp = &arrayp[0];
+        if (++_headp >= &_arrayp[_length]) {
+            _headp = &_arrayp[0];
         }
 
         return true;
@@ -133,7 +133,7 @@ inline
 size_t
 ArrayQueue<Item>::get_length() const
 {
-    return length;
+    return _length;
 }
 
 template <typename Item>
@@ -141,7 +141,7 @@ inline
 size_t
 ArrayQueue<Item>::get_count() const
 {
-    return count;
+    return _count;
 }
 
 template <typename Item>
@@ -191,14 +191,14 @@ ArrayQueue<Item>::ArrayQueue(
     size_t length
 )
     :
-    arrayp(array),
-    length(length),
-    count(0),
-    headp(array),
-    tailp(array)
+    _arrayp(array),
+    _length(length),
+    _count(0),
+    _headp(array),
+    _tailp(array)
 {
     CORE_ASSERT(array != nullptr);
-    CORE_ASSERT(length > 0);
+    CORE_ASSERT(_length > 0);
 }
 
 NAMESPACE_CORE_MW_END
