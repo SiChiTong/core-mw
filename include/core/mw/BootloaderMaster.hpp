@@ -255,6 +255,8 @@ public:
     bool
     deselectSlave();
 
+    void
+    deselectAllSlaves();
 
     inline void
 	bootload(bool enable) {

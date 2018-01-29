@@ -534,6 +534,8 @@ BootloaderMaster::ls()
         success &= tmp;
     }
 
+    deselectAllSlaves();
+
     return success;
 } // BootloaderMaster::ls
 
@@ -597,6 +599,13 @@ bool
 BootloaderMaster::deselectSlave()
 {
     return commandUID(MessageType::DESELECT_SLAVE, _selected);
+}
+
+void
+BootloaderMaster::deselectAllSlaves()
+{
+	_selected = 0xFFFFFFFF;
+	deselectSlave();
 }
 
 bool
