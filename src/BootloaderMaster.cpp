@@ -226,7 +226,7 @@ BootloaderMaster::masterAnnounceNode()
                            }
                        };
 
-    auto tmp = core::os::Thread::create_heap(nullptr, 128, core::os::Thread::PriorityEnum::NORMAL - 1, thread_code, this, "bootm_sub");
+    auto tmp = core::os::Thread::create_heap(nullptr, 256, core::os::Thread::PriorityEnum::NORMAL - 1, thread_code, this, "bootm_sub");
 
     if (tmp == nullptr) {
         return false;
