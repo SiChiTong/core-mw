@@ -20,6 +20,8 @@ CoreConfigurationManager::add(
     const CoreConfigurableBase& configurableObject
 )
 {
+	CORE_ASSERT(configurableObject.getKey() != nullptr);
+
     _objects.link(configurableObject.link);
 }
 

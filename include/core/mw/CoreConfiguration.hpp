@@ -419,10 +419,9 @@ public:
      */
     CoreConfigurableBase(
         const char* key
-    ) : _configuration(nullptr), _key(key), link(*this)
+    ) : _configuration(nullptr), _key(nullptr), link(*this)
     {
-        //CORE_ASSERT(is_identifier(key, NamingTraits<Node>::MAX_LENGTH));
-        CORE_ASSERT(strlen(key) <= NamingTraits<CoreConfigurableBase>::MAX_LENGTH);
+    	setKey(key);
     }
 
     void
@@ -451,6 +450,17 @@ public:
     isConfigured() const
     {
         return _configuration != nullptr;
+    }
+
+    void
+    setKey(const char* key)
+    {
+    	if(key != nullptr) {
+    		//CORE_ASSERT(is_identifier(key, NamingTraits<Node>::MAX_LENGTH));
+    		CORE_ASSERT(strlen(key) <= NamingTraits<CoreConfigurableBase>::MAX_LENGTH);
+    	}
+
+    	_key = key;
     }
 
     inline const char*

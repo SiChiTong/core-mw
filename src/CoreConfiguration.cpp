@@ -160,6 +160,8 @@ CoreConfigurableBase::setConfigurationFrom(
     std::size_t  size
 )
 {
+	CORE_ASSERT(_key != nullptr);
+
     std::size_t tmpOffset = offset;
 
     char name[NamingTraits < CoreConfigurableBase > ::MAX_LENGTH];
@@ -205,6 +207,8 @@ CoreConfigurableBase::overrideConfigurationFrom(
     std::size_t  size
 )
 {
+	CORE_ASSERT(_key != nullptr);
+
     std::size_t tmpOffset = offset;
 
     char name[NamingTraits < CoreConfigurableBase > ::MAX_LENGTH];
@@ -252,6 +256,7 @@ CoreConfigurableBase::dumpConfigurationTo(
     std::size_t  size
 ) const
 {
+	CORE_ASSERT(_key != nullptr);
     CORE_ASSERT(size >= offset + NamingTraits<Node>::MAX_LENGTH + sizeof(CoreConfigurationBase::Signature) + getConfigurationSize());
 
     memcpy(storage + offset, _key, NamingTraits<Node>::MAX_LENGTH);
