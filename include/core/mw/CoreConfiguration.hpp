@@ -7,7 +7,7 @@
 #pragma once
 
 #include <core/mw/namespace.hpp>
-#include <core/mw/CoreType.hpp>
+#include <core/CoreType.hpp>
 #include <core/Array.hpp>
 #include <core/String.hpp>
 #include <core/mw/StaticList.hpp>
@@ -53,7 +53,7 @@ struct CoreConfigurationMap {
     struct FieldMetadata {
         Key                key; //!< key (== name) of the field
         std::ptrdiff_t     offset; //!< offset wrt the beginnig of the configuration struct
-        core::mw::CoreType type; //!< type of the field
+        core::CoreType type; //!< type of the field
         std::size_t        size; //!< size of the field (== 1 for scalar types)
     };
 
@@ -736,9 +736,9 @@ CoreConfigurationStatic_::set(
 )
 {
     std::size_t        s1 = field.size;
-    std::size_t        s2 = core::mw::CoreTypeUtils::size(x);
-    core::mw::CoreType t1 = field.type;
-    core::mw::CoreType t2 = core::mw::CoreTypeUtils::coreType(x);
+    std::size_t        s2 = core::CoreTypeUtils::size(x);
+    core::CoreType t1 = field.type;
+    core::CoreType t2 = core::CoreTypeUtils::coreType(x);
 
     CORE_ASSERT(s1 == s2 && t1 == t2);  // make sure we are doing something meaningful...
 
@@ -760,8 +760,8 @@ CoreConfigurationStatic_::set(
 {
     std::size_t        s1 = field.size;
     std::size_t        s2 = x.size();
-    core::mw::CoreType t1 = field.type;
-    core::mw::CoreType t2 = core::mw::CoreTypeTraitsHelperB<T>::types;
+    core::CoreType t1 = field.type;
+    core::CoreType t2 = core::CoreTypeTraitsHelperB<T>::types;
 
     CORE_ASSERT(s1 == s2 && t1 == t2);  // make sure we are doing something meaningful...
 
@@ -781,9 +781,9 @@ CoreConfigurationStatic_::get(
 )
 {
     std::size_t        s1 = field.size;
-    std::size_t        s2 = core::mw::CoreTypeUtils::size(x);
-    core::mw::CoreType t1 = field.type;
-    core::mw::CoreType t2 = core::mw::CoreTypeUtils::coreType(x);
+    std::size_t        s2 = core::CoreTypeUtils::size(x);
+    core::CoreType t1 = field.type;
+    core::CoreType t2 = core::CoreTypeUtils::coreType(x);
 
     CORE_ASSERT(s1 == s2 && t1 == t2);    // make sure we are doing something meaningful...
 
@@ -819,7 +819,7 @@ NAMESPACE_CORE_MW_END
         static const std::size_t LENGTH = __l__;
 #define CORE_CONFIGURATION_FIELD(__name__, __type__, __size__) \
 public: \
-    core::mw::CoreTypeTraits<core::mw::CoreType::__type__, __size__>::Type __name__;
+    core::CoreTypeTraits<core::CoreType::__type__, __size__>::Type __name__;
 #define CORE_CONFIGURATION_FIELDS_ENUM_BEGIN(__name__) \
 public: \
     enum class __name__ : uint8_t
@@ -827,9 +827,9 @@ public: \
 		__name__ = __value__,
 #define CORE_CONFIGURATION_FIELDS_ENUM_END() \
     }; \
-    bool set(Fields field, std::size_t idx, const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value); \
+    bool set(Fields field, std::size_t idx, const core::CoreTypeTraits<core::CoreType::VARIANT, 1>::Type& value); \
     bool set(Fields field, const char* value);
-    // void set(core::mw::CoreConfigurationMap::Key field, std::size_t idx, const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value);
+    // void set(core::mw::CoreConfigurationMap::Key field, std::size_t idx, const core::CoreTypeTraits<core::CoreType::VARIANT, 1>::Type& value);
     // void set(core::mw::CoreConfigurationMap::Key field, const char* value);
 #define CORE_CONFIGURATION_SIGNATURE(__s__) \
 public: \
@@ -854,19 +854,19 @@ public: \
 #define CORE_CONFIGURATION_DEFAULT_BEGIN() \
     namespace defaults {
 #define CORE_CONFIGURATION_DEFAULT_FIELD(__name__, __type__, __size__, ...) \
-    static const core::mw::CoreTypeTraits<core::mw::CoreType::__type__, __size__>::Type __name__ = {__VA_ARGS__};
+    static const core::CoreTypeTraits<core::CoreType::__type__, __size__>::Type __name__ = {__VA_ARGS__};
 #define CORE_CONFIGURATION_DEFAULT_END() \
     }
 #define CORE_CONFIGURATION_MAP_BEGIN(__name__) \
     template <> \
     const core::Array<core::mw::CoreConfigurationMap::FieldMetadata, core::mw::CoreConfigurationMap_<__name__>::LENGTH>core::mw::CoreConfigurationMap_<__name__>::_map = {{
 #define CORE_CONFIGURATION_MAP_ENTRY(__name__, __field__, __type__, __size__) \
-    { # __field__, offsetof(__name__, __field__), core::mw::CoreType::__type__, __size__},
+    { # __field__, offsetof(__name__, __field__), core::CoreType::__type__, __size__},
 #define CORE_CONFIGURATION_MAP_END() \
     } \
     };
 #define CORE_CONFIGURATION_SET_FIELD_ENUM_BEGIN(__name__) \
-    bool __name__::set(Fields field, std::size_t idx, const core::mw::CoreTypeTraits<core::mw::CoreType::VARIANT, 1>::Type& value) { \
+    bool __name__::set(Fields field, std::size_t idx, const core::CoreTypeTraits<core::CoreType::VARIANT, 1>::Type& value) { \
         switch(field) {
 #define CORE_CONFIGURATION_SET_FIELD_ENUM_END() \
             default: return false; \
@@ -874,9 +874,9 @@ public: \
         return true; \
     }
 #define CORE_CONFIGURATION_SET_FIELD_ENUM_SCALAR(__enum__, __field__, __type__, __size__) \
-        case Fields::__enum__: { CORE_ASSERT(value.type == core::mw::CoreType::__type__); CORE_ASSERT(idx < __size__); core::mw::CoreTypeTraits<core::mw::CoreType::__type__, 1>::BaseType tmp; core::mw::CoreTypeUtils::variantGet(value, tmp); __field__ = tmp; } break;
+        case Fields::__enum__: { CORE_ASSERT(value.type == core::CoreType::__type__); CORE_ASSERT(idx < __size__); core::CoreTypeTraits<core::CoreType::__type__, 1>::BaseType tmp; core::CoreTypeUtils::variantGet(value, tmp); __field__ = tmp; } break;
 #define CORE_CONFIGURATION_SET_FIELD_ENUM_ARRAY(__enum__, __field__, __type__, __size__) \
-        case Fields::__enum__: { CORE_ASSERT(value.type == core::mw::CoreType::__type__); CORE_ASSERT(idx < __size__); core::mw::CoreTypeTraits<core::mw::CoreType::__type__, 1>::BaseType tmp; core::mw::CoreTypeUtils::variantGet(value, tmp); __field__[idx] = tmp; } break;
+        case Fields::__enum__: { CORE_ASSERT(value.type == core::CoreType::__type__); CORE_ASSERT(idx < __size__); core::CoreTypeTraits<core::CoreType::__type__, 1>::BaseType tmp; core::CoreTypeUtils::variantGet(value, tmp); __field__[idx] = tmp; } break;
 #define CORE_CONFIGURATION_SET_FIELD_ENUM_STRING(__enum__, __field__, __type__, __size__) \
-        case Fields::__enum__: { CORE_ASSERT(value.type == core::mw::CoreType::__type__); CORE_ASSERT(idx < __size__); core::mw::CoreTypeTraits<core::mw::CoreType::__type__, 1>::BaseType tmp; core::mw::CoreTypeUtils::variantGet(value, tmp); __field__[idx] = tmp; } break;
+        case Fields::__enum__: { CORE_ASSERT(value.type == core::CoreType::__type__); CORE_ASSERT(idx < __size__); core::CoreTypeTraits<core::CoreType::__type__, 1>::BaseType tmp; core::CoreTypeUtils::variantGet(value, tmp); __field__[idx] = tmp; } break;
 

@@ -51,9 +51,9 @@ CoreConfigurationStatic_::set(
 )
 {
     std::size_t        s1 = field.size;
-    core::mw::CoreType t1 = field.type;
+    core::CoreType t1 = field.type;
 
-    std::size_t len = s1 * core::mw::CoreTypeUtils::coreTypeSize(t1);
+    std::size_t len = s1 * core::CoreTypeUtils::coreTypeSize(t1);
 
     const uint8_t* src = reinterpret_cast<const uint8_t*>(x);
     uint8_t*       dst = reinterpret_cast<uint8_t*>(obj + field.offset);
@@ -73,8 +73,8 @@ CoreConfigurationStatic_::set(
     std::size_t s1 = field.size;
     std::size_t s2 = strlen(x);
 
-    core::mw::CoreType t1 = field.type;
-    core::mw::CoreType t2 = core::mw::CoreType::CHAR;
+    core::CoreType t1 = field.type;
+    core::CoreType t2 = core::CoreType::CHAR;
 
     CORE_ASSERT(s1 >= s2 && t1 == t2);  // make sure we are doing something meaningful...
 
@@ -105,9 +105,9 @@ CoreConfigurationStatic_::get(
 )
 {
     std::size_t        s1 = field.size;
-    core::mw::CoreType t1 = field.type;
+    core::CoreType t1 = field.type;
 
-    std::size_t len = s1 * core::mw::CoreTypeUtils::coreTypeSize(t1);
+    std::size_t len = s1 * core::CoreTypeUtils::coreTypeSize(t1);
 
     const uint8_t* src = reinterpret_cast<const uint8_t*>(obj + field.offset);
     uint8_t*       dst = reinterpret_cast<uint8_t*>(x);
@@ -127,8 +127,8 @@ CoreConfigurationStatic_::get(
     std::size_t s1 = field.size;
     std::size_t s2 = strlen(x);
 
-    core::mw::CoreType t1 = field.type;
-    core::mw::CoreType t2 = core::mw::CoreType::CHAR;
+    core::CoreType t1 = field.type;
+    core::CoreType t2 = core::CoreType::CHAR;
 
     CORE_ASSERT(s1 >= s2 && t1 == t2);    // make sure we are doing something meaningful...
 

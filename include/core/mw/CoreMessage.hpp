@@ -7,7 +7,7 @@
 #pragma once
 
 #include <core/mw/Message.hpp>
-#include <core/mw/CoreType.hpp>
+#include <core/CoreType.hpp>
 
 /* Macros that allow us to keep the python code generator clean */
 #define CORE_MESSAGE_BEGIN(__name__)  struct __name__: \
@@ -16,7 +16,7 @@
         using MessageType = __name__;
 #define CORE_MESSAGE_FIELD(__name__, __type__, __size__) \
 public: \
-    core::mw::CoreTypeTraits<core::mw::CoreType::__type__, __size__>::Type __name__;
+    core::CoreTypeTraits<core::CoreType::__type__, __size__>::Type __name__;
 #define CORE_MESSAGE_SIGNATURE(__s__) \
 public: \
     static const core::mw::Message::Signature SIGNATURE = __s__; \
