@@ -385,6 +385,22 @@ BootloaderMaster::commandUID(
 }
 
 bool
+BootloaderMaster::commandUID_NoAck(
+    MessageType type,
+    ModuleUID   uid
+)
+{
+    if (beginCommand(type)) {
+        commandPayload<payload::UID>()->uid = uid;
+
+        if (endCommand()) {
+            return true;
+        }
+    }
+
+    return false;
+}
+bool
 BootloaderMaster::commandUIDAndName(
     MessageType type,
     ModuleUID   uid,
@@ -600,6 +616,12 @@ BootloaderMaster::deselectSlave()
 {
     return commandUID(MessageType::DESELECT_SLAVE, _selected);
 }
+
+bool
+BootloaderMaster::resetSlave() {
+	return commandUID_NoAck(MessageType::RESET, _selected);
+}
+
 
 void
 BootloaderMaster::deselectAllSlaves()

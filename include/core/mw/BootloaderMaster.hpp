@@ -253,6 +253,9 @@ public:
 	readTags(char* buffer);
 
     bool
+	resetSlave();
+
+    bool
     deselectSlave();
 
     void
@@ -367,6 +370,12 @@ private:
 
     bool
     commandUID(
+        MessageType type,
+        ModuleUID   uid
+    );
+
+    bool
+    commandUID_NoAck(
         MessageType type,
         ModuleUID   uid
     );
