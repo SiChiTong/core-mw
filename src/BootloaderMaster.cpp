@@ -627,6 +627,8 @@ void
 BootloaderMaster::deselectAllSlaves()
 {
 	_selected = 0xFFFFFFFF;
+	selectSlave(_selected);
+	_selected = 0xFFFFFFFF;
 	deselectSlave();
 }
 
