@@ -393,7 +393,11 @@ BootloaderMaster::commandUID_NoAck(
     if (beginCommand(type)) {
         commandPayload<payload::UID>()->uid = uid;
 
+
         if (endCommand()) {
+            if (waitForAck()) {
+            }
+
             return true;
         }
     }
