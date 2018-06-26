@@ -262,6 +262,11 @@ public:
     deselectAllSlaves();
 
     inline void
+	advertise(bool enable) {
+    	_advertise = enable;
+    }
+
+    inline void
 	bootload(bool enable) {
     	_bootload = enable;
     }
