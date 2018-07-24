@@ -549,7 +549,8 @@ BootloaderMaster::ls()
         	_slaves.value(n)._version = SlaveDescription::Version::NONE;
         	tmp = false;
         }
-        tmp &= deselectSlave();
+
+        deselectSlave();
 
         success &= tmp;
     }
