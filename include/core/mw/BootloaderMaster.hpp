@@ -316,7 +316,7 @@ private:
 
     core::mw::Node _node;
     core::mw::Publisher<BootMsg>     _pub;
-    core::mw::Subscriber<BootMsg, 5> _sub;
+    core::mw::Subscriber<BootMsg, 2> _sub;
 
     core::os::Thread* _masterAdvertiseThread;
     core::os::Thread* _masterAnnounceThread;
