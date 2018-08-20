@@ -253,6 +253,12 @@ public:
 	readTags(char* buffer);
 
     bool
+    readTags(
+        size_t offset,
+        core::String<17>& buffer
+    );
+
+    bool
 	resetSlave();
 
     bool

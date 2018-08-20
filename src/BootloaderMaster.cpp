@@ -732,5 +732,22 @@ BootloaderMaster::readTags(char* buffer) {
 	return false;
 }
 
+bool
+BootloaderMaster::readTags(size_t offset, core::String<17>& buffer) {
+	if(_slaves[_selected]._version == SlaveDescription::Version::V3) {
+		uint32_t size = _slaves[_selected]._v3.tagsFlashSize;
+		if(size > 0) {
+			if(offset < size) {
+				if (commandUIDAndAddress(MessageType::TAGS_READ, _selected, offset)) {
+					AcknowledgeString* tmp = reinterpret_cast<AcknowledgeString*>(&_last_ack);
+					buffer.fill(0);
+					::memcpy(buffer.data(), tmp->data, 16);
+					return true;
+				}
+			}
+		}
+	}
+	return false;
+}
 }
 NAMESPACE_CORE_MW_END
