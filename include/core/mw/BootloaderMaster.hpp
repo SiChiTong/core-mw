@@ -262,6 +262,9 @@ public:
 	resetSlave();
 
     bool
+    resetAllSlaves();
+
+    bool
     deselectSlave();
 
     void
@@ -389,6 +392,11 @@ private:
     commandUID_NoAck(
         MessageType type,
         ModuleUID   uid
+    );
+
+    bool
+    commandEmpty_NoAck(
+        MessageType type
     );
 
     bool

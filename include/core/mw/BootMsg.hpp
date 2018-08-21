@@ -52,6 +52,7 @@ enum class MessageType : uint8_t {
     IHEX_READ  = 0x51,
 
     RESET            = 0x60,
+    RESET_ALL        = 0x61,
     BOOTLOAD         = 0x70,
     BOOTLOAD_BY_NAME = 0x71,
 
@@ -286,6 +287,7 @@ using IHexData = Message_<BootMsg, MessageType::IHEX_READ, payload::IHex>;
 using IHexRead = Message_<BootMsg, MessageType::IHEX_WRITE, payload::UIDAndAddress>;
 
 using Reset = Message_<BootMsg, MessageType::RESET, payload::UID>;
+using ResetAll = Message_<BootMsg, MessageType::RESET_ALL, payload::EMPTY>;
 
 //using ReadName = Message_<BootMsg, MessageType::READ_MODULE_NAME, payload::UID>;
 using WriteModuleName = Message_<BootMsg, MessageType::WRITE_MODULE_NAME, payload::UIDAndName>;

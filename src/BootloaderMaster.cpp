@@ -404,6 +404,23 @@ BootloaderMaster::commandUID_NoAck(
 
     return false;
 }
+
+bool
+BootloaderMaster::commandEmpty_NoAck(
+    MessageType type
+)
+{
+    if (beginCommand(type)) {
+        if (endCommand()) {
+            if (waitForAck()) {
+            }
+
+            return true;
+        }
+    }
+
+    return false;
+}
 bool
 BootloaderMaster::commandUIDAndName(
     MessageType type,
@@ -627,6 +644,14 @@ BootloaderMaster::resetSlave() {
 	return commandUID_NoAck(MessageType::RESET, _selected);
 }
 
+bool
+BootloaderMaster::resetAllSlaves()
+{
+    _sequence_id = 0;
+    _selected = 0xFFFFFFFF;
+
+    return commandEmpty_NoAck(MessageType::RESET_ALL);
+}
 
 void
 BootloaderMaster::deselectAllSlaves()
