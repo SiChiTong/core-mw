@@ -202,7 +202,7 @@ BootloaderMaster::masterAnnounceNode()
                            _this->_masterAnnounceThread = &core::os::Thread::self();
 
                            core::mw::Node node("bootm_sub");
-                           core::mw::Subscriber<core::mw::bootloader::BootMasterMsg, 5> sub;
+                           core::mw::Subscriber<core::mw::bootloader::BootMasterMsg, MAX_NUMBER_OF_SLAVES> sub;
                            core::mw::bootloader::BootMasterMsg* msgp;
 
                            node.subscribe(sub, BOOTLOADER_MASTER_TOPIC_NAME);
@@ -226,7 +226,7 @@ BootloaderMaster::masterAnnounceNode()
                            }
                        };
 
-    auto tmp = core::os::Thread::create_heap(nullptr, 256, core::os::Thread::PriorityEnum::NORMAL - 1, thread_code, this, "bootm_sub");
+    auto tmp = core::os::Thread::create_heap(nullptr, 256 + sizeof(core::mw::Subscriber<core::mw::bootloader::BootMasterMsg, MAX_NUMBER_OF_SLAVES>), core::os::Thread::PriorityEnum::NORMAL - 1, thread_code, this, "bootm_sub");
 
     if (tmp == nullptr) {
         return false;
