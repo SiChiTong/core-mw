@@ -24,6 +24,8 @@ struct SlaveDescription {
 		NONE, V1, V2, V3
 	};
 
+	SlaveDescription() : _version(Version::NONE) {}
+
 	Version version() const;
 
 	const ModuleType& moduleType() const;
@@ -157,6 +159,11 @@ public:
 
     void clear()
     {
+        for (size_t i = 0; i < _cnt; i++) {
+        	_data[i].key = 0xFFFFFFFF;
+        	_data[i].value = VALUE();
+        }
+
     	_cnt = 0;
     }
 

@@ -547,23 +547,23 @@ BootloaderMaster::ls()
 {
     bool success = true;
 
-    std::size_t n = slavesCount();
+    size_t n = slavesCount();
 
-    while (n--) {
+    for(size_t i = 0; i < n; i++) {
         bool      tmp = true;
-        ModuleUID uid = _slaves.key(n);
+        ModuleUID uid = _slaves.key(i);
         tmp &= selectSlave(uid);
 
         if(!tmp) {
-        	_slaves.value(n)._version = SlaveDescription::Version::NONE;
-    	} else if(describeV3(_slaves.value(n)._v3)) {
-    		_slaves.value(n)._version = SlaveDescription::Version::V3;
-        } else if(describeV2(_slaves.value(n)._v2)) {
-        	_slaves.value(n)._version = SlaveDescription::Version::V2;
-        } else if(describeV1(_slaves.value(n)._v1)) {
-        	_slaves.value(n)._version = SlaveDescription::Version::V1;
+        	_slaves.value(i)._version = SlaveDescription::Version::NONE;
+    	} else if(describeV3(_slaves.value(i)._v3)) {
+    		_slaves.value(i)._version = SlaveDescription::Version::V3;
+        } else if(describeV2(_slaves.value(i)._v2)) {
+        	_slaves.value(i)._version = SlaveDescription::Version::V2;
+        } else if(describeV1(_slaves.value(i)._v1)) {
+        	_slaves.value(i)._version = SlaveDescription::Version::V1;
         } else {
-        	_slaves.value(n)._version = SlaveDescription::Version::NONE;
+        	_slaves.value(i)._version = SlaveDescription::Version::NONE;
         	tmp = false;
         }
 
