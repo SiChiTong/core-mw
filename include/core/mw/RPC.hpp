@@ -4,18 +4,6 @@
  * subject to the License Agreement located in the file LICENSE.
  */
 
-/*****************************************************************************
- *
- *   m     m   mm   mmmmm  mm   m mmmmm  mm   m   mmm
- *   #  #  #   ##   #   "# #"m  #   #    #"m  # m"   "
- *   " #"# #  #  #  #mmmm" # #m #   #    # #m # #   mm
- *    ## ##"  #mm#  #   "m #  # #   #    #  # # #    #
- *    #   #  #    # #    " #   ## mm#mm  #   ##  "mmm"
- *
- *   USE AT YOUR OWN RISK
- *
- *****************************************************************************/
-
 #pragma once
 
 #include <core/mw/namespace.hpp>
@@ -26,6 +14,7 @@
 #include <core/mw/Middleware.hpp>
 #include <core/mw/Publisher.hpp>
 #include <core/mw/Subscriber.hpp>
+#include <core/ConstString.hpp>
 
 #include <core/mw/RPCMessages.hpp>
 
@@ -107,16 +96,14 @@ class ServerBase
     friend class RPC;
 
 public:
-    ServerBase() : _rpc(nullptr), _id(0), _timeout(core::os::Time::INFINITE), _by_rpc(*this)
+    ServerBase() : _rpc(nullptr), _rpc_name(""), _id(0), _timeout(core::os::Time::INFINITE), _by_rpc(*this)
     {
-        _rpc_name.clear();
     }
 
     ServerBase(
         const char* rpc_name
-    ) : _rpc(nullptr), _id(0), _timeout(core::os::Time::INFINITE), _by_rpc(*this)
+    ) : _rpc(nullptr), _rpc_name(rpc_name), _id(0), _timeout(core::os::Time::INFINITE), _by_rpc(*this)
     {
-        _rpc_name = rpc_name;
     }
 
     virtual ~ServerBase() {}
@@ -130,7 +117,7 @@ public:
 
 protected:
     RPCBase*       _rpc;
-    RPCName        _rpc_name;
+    core::ConstString<RPCName::SIZE> _rpc_name;
     uint8_t        _id;
     core::os::Time _timeout;
 //    Transaction    transaction;
@@ -150,9 +137,8 @@ public:
 public:
     ClientBase(
         const char* rpc_name
-    ) : _rpc(nullptr), _id(0), _server_id(0), _state(State::NONE), _service(nullptr), _timeout(core::os::Time::s(1)), _private(nullptr), _by_rpc(*this)
+    ) : _rpc(nullptr), _rpc_name(rpc_name), _id(0), _server_id(0), _state(State::NONE), _service(nullptr), _timeout(core::os::Time::s(1)), _private(nullptr), _by_rpc(*this)
     {
-        _rpc_name = rpc_name;
         _server_name.clear();
     }
 
@@ -185,7 +171,7 @@ public:
 
 protected:
     RPCBase*       _rpc;
-    RPCName        _rpc_name;
+    core::ConstString<RPCName::SIZE> _rpc_name;
     uint8_t        _id;
     ModuleName     _server_name;
     uint8_t        _server_id;
