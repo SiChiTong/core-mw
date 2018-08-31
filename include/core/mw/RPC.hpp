@@ -43,6 +43,9 @@ public:
     using Request  = REQUEST;
     using Response = RESPONSE;
 
+    static_assert(sizeof(Request) <= RPCMessage::PAYLOAD_SIZE, "sizeof(Request) > RPCMessage::PAYLOAD_SIZE");
+    static_assert(sizeof(Response) <= RPCMessage::PAYLOAD_SIZE, "sizeof(Response) > RPCMessage::PAYLOAD_SIZE");
+
     Request CORE_MEMORY_ALIGNED  request;
     Response CORE_MEMORY_ALIGNED response;
 
