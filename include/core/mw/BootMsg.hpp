@@ -82,6 +82,8 @@ struct Message:
     MessageType command;
     uint8_t     sequenceId;
 
+    static const std::size_t MESSAGE_HEADER_SIZE = sizeof(command) + sizeof(sequenceId);
+
     const Message*
     asMessage()
     {
@@ -101,8 +103,9 @@ class MessageBase:
 public:
     using ParentType = Message;
     static const std::size_t MESSAGE_LENGTH = _MESSAGE_LENGTH;
+    static const std::size_t DATA_LENGTH = MESSAGE_LENGTH - MESSAGE_HEADER_SIZE;
 
-    uint8_t data[MESSAGE_LENGTH - 2];
+    uint8_t data[DATA_LENGTH];
 }
 
 CORE_PACKED_ALIGNED;
@@ -115,6 +118,7 @@ template <typename _CONTAINER, MessageType _TYPE, typename _PAYLOAD>
 class Message_:
     public _CONTAINER::Parent
 {
+static_assert(sizeof(_PAYLOAD) <= _CONTAINER::DATA_LENGTH, "Payload too large");
 public:
     using ContainerType = _CONTAINER;
     using PayloadType   = _PAYLOAD;
@@ -125,7 +129,7 @@ public:
 
     PayloadType data;
 
-    uint8_t padding[ContainerType::MESSAGE_LENGTH - sizeof(ContainerType) - sizeof(data)];
+    uint8_t padding[ContainerType::DATA_LENGTH - sizeof(data)];
 }
 
 CORE_PACKED_ALIGNED;
@@ -137,6 +141,8 @@ struct AcknowledgeMessage:
     uint8_t           sequenceId;
     AcknowledgeStatus status;
     MessageType       type;
+
+    static const std::size_t ACKNOWLEDGE_MESSAGE_HEADER_SIZE = sizeof(command) + sizeof(sequenceId) + sizeof(status) + sizeof(type);
 
     const Message*
     asMessage()
@@ -154,24 +160,24 @@ class AcknowledgeMessageBase:
 public:
     using ParentType = AcknowledgeMessage;
     static const std::size_t MESSAGE_LENGTH = _MESSAGE_LENGTH;
-
-    uint8_t data[MESSAGE_LENGTH - sizeof(AcknowledgeMessage)];
+    static const std::size_t DATA_LENGTH = MESSAGE_LENGTH - ACKNOWLEDGE_MESSAGE_HEADER_SIZE;
+    uint8_t data[DATA_LENGTH];
 }
 
 CORE_PACKED_ALIGNED;
 
-template <typename CONTAINER, typename PAYLOAD>
+template <typename _CONTAINER, typename _PAYLOAD>
 class AcknowledgeMessage_:
-    public CONTAINER::ParentType
+    public _CONTAINER::ParentType
 {
-        // static_assert(sizeof(PAYLOAD) <= CONTAINER::MESSAGE_LENGTH - sizeof(AcknowledgeMessage), "Payload too large");
+static_assert(sizeof(_PAYLOAD) <= _CONTAINER::DATA_LENGTH, "Payload too large");
 public:
-    using ContainerType = CONTAINER;
-    using PayloadType   = PAYLOAD;
+    using ContainerType = _CONTAINER;
+    using PayloadType   = _PAYLOAD;
 
-    PAYLOAD data;
+    PayloadType data;
 
-    uint8_t padding[ContainerType::MESSAGE_LENGTH - sizeof(AcknowledgeMessage) - sizeof(data)];
+    uint8_t padding[ContainerType::DATA_LENGTH - sizeof(data)];
 }
 
 CORE_PACKED_ALIGNED;
