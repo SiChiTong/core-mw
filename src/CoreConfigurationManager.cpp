@@ -64,7 +64,7 @@ CoreConfigurationManager::setFrom(
             // For every block...
             for (CoreConfigurableBase& object : _objects) {
                 // Try with every object...
-                if (object.setConfigurationFrom(storage, offset, size - sizeof(std::size_t))) {
+                if (object.setConfigurationFrom(storage, offset, size - sizeof(std::size_t), true)) {
                     // If the block matches the object...
                     break; // Go on with the next block!
                 }
@@ -141,6 +141,8 @@ CoreConfigurationManager::saveTo(
 
         success &= storage.endWrite();
     }
+
+    loadFrom(storage);
 
     CORE_ASSERT(success);
 } // CoreConfigurationManager::dumpTo
