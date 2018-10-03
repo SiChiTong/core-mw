@@ -510,6 +510,8 @@ public:
     virtual CoreConfigurationBase&
     getOverridingConfigurationBase() = 0;
 
+    virtual bool
+    isOverridingConfiguration() = 0;
 
 //-----------------------------------------------------------------------------
 
@@ -528,7 +530,8 @@ public:
     setConfigurationFrom(
         const void*  storage, //!< [in] pointer to memory area that holds the configuration
         std::size_t& offset, //!< [in/out] offset
-        std::size_t  size //!< [in] size of storage
+        std::size_t  size, //!< [in] size of storage
+        bool         skip_overridden //!< [in] skip overridden configurations
     );
 
 
@@ -686,6 +689,15 @@ public:
         return *_overriding;
     }
 
+    inline bool
+    isOverridingConfiguration()
+    {
+        if(_overriding != nullptr) {
+            return _overriding == _configuration;
+        }
+
+        return false;
+    }
 #if 0
     /*! \brief Get the overriding configuration
      *

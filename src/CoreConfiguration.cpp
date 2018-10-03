@@ -157,7 +157,8 @@ bool
 CoreConfigurableBase::setConfigurationFrom(
     const void*  storage,
     std::size_t& offset,
-    std::size_t  size
+    std::size_t  size,
+    bool         skip_overridden
 )
 {
 	CORE_ASSERT(_key != nullptr);
@@ -185,7 +186,9 @@ CoreConfigurableBase::setConfigurationFrom(
 
     tmpOffset += sizeof(CoreConfigurationBase::Signature);
 
-    setConfigurationBase(*reinterpret_cast<const CoreConfigurationBase*>((std::size_t)storage + tmpOffset));
+    if(!(isOverridingConfiguration() && skip_overridden)) {
+        setConfigurationBase(*reinterpret_cast<const CoreConfigurationBase*>((std::size_t)storage + tmpOffset));
+    }
 
     std::size_t dataSize = getConfigurationSize();
 
